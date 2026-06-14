@@ -1,0 +1,88 @@
+# JavaScript
+- Backwards compatible
+- Run till completion 
+- client side programming
+- multi-paradign language
+	- Imperative
+	- Object Oriented
+	- Functional
+	- JavaScript has prototypes 
+		- Prototypes are other objects
+	- Functional
+- Events
+- Quirks
+	- Variable hoisting
+	- No real block scoping with `var`
+		- `let` fixes this issue
+		- `let` is blocked scope
+	- `var` is function scoped 
+	- Strange things happen when you forget to use new
+	- `this` is bound dynamically in the language
+	- If you forget var or let variables are global
+	- `==` is not transitive
+- Execution Contexts
+	- Variable object
+	- Scope chain
+		- Look in different blocks kinds of like look at inner circle then it's outer then that's outer and so on . 
+	- Context obj (this)
+		- Normal functions
+		- Arrow functions
+		- Method
+			- refers to object that method is apart of 
+		- Constructor
+			- Refers to new object w are creating 
+		- Call/bind/appl
+			- Chose what we want to have set there
+		- DOM elements
+			- document object model
+- JSLint
+	- Looks for anti-patterns in the code
+	- Static code analysis
+- TypeScript
+	- JavaScript with types
+- ES6
+	- introduced `let`
+		- `let` is block scoped
+	- arrow functions (lexical scoping for `this`)
+	- promises
+		- simplify async code 
+	- Proxies
+		- Wrapper for metaprogramming feature
+		- Have a special Proxy object
+		- handler object
+---
+# Metaprogramming
+- Reflection 
+	- Introspection
+	- self modify
+- Intercession 
+---
+# Ruby
+- Method Missing
+	- Ruby version of metaprogramming
+- Blocks
+	- kinda like lambdas 
+- Singleton classes
+- Pearl and SmallTalk language influences
+---
+# Type Systems
+- Typed arithmetic 
+	- $e:T$
+- Simply typed lambda calculus 
+	- $\Gamma \vdash e: T$
+	- Safety = progress + 
+- Benefits
+	- Compile time checks
+	- Prevents program from being stuck 
+	- Enforced/built in documentation 
+	- Optimizations in the compiler 
+	- Tool tips
+---
+# Virtual Machine
+- ByteCode
+	- encoded instructions
+	- Low level and fast still platform independent
+	- Platform independence
+	- Performance is a downside
+	- Garbage Collection 
+[[CS252]]
