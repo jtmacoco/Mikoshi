@@ -6,6 +6,6 @@
 - This is the loss function equation:
 	- $-\frac{1}{n}\sum_{i=1}^n(y_ip_i)$
 
-[[Generative Models]]
+[[CS271]]
 
 	

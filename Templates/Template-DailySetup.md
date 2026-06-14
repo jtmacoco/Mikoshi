@@ -3,7 +3,7 @@ const year = moment().format("YYYY");
 const month = moment().format("MM");
 const day = moment().format("YYYY-MM-DD");
 
-const base = `Mikoshi/Memory Shards`;
+const base = `Mikoshi/Engrams`;
 const yearPath = `${base}/${year}`;
 const monthPath = `${yearPath}/${month}`;
 const dayPath = `${monthPath}/${day}`;
@@ -14,7 +14,7 @@ const sectorName = `Sector ${month}`;
 const sectorPath = `${monthPath}/${sectorName}.md`;
 const uplinkName = `Uplink ${year}`;
 const uplinkPath = `${yearPath}/${uplinkName}.md`;
-const shardsPath = `${base}/Shards.md`;
+const shardsPath = `${base}/Engrams.md`;
 
 // Create folders
 for (const path of [yearPath, monthPath, dayPath]) {
