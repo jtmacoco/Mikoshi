@@ -1,0 +1,24 @@
+- <span style="color:rgb(192, 0, 0)">This only works with classification problems</span> 
+- <span style="color:rgb(192, 0, 0)">Must normalize when using cross-entropy</span>
+- Equation: $L(y,t) = -\sum_it_iln(y_i)$
+	- Notice how using $ln$ 
+	- Using $ln$ doesn't really matter in this case we could use $log$ base 10
+	- The reason it doesn't matter technically is because we are applying to this $ln$ or $log$ to all the values so the outcome will pretty much be the same
+		- So values that had a low loss will still have a low loss(slightly lower since cross-entropy tries to help make these values more prominent)
+		- Values that had a high loss will still have an high loss
+		- <span style="color:rgb(192, 0, 0)">The outcome doesn't change so long as we make sure to apply to every value and not just specific vlaues</span>
+		- We a us $ln$ because it's easier to calculate derivatives when back propagating
+		- Also use logs to help reduce size of numbers since don't want them to big
+
+- So what cross entropy is trying to do is force the model to make values that correspond to an apple higher and the other values that don't correspond to an apple lower
+- Using apple example from class
+- Need label's or targets
+	- example of this is using 1 hot vector
+- Example:
+- Pear
+	- Y = [0.4, 0.4, 0.2]
+	- T = [0, 1, 0]
+	- Apply formula = $-0*ln(0.4)-1*ln(0.4)-0*ln(0.2) = 0.92$
+	- So this has a high loss since the model isn't sure if the image is a pear 
+- Neural nets don't like numbers that are to larger or to small need a good balance
+[[CS271]]
