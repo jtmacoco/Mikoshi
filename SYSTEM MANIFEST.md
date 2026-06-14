@@ -26,7 +26,7 @@ Structure:
 │   ├── Fiction
 │   └── Non-Fiction
 │
-├──  05 - Memory Shards # Personal / Journal / Ideas
+├──  05 - Engrams         # Personal / Journal / Ideas
 │
 │
 └──  06 - FLATLINED      # Archived / Dead projects
