@@ -3,6 +3,7 @@
 These are my personal notes
 
 Structure:
+```
  root
 │
 ├──  00 - INBOX                # Dump everything here first, sort later
@@ -29,3 +30,4 @@ Structure:
 │
 │
 └──  06 - FLATLINED      # Archived / Dead projects
+```
