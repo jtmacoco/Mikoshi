@@ -1,38 +1,54 @@
 # Mikoshi
 
-These are my personal notes
+# SYSTEM MANIFEST
 
-Structure:
-```
- root
-│
-├──  00 - INBOX                # Dump everything here first, sort later
-│
-├──  01 - NETRUNNER      # Coding & Tech
-│   ├── Languages
-│   ├── Snippets
-│   └── Tutorials
-│
-├──  02 - CONTRACTS     # Projects 
-│   ├── Active
-│   ├── Completed
-│   └── On Hold
-│
-├──  03 - ACADEMY         # School Notes
-│   ├── Subject 1
-│   └── Subject 2
-│
-├──  04 - Data Shards     # Book Notes 
-│   ├── Fiction
-│   └── Non-Fiction
-│
-├──  05 - Engrams         # Personal / Journal / Ideas
-│
-│
-└──  06 - FLATLINED      # Archived / Dead projects
-```
+**Tags**: #academic #netrunner #contract #shards #active #backlog #completed #personal #book
+**Description**: Personal notes
 
-# Templates
+---
+## Structure
+
+```
+ Mikoshi (root)
+│
+├──  Academy              # School notes & courses
+│   └── [[Academy]]
+│
+├──  Contracts            # Projects (active, on hold, completed)
+│   └── [[Contracts]]
+│
+├──  Data Shards          # Book notes (fiction & non-fiction)
+│   └── [[Data Shards]]
+│
+├──  Directives           # TODOs & tasks
+│   └── [[Directives]]
+│
+├──  Engrams              # Personal / ideas / journal
+│   └── [[Engrams]]
+│
+├──  Flatlined            # Archived / dead projects
+│   └── [[Flatlined]]
+│
+├──  Inbox                # Dump zone, sort later
+│   └── [[Inbox]]
+│
+├──  Memory Shards        # Daily journal logs
+│   └── [[Shards]]
+│
+├──  Netrunner            # Coding & tech
+│   └── [[Netrunner]]
+│
+└──  Templates            # Note templates
+```
+---
+
+## Rules
+- Inbox first, sort later
+- Every folder has a MOC linking up and down
+- Archive to Flatlined when done
+- Link Source back to [[SYSTEM MANIFEST]] in every MOC
+---
+## Templates
 - [[Template-Notes]]
 - [[Template-DailySetup]]
 - [[Template-Daily-Notes]]
