@@ -30,9 +30,6 @@
 ├──  Inbox                # Dump zone, sort later
 │   └── [[Inbox]]
 │
-├──  Memory Shards        # Daily journal logs
-│   └── [[Shards]]
-│
 ├──  Netrunner            # Coding & tech
 │   └── [[Netrunner]]
 │
@@ -41,12 +38,8 @@
 ---
 
 ## Rules
+- MOC (Map of Content): The index note that links to everything inside a folder or topic
 - Inbox first, sort later
 - Every folder has a MOC linking up and down
 - Archive to Flatlined when done
 - Link Source back to [[SYSTEM MANIFEST]] in every MOC
----
-## Templates
-- [[Template-Notes]]
-- [[Template-DailySetup]]
-- [[Template-Daily-Notes]]

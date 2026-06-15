@@ -1,6 +1,3 @@
 **Source**: [[SYSTEM MANIFEST]]
 **Tags**: #engrams
-**Description**: Daily notes 
-# Years
-
-- [[Uplink 2026]]
+**Description**: Tack Ideas
