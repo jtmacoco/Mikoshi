@@ -1,7 +1,5 @@
 # Mikoshi
 
-# SYSTEM MANIFEST
-
 **Tags**: #academic #netrunner #contract #shards #active #backlog #completed #personal #book
 **Description**: Personal notes
 
