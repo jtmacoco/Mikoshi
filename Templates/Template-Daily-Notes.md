@@ -3,4 +3,6 @@
 - [ ] Practice C
 - [ ] Mental Math
 - [ ] Chess
+- [ ] Leetcode
+
 # Shard Log
