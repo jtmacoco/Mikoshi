@@ -8,7 +8,9 @@ const yearPath = `${base}/${year}`;
 const monthPath = `${yearPath}/${month}`;
 const dayPath = `${monthPath}/${day}`;
 const notesName = `${day}_notes`;
+const encodedNotesName= `encoded_${day}_notes`;
 const notesPath = `${dayPath}/${notesName}.md`;
+const encodedNotesPath = `${dayPath}/${encodedNotesName}.md`;
 
 const sectorName = `Sector ${month}`;
 const sectorPath = `${monthPath}/${sectorName}.md`;
@@ -48,13 +50,13 @@ if (!await app.vault.adapter.exists(sectorPath)) {
     await app.vault.create(sectorPath, `**Source**: [[${uplinkName}]]\nTags: #sector\nDescription: Keeps track of daily entries\n\n## Entries\n- [[${notesName}]]`);
 } else {
     const sector = await app.vault.adapter.read(sectorPath);
-    if (!sector.includes(`[[${notesName}]]`)) {
+    if (!sector.includes(`[[${notesName}]]`) && !sector.includes(`[[${encodedNotesName}]]`)) {
         await app.vault.adapter.write(sectorPath, sector + `\n- [[${notesName}]]`);
     }
 }
 
 // Create today's notes file
-if (!await app.vault.adapter.exists(notesPath)) {
+if (!await app.vault.adapter.exists(notesPath) && !await app.vault.adapter.exists(encodedNotesPath)) {
     await tp.file.create_new(tp.file.find_tfile("Template-Daily-Notes"), notesName, false, dayPath);
 }
 %>
