@@ -2,6 +2,6 @@
 **Tags**: #directives
 **Description**: A list of items needed to complete
 
-# [[Active]]
-# Backlog
-# Completed
+- # [[On-Contract]]
+- # [[Completed]]
+- # [[Backlog]]

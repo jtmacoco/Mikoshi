@@ -21,9 +21,6 @@
 ├──  Directives           # TODOs & tasks
 │   └── [[Directives]]
 │
-├──  Engrams              # Personal / ideas / journal
-│   └── [[Engrams]]
-│
 ├──  Flatlined            # Archived / dead projects
 │   └── [[Flatlined]]
 │
