@@ -1,6 +1,6 @@
 # Mikoshi
 
-**Tags**: #academic #netrunner #contract #shards #active #backlog #completed #personal #book
+**Tags**: #academic #netrunner #contract #shards #active #backlog #completed #personal #book #on-contract 
 **Description**: Personal notes
 
 ---
