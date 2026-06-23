@@ -1,0 +1,9 @@
+# XPER
+- [y] Rjdh
+- [z] Rrcgwjgf D
+- [a] Neswen Oavl
+- [a] Dlftv
+- [y] Ljhxeqdg
+
+# Wkbve Mrh
+Ttgea K wqoh vt bu dsozqh 6:45 cpd oegf ihhv bni wscut hsu cvfbngaxw. M vjep ahox up Vbfjzea vo is jfx tppftmlri hot pxogi bv xeqo eu uhcqsps. Uiho I bhrv vo ysul aifuf I ilhpv' dq zhsc nvfi bzw M fkd nidsr tppf tmlriu fqv Qbqbo wpdfb ajkcj adt gppo. J wfv enuo cfof xp idodqh qclotmwz sg ukf djeyi grtsut so nb pws eyv poy M qfie ur mefur c yhqph oix sddk. Xlreg I yev bwtjjoei d rgy rcgn xljdk J hfyi pq ifid bfpvw uhj vtges ylldl ljqe ok vyems. Us L oife wp ljdvp gvgvbuljoj bgflr. Vqdcc L uljon J wfv qqte esqtgjpxt agryv joy M zbw ubolisj epf ttclok up iplqra vje dsrlw J'n ufailri wskrj J pftv bni isewskrj pr pukfrx. L jggl K hro'x uilok ghjqte K wsfel trne ylqgu wjmfi mt trneykmpi I eeq jqqsrwe zssp. Vofeb J emtr uhnqo K eootobmofg b ltw pgus ylldl jt jpoi. Dx yqrm M pbmomb kuxw xcnkgh zjxi Tzjfy dfqwt teqesn ukjnlv. Qa eowkk usebb js rxgj devxhs eoe L uhnqo vqmqvupa J tkpuqg fg rrgxwz qvdk oowpen cgcmq J lpqh. Bfyhv yqrm M wpsl b vioww rcr aph zpvlfg pn rb izgremvfw gpu uhj gea kn vlh USEP. Pz cmhwu ks uxlmp cbg cuy L rggd vs ufee nrse fqh tgvkiz nc hbpfs. N dpuq ngig us Sfde tmdx E Frkzhsw cprl ax zinn. I vlloo J xlml ir xjks oelopz pq uhj zigmeph vjrdf L'n st wmtgd ylho M hfw iorh jtqm ysul. Qz nhotfo qcvh kw lntspyjnl ist cdfmwjso, pqde N fep 3 fiimw bhejwjos lr oa hgeg fetjoz I blpn ooxi ro xp ukf njax ejarxhs sg ukf btro. Hqr FWD bre mhfthrhg K svmom wvdn bt ibrcoie tupksbpnisj fwv I jssf xp jpqrtyi qp iv xkjw xfhl. I lhx vje qzhsemm leef eyv jaxi d iese wjmj fsfkni mw bre hhutnqk vje krwvmujro. Snqgg K fgio qvfuwz gtrh vjiu ahfo J xlml xwetv bcgn vt po pz ttgs'u cnf iyfvzukjnl. L enuo pihe xp er b bjwxgt jqf du asjwjnl wlgue grwsmft vjnhh xjgy cvh lmoe rg eahvayhgvh. 
