@@ -69,3 +69,76 @@ int main(){
 >- Cast as `unsigned char *` so can index memory one byte at a time with values guaranteed to be in 0-255 range and non sign-bit surprises
 
 ---
+# Tuesday 
+```c
+#include <stdio.h>
+void *my_mmemove(void *dest, const void *src, size_t n){
+	unsigned char *d = dest;
+	const unsigned char *s = src;
+	if (d > s){
+		for(size_t i = n; i-- > 0;){
+			d[i] = s[i];
+		}
+
+	}
+	else{
+		for(size_t i = 0; i < n; ++i){
+			d[i] = s[i];
+		}
+
+	}
+	return dest;
+}
+int main(){
+	char str[] = "abcdef";
+	char str1[] = "Geeks"; 
+	char str2[] = "Quiz"; 
+
+	//puts("str1 before memmove ");
+	//puts(str1);
+
+	/* Copies contents of str2 to sr1 */
+	my_mmemove(str+2, str, 4);
+	printf("%s\n",str);
+
+	//puts("\nstr1 after memmove ");
+	//puts(str1);
+	return 0;
+}
+```
+
+>[!Important] Key Idea
+>Need to have this wrap around idea with the `d>s`
+
+`(src=index 0, dest = index 1, n =4)`
+## Visual Example
+```
+Index:  0   1   2   3   4
+Data: [ A | B | C | D | _ ]
+        ^src
+            ^dest
+```
+
+## Left to Right
+```
+Step 1: d[0]=s[0] → [ A | A | C | D | _ ]  ✓
+Step 2: d[1]=s[1] → [ A | A | A | D | _ ]  ✗ corrupted! s[1] was already overwritten
+```
+
+## Right to Left
+
+```
+Step 1: d[3]=s[3] → [ A | B | C | D | D ]  ✓
+Step 2: d[2]=s[2] → [ A | B | C | C | D ]  ✓
+Step 3: d[1]=s[1] → [ A | B | B | C | D ]  ✓
+Step 4: d[0]=s[0] → [ A | A | B | C | D ]  ✓
+```
+
+so if dest > src (dest is ahead) then forward copy overwrites the src data before it's read 
+if dest < src then backward copy overwrites src data before it's read
+
+>[!important] Note
+>`i-->0` is meant since using size_t which is unsigned so can't be negative so would always be true and infinite loop in normal for loop format
+
+---
+# Wednesday 
