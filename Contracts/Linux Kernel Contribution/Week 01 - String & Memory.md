@@ -142,3 +142,68 @@ if dest < src then backward copy overwrites src data before it's read
 
 ---
 # Wednesday 
+
+``` c
+#include <stdio.h>
+char *my_strncpy(char *dest, const char *src, size_t num){ //needs a check but I'm tired 
+	for (size_t i = 0; i < num; ++i){
+		dest[i] = src[i];
+	}
+	dest[num] = '\0';
+	return dest;
+}
+int my_strcmp(const char *str1, const char *str2){
+	size_t count = 0;
+	while (str1[count] != '\0' || str2[count] != '\0'){
+		if (str1[count] == '\0'){return 0;}
+		if (str2[count] == '\0'){return 0;}
+		if (str1[count] != str2[count]){
+			return 0;
+		}
+		count++;
+	}
+	return 1;
+}
+char *my_strcpy(char *dest, const char *src){
+	size_t count = 0;
+	while(src[count]!='\0'){
+		dest[count]=src[count];
+		count+=1;
+	}
+	dest[count] = '\0';
+	return dest;
+}
+size_t my_strlen(const char *str){
+	size_t count = 0;
+	while (str[count] != '\0'){
+		count+=1;
+	}
+	return count;
+}
+int main(){
+	char str1 [] = "Test";
+	char str2 [] = "Test";
+	char str3 [] = "Dumb";
+	char dest[30];
+	size_t len = my_strlen(str1);
+	printf("My length str1: %lu\n", len);
+	
+	char dest1[30];
+	my_strcpy(dest1,str1);
+	printf("my_strcpy: %s\n",dest1);
+
+	char dest2[30];
+	my_strncpy(dest2,str1,2);
+	printf("my_strncpy: %s\n",dest2);
+
+	
+	int b;
+	b = my_strcmp(str1,str2);
+	printf("my_strcmp: %d\n",b);
+
+
+	
+	return 0;
+}
+
+```
