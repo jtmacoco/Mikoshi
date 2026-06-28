@@ -20,6 +20,7 @@
 # Monday
 
 ## Solution 
+
 ```c
 #include <stdio.h>
 void *my_memset(void * ptr, int value, size_t num){
@@ -70,6 +71,8 @@ int main(){
 
 ---
 # Tuesday 
+## Solution
+
 ```c
 #include <stdio.h>
 void *my_mmemove(void *dest, const void *src, size_t n){
@@ -142,6 +145,7 @@ if dest < src then backward copy overwrites src data before it's read
 
 ---
 # Wednesday 
+## Solution  
 
 ``` c
 #include <stdio.h>
@@ -207,3 +211,6 @@ int main(){
 }
 
 ```
+---
+# Thursday
+jj
