@@ -213,4 +213,58 @@ int main(){
 ```
 ---
 # Thursday
-jj
+## Solution
+
+```c
+#include <stdio.h>
+#include <string.h>
+char *my_strtok(char *restrict str, const char *restrict delim){
+	size_t count = 0;
+	static char *saved = NULL;
+	str += strspn(str,delim);
+	if (str == NULL){
+		str = saved;
+	}
+	if (str == NULL){
+		return NULL;
+	}
+	if (*str == '\0'){
+		saved = NULL;
+		return NULL;
+	}
+	char *token_end = str + strcspn(str,delim);
+	if (*token_end == '\0'){
+		saved = NULL;
+	}
+	else{
+		*token_end = '\0';
+		saved = token_end+1;
+	}
+	return str;
+}
+
+int main()
+{
+    char str[] = "Geeks-for-Geeks";
+
+    // Returns first token
+    char* token = strtok(str, " - ");
+
+    // Keep printing tokens while one of the
+    // delimiters present in str[].
+    while (token != NULL) {
+        printf(" %s\n", token);
+        token = strtok(NULL, " - ");
+    }
+
+    return 0;
+}
+```
+
+
+- Static keeps the saved pointer alive for the duration of the program so no need to keep moving the pointer from the start to it's previous spot
+- `strcspn` removes the any delimiters from the front and grabs the final token
+	- This gives us a section of a word basically which we can then added the termination token to and adjust the str pointer accordingly 
+- Static pointer is not thread save due to it's lifetime being tied to the duration of the program so multiple threads will likely have different values of saved pointer
+---
+# Friday

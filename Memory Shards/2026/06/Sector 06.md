@@ -29,3 +29,4 @@
 - [[encoded_2026-06-25_notes]]
 - [[encoded_2026-06-26_notes]]
 - [[encoded_2026-06-27_notes]]
+- [[encoded_2026-06-28_notes]]
