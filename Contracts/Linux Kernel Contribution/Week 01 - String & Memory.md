@@ -268,3 +268,38 @@ int main()
 - Static pointer is not thread save due to it's lifetime being tied to the duration of the program so multiple threads will likely have different values of saved pointer
 ---
 # Friday
+
+## Solution
+```c
+#include <stdio.h>
+void *my_memcpy(void *dest, const void *src, size_t n){
+	size_t *d_word = (size_t *) dest;
+	const size_t *s_word = (const size_t *) src;
+	while(n > sizeof(size_t)){
+		*d_word=*s_word;
+		d_word++;
+		s_word++;
+		n-=sizeof(size_t);
+	}
+	unsigned char *d = (unsigned char *) d_word;
+	const unsigned char *s = (const unsigned char *) s_word;
+	while (n > 0){
+		*d++=*s++;
+		n--;
+	}
+	return dest;
+}
+int main(){
+	char str1[50] = "GeeksForGeeks is for programming geeks.";
+	char str2[50] = "";
+
+	printf("Value of b before calling memcpy: %s\n", str2);
+
+	// Use memcpy to copy the value of 'a' into 'b'
+	my_memcpy(&str2, &str1, 50); 
+
+	printf("Value of b after calling memcpy: %s\n", str2);
+
+
+}
+```
