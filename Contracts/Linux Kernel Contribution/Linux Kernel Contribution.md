@@ -1,5 +1,5 @@
 **Source**: [[Contracts]]
-**Tags**: #linux  #on-contract
+**Tags**: #linux  #completed
 **Description**: Plan to make contribution to Linux Kernel
 # C → Linux Kernel Contribution: 16-Week Daily Schedule
 
@@ -16,7 +16,7 @@
 
 ## PHASE 1 — Weeks 1–4: C mastery, kernel-style
 
-### Week 1 — String & memory functions
+### [[Week 01 - String & Memory]]
 
 | Day       | Task (≈30 min)                                                                                                                                                                  |
 | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -28,7 +28,7 @@
 | Sat (lab) | Read the kernel's real implementations in [`lib/string.c`](https://github.com/torvalds/linux/blob/master/lib/string.c). Compare to yours. Note every trick you didn't think of. |
 | Sun       | Rest / catch-up.                                                                                                                                                                |
 
-### Week 2 — Bit manipulation
+### [[Week 02 - Bit manipulation]]
 
 |Day|Task (≈30 min)|
 |---|---|
