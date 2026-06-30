@@ -1,5 +1,5 @@
 **Source**: [[Contracts]]
-**Tags**: #linux  #completed
+**Tags**: #linux  #on-contract
 **Description**: Plan to make contribution to Linux Kernel
 # C → Linux Kernel Contribution: 16-Week Daily Schedule
 

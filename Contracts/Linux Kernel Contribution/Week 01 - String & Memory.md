@@ -1,5 +1,5 @@
 **Source**: [[Linux Kernel Contribution]]
-**Tags**: #linux #on-contract
+**Tags**: #linux #completed 
 **Description**: Week one notes
 
 ## PHASE 1 — Weeks 1–4: C mastery, kernel-style
