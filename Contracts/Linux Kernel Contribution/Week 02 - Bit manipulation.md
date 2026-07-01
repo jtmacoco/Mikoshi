@@ -116,3 +116,55 @@ byte 3   byte 2   byte 1   byte 0
 Rest should be able to figure out if not practice it by hand again
 
 ---
+# Tuesday
+
+>[!danger] **Finish the reverse bits part tomorrow**
+# Solution
+```c
+#include <stdio.h>
+#include <stdint.h>
+int powerTwo(int n){
+	int x = n & (n-1);
+	if (x == 0)
+		return 1;
+	else
+		return 0;
+}
+uint32_t roundPower(uint32_t n){
+	//1001(9)
+	//1000(8)
+	//0001
+	/*
+	int pt = n & (n-1);
+	while (pt > 0){
+		n+=1;
+		pt = n & (n-1);
+	}
+	return n;
+	*/
+	/*
+	 * so uint32_t is 32 bits so we know this is a fixed size
+	 * the intuition is to push all of the 1's to the right side
+	 * so we can add 1 to the binary which will push it to the next
+	 * power of 2.
+	*/
+	n--;
+	n |= n>>1;
+	n |= n>>2;
+	n |= n>>4;
+	n |= n>>8;
+	n |= n>>16;
+	n++;
+	return n;
+}
+int main(){
+	int n = 5;
+	printf("is power of two: %d\n",powerTwo(n));
+	printf("round power up: %d\n",roundPower(n));
+
+
+	return 0;
+}
+
+```
+
