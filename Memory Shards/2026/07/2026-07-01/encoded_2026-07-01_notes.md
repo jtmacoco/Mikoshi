@@ -1,9 +1,9 @@
-# TODO
-- [ ] Read
-- [ ] Practice C
-- [ ] Mental Math
-- [ ] Chess
-- [ ] Leetcode
+# YTDR
+- [ ] Rjei
+- [ ] Pvbhtjdf H
+- [ ] Reqtfp Raxi
+- [ ] Hhftt
+- [ ] Qjewcthj
 
-# Shard Log
-Today I took my amazon assessment which I likely failed sucks but it is what it is. At least I have a job
+# Slbwd Mph
+Ytddy N xtoo nd anbats avsjwxmioy wijdm N llkjpd fejqee tvhps euy my iw xmau ju nx. Aw ljext M ifvf b ktg
