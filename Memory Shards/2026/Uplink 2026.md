@@ -3,3 +3,4 @@
 **Description**: Keeps Track of monthly notes
 # Month
 [[Sector 06]]
+- [[Sector 07]]
