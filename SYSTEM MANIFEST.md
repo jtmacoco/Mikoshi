@@ -24,6 +24,9 @@
 ├──  Flatlined            # Archived / dead projects
 │   └── [[Flatlined]]
 │
+├──  ICEbreaker           # Dump zone, sort later
+│   └── [[ICEbreaker]]
+|
 ├──  Inbox                # Dump zone, sort later
 │   └── [[Inbox]]
 │
