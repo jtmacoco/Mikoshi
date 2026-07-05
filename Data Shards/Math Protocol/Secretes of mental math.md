@@ -5,11 +5,11 @@ tags:
   - book
   - reference
   - math
-created:
+created: 2026-07-05
 author:
 subject: mental math
 status: reading
-rating:
+rating: Benjamin and Michael Shermer
 ---
 
 ## Why I'm Reading This

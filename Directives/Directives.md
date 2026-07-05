@@ -1,8 +1,9 @@
 ---
 title: Directives
 source: "[[SYSTEM MANIFEST]]"
-tags: [directives]
-created: 
+tags:
+  - directives
+created: 2026-07-04
 ---
 
 ## Overview

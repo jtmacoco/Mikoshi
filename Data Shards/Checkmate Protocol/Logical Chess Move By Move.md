@@ -6,8 +6,8 @@ tags:
   - reference
   - chess
   - strategy
-created:
-author:
+created: 2026-07-05
+author: " Irving Chernev"
 subject: chess
 status: reading
 rating:
