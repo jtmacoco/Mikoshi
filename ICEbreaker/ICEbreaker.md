@@ -6,27 +6,17 @@ created: 2026-07-04
 ---
 
 ## Overview
-
-
-
-## Active
+## Solved
 
 ```dataview
 LIST
 FROM "Mikoshi/ICEbreaker"
-WHERE status = "active" OR status = "on-contract" OR status = "reading"
+WHERE status = "unsolved" 
 SORT file.mtime DESC
 ```
 
-## Backlog
 
-```dataview
-LIST
-FROM "Mikoshi/ICEbreaker"
-WHERE status = "backlog"
-SORT file.mtime DESC
-```
-## Completed
+## Solved
 
 ```dataview
 LIST
@@ -42,6 +32,3 @@ LIST
 FROM "Mikoshi/ICEbreaker"
 SORT file.name ASC
 ```
-
-## Links
-

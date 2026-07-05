@@ -5,6 +5,7 @@ tags:
   - c
   - unions
 created: 2026-07-03
+noteType: reference
 ---
 ## What is Unions
 
@@ -56,7 +57,3 @@ float x = u.f; // read f — this is the "invalidation" issue
 ```
 
 `x` will output nonsense since `u.i` puts an `int`'s bit pattern into that storage
-
----
-
-## Links

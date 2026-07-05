@@ -17,5 +17,4 @@ FROM "Mikoshi/Netrunner/C"
 SORT file.name ASC
 ```
 
-## Links
 

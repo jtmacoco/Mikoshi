@@ -11,15 +11,14 @@ author: " Irving Chernev"
 subject: chess
 status: reading
 rating:
+sto: page 13
 ---
 
 ## Why I'm Reading This
 
+To improve chess skills and strategy
 
-## Notes
-
-Page: 13
-
+---
 # The Kingside Attack
 
 ## Game 1: von Scheve - Teichmann

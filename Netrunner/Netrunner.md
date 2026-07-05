@@ -16,6 +16,16 @@ LIST
 FROM "Mikoshi/Netrunner"
 SORT file.name ASC
 ```
-
-## Links
+## References
+```dataview
+LIST FROM "Mikoshi/Netrunner" 
+WHERE notetype = "reference" 
+SORT created DESC
+```
+## CheatSheets
+```dataview
+LIST FROM "Mikoshi/Netrunner" 
+WHERE notetype = "cheatsheet" 
+SORT created DESC
+```
 

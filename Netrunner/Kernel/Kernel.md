@@ -16,6 +16,3 @@ LIST
 FROM "Mikoshi/Netrunner/Kernel"
 SORT file.name ASC
 ```
-
-## Links
-

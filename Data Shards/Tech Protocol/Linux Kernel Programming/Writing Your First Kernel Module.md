@@ -15,8 +15,10 @@ rating:
 ---
 
 ## Why I'm Reading This
+
 To learn how to write drivers
 
+---
 # Notes
 
 ## Kernel Headers

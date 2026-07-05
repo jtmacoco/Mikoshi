@@ -6,18 +6,18 @@ tags:
   - reference
   - math
 created: 2026-07-05
-author:
+author: Benjamin and Michael Shermer
 subject: mental math
 status: reading
-rating: Benjamin and Michael Shermer
+rating:
+stopped: page 23
 ---
 
 ## Why I'm Reading This
 
+To improve my mental math skills
 
-## Notes
-
-Stopped: Page 23
+---
 
 # Chapter 1
 ## Left To Right Addition 

@@ -6,6 +6,7 @@ tags:
   - linux
   - kernel
 created: 2026-07-03
+noteType: cheatsheet
 ---
 
 ## What is printk Levels
@@ -34,6 +35,3 @@ Quick reference for printk levels.
 `KERN_SOH` (`\001`, ASCII Start Of Header) is prepended to each level value — it's the marker that tells the kernel a priority follows, not a level itself.
 
 Source: `include/linux/kern_levels.h`
-
-## Links
-

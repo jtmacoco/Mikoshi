@@ -49,5 +49,4 @@ FROM "<% path %>"
 SORT file.name ASC
 ```
 
-## Links
 
