@@ -6,7 +6,6 @@ tags:
   - unions
 created: 2026-07-03
 ---
-
 ## What is Unions
 
 A union lets multiple members share the same memory address.
@@ -16,7 +15,6 @@ Only one member holds a value at a time.
 
 ## Example / Usage
 
-[[Netrunner]]
 
 ```c
 struct Color {
@@ -62,4 +60,3 @@ float x = u.f; // read f — this is the "invalidation" issue
 ---
 
 ## Links
-
