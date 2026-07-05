@@ -1,6 +1,11 @@
-**Source**: [[Netrunner]]
-**Tags**: #data-types #c
-**Description**: Reference for C data types
+---
+title: Unions
+source: "[[C]]"
+tags:
+  - c
+  - data-types
+created: 2026-07-03
+---
 ## Basic Integer Types
 
 | Type | Typical Size (bytes) | Range (typical, signed unless noted) | Format Specifier | Notes |

@@ -1,7 +1,24 @@
-**Source**: [[Data Shards]]
-**Tags**: #math 
-**Description**: Notes on mental math
-**Stopped**: Page 23
+---
+title: Secrets of Mental Math
+source: "[[Data Shards]]"
+tags:
+  - book
+  - reference
+  - math
+created:
+author:
+subject: mental math
+status: reading
+rating:
+---
+
+## Why I'm Reading This
+
+
+## Notes
+
+Stopped: Page 23
+
 # Chapter 1
 ## Left To Right Addition 
 

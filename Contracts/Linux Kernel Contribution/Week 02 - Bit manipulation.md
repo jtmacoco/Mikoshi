@@ -1,6 +1,11 @@
-**Source**: [[Linux Kernel Contribution]]
-**Tags**: #linux #on-contract
-**Description**: Week two notes on bit map solutions
+---
+title: Contracts
+source: "[[Linux Kernel Contribution]]"
+tags:
+  - linux
+created: 2026-07-04
+status: on-contract
+---
 
 | Day       | Task (≈30 min)                                                                                                                                                                                                                           |
 | --------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |

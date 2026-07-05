@@ -1,5 +1,47 @@
-**Source**: [[SYSTEM MANIFEST]]
-**Tags**: #interview-prep
-**Description**: SWE & engineering interview prep
+---
+title: ICEbreaker
+source: "[[SYSTEM MANIFEST]]"
+tags: [moc]
+created: 2026-07-04
+---
 
-# Sections
+## Overview
+
+
+
+## Active
+
+```dataview
+LIST
+FROM "Mikoshi/ICEbreaker"
+WHERE status = "active" OR status = "on-contract" OR status = "reading"
+SORT file.mtime DESC
+```
+
+## Backlog
+
+```dataview
+LIST
+FROM "Mikoshi/ICEbreaker"
+WHERE status = "backlog"
+SORT file.mtime DESC
+```
+## Completed
+
+```dataview
+LIST
+FROM "Mikoshi/ICEbreaker"
+WHERE status = "completed" OR status = "solved"
+SORT file.mtime DESC
+```
+
+## All Notes
+
+```dataview
+LIST
+FROM "Mikoshi/ICEbreaker"
+SORT file.name ASC
+```
+
+## Links
+

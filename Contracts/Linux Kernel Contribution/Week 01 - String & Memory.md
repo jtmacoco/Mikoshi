@@ -1,6 +1,13 @@
-**Source**: [[Linux Kernel Contribution]]
-**Tags**: #linux #completed 
-**Description**: Week one notes
+---
+title: Contracts
+source: "[[Linux Kernel Contribution]]"
+tags:
+  - completed
+  - linux
+  - strings
+created: 2026-07-04
+status: completed
+---
 
 ## PHASE 1 — Weeks 1–4: C mastery, kernel-style
 

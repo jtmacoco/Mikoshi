@@ -1,22 +1,39 @@
-**Source**: [[Linux Kernel Programming]]
-**Tags**: #drivers #linux #kernel 
-**Description**: Notes on how to write first kernel module/driver 
+---
+title: Writing Your First Kernel Module
+source: "[[Linux Kernel Programming]]"
+tags:
+  - book
+  - reference
+  - drivers
+  - linux
+  - kernel
+created: 2026-07-03
+author: Kaiwan N. Billimoria
+subject: kernel programming / device drivers
+status: reading
+rating:
+---
 
-# Kernel Headers
+## Why I'm Reading This
+To learn how to write drivers
+
+# Notes
+
+## Kernel Headers
 - `#include` are header kernel header files
 - They look through the modules build soft link which points to the kernel header files location
 ---
-# Module Macros
+## Module Macros
 - Provide information to a customer using 
 - `modinfo` will provide this macro info
 ---
-# Entry & Exit Points
+## Entry & Exit Points
 - Kernel mods don't have entry points like normal `main()` entry points
 - Instead the follow `module_{init|exit}()` 
 - So can be named anything as long as they end in `init` or `exit`
 - These are code macros that specify the entry point
 ---
-# Return Values
+## Return Values
 ```c
 static int  __init <modulename>_init(void);
 static void __exit <modulename>_exit(void);
@@ -34,9 +51,9 @@ static void __exit <modulename>_exit(void);
 	- Any data declared with the `__initdata` goes in the `init.data`
     - After the program or kernel finishes starting up, that code can be discarded from memory to save space.
 - `__exit` marks code used during **shutdown or module unloading**.
-    - It may be ignored entirely if unloading/shutdown support isn’t needed.
+    - It may be ignored entirely if unloading/shutdown support isn't needed.
 ---
-# Running the kernel module
+## Running the kernel module
 
 To work with modules need root access `sudo`
 
@@ -46,21 +63,21 @@ To work with modules need root access `sudo`
 To view any `printk` stuff used the `dmesg` command, this prints the kenrel messages 
 
 ---
-# Listing live kernel modules
+## Listing live kernel modules
 **List Modules**: `lsmod`
 - This shows all of the live modules in chronological order
 ---
-# Understanding kernel logging and printk
+### Understanding kernel logging and printk
 - A way to display stuff to user but is done as a kernel message so use `dmesg` to see output
-## Using kernel memory ring buffer
+### Using kernel memory ring buffer
 - **Kernel log buffer**: memory buffer within the kernel virtual address space where the `printk` output is saved to
 - Called a ring buffer since it's finite in size and once it gets full it gets overwritten from byte zero
-## Kernel logging and systemd's journalctl
+### Kernel logging and systemd's journalctl
 - Key idea is that since `printk` is volatile and overwrites data once it's reached the limit but how do we fix this
 - To fix we write to a file in  a non volatile secondary storage.  
 - **Systemmd** replaces or works in addition to the old SysV init framework. 
 
-## Using printk log levels
+### Using printk log levels
 
 `printk(KERN_INFO "Hello, world\n");` 
 **KERN_INFO**: one of 8 log levels that a kernel printk can get logged at

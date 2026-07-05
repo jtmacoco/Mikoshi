@@ -1,20 +1,24 @@
+<%*
+let folder = await tp.system.prompt("Folder this MOC covers (just the folder name, e.g. Contracts, Data Shards):");
+let path = "Mikoshi/" + folder;
+await tp.file.rename(folder);
+-%>
 ---
-title: Contracts
+title: <% folder %>
 source: "[[SYSTEM MANIFEST]]"
 tags: [moc]
-created: 2026-07-04
+created: <% tp.date.now("YYYY-MM-DD") %>
 ---
 
 ## Overview
 
-Active and completed builds — everything I'm creating, shipping, or grinding through
 
 
 ## Active
 
 ```dataview
 LIST
-FROM "Mikoshi/Contracts"
+FROM "<% path %>"
 WHERE status = "active" OR status = "on-contract" OR status = "reading"
 SORT file.mtime DESC
 ```
@@ -23,7 +27,7 @@ SORT file.mtime DESC
 
 ```dataview
 LIST
-FROM "Mikoshi/Contracts"
+FROM "<% path %>"
 WHERE status = "backlog"
 SORT file.mtime DESC
 ```
@@ -32,7 +36,7 @@ SORT file.mtime DESC
 
 ```dataview
 LIST
-FROM "Mikoshi/Contracts"
+FROM "<% path %>"
 WHERE status = "completed"
 SORT file.mtime DESC
 ```
@@ -41,7 +45,7 @@ SORT file.mtime DESC
 
 ```dataview
 LIST
-FROM "Mikoshi/Contracts"
+FROM "<% path %>"
 SORT file.name ASC
 ```
 

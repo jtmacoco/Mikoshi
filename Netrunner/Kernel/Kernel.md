@@ -1,5 +1,5 @@
 ---
-title: Netrunner
+title: Kernel
 source: "[[SYSTEM MANIFEST]]"
 tags: [moc]
 created: 2026-07-04
@@ -7,13 +7,13 @@ created: 2026-07-04
 
 ## Overview
 
-Knowledge arsenal — references, snippets, and tech notes to pull from on any job
+Kernel reference guide
 
 ## All Notes
 
 ```dataview
 LIST
-FROM "Mikoshi/Netrunner"
+FROM "Mikoshi/Netrunner/Kernel"
 SORT file.name ASC
 ```
 

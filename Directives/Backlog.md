@@ -1,5 +1,10 @@
-**Source**: [[Directives]]
-**Tags**: #backlog
-**Description**: Pending tasks
-- [ ] Finish Robot Hand
-	- Tags: #backlog  #programming #robot 
+---
+title: Backlog
+source: "[[Directives]]"
+tags: [backlog]
+created: 
+---
+
+## Pending Tasks
+
+- [ ] Finish Robot Hand #backlog #programming #robot

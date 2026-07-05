@@ -57,6 +57,6 @@ if (!await app.vault.adapter.exists(sectorPath)) {
 
 // Create today's notes file
 if (!await app.vault.adapter.exists(notesPath) && !await app.vault.adapter.exists(encodedNotesPath)) {
-    await tp.file.create_new(tp.file.find_tfile("Template-Daily-Notes"), notesName, false, dayPath);
+    await tp.file.create_new(tp.file.find_tfile("Daily-Notes"), notesName, false, dayPath);
 }
 %>
