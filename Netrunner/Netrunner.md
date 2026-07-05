@@ -9,6 +9,18 @@ created: 2026-07-04
 
 Knowledge arsenal — references, snippets, and tech notes to pull from on any job
 
+## References
+```dataview
+LIST FROM "Mikoshi/Netrunner" 
+WHERE notetype = "reference" OR type = "reference"
+SORT created DESC
+```
+## CheatSheets
+```dataview
+LIST FROM "Mikoshi/Netrunner" 
+WHERE notetype = "cheatsheet" OR type="cheatsheet"
+SORT created DESC
+```
 ## All Notes
 
 ```dataview
@@ -16,16 +28,3 @@ LIST
 FROM "Mikoshi/Netrunner"
 SORT file.name ASC
 ```
-## References
-```dataview
-LIST FROM "Mikoshi/Netrunner" 
-WHERE notetype = "reference" 
-SORT created DESC
-```
-## CheatSheets
-```dataview
-LIST FROM "Mikoshi/Netrunner" 
-WHERE notetype = "cheatsheet" 
-SORT created DESC
-```
-

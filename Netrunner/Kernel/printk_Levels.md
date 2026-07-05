@@ -6,7 +6,7 @@ tags:
   - linux
   - kernel
 created: 2026-07-03
-noteType: cheatsheet
+type: cheatsheet
 ---
 
 ## What is printk Levels

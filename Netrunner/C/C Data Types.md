@@ -5,7 +5,7 @@ tags:
   - c
   - data-types
 created: 2026-07-03
-noteType: cheatsheet
+type: cheatsheet
 ---
 ## Basic Integer Types
 
