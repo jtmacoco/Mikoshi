@@ -13,7 +13,7 @@ Bit Manipulation - Reference
 
 ```dataview
 LIST
-FROM "Mikosh/Netrunner/C/Bit Manipulation"
+FROM "Mikoshi/Netrunner/C/Bit Manipulation"
 SORT file.name ASC
 ```
 
