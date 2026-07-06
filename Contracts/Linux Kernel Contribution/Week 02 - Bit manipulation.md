@@ -123,7 +123,6 @@ Rest should be able to figure out if not practice it by hand again
 ---
 # Tuesday
 
->[!danger] **Finish the reverse bits part tomorrow**
 # Solution
 ```c
 #include <stdio.h>
@@ -143,6 +142,7 @@ uint32_t reverse_bits(uint32_t n){
 uint32_t reverse_bits_efficient(uint32_t n){
 
 }
+//A number is a **power of two** if it has exactly one `1` bit in binary
 int powerTwo(int n){
 	int x = n & (n-1);
 	if (x == 0)
