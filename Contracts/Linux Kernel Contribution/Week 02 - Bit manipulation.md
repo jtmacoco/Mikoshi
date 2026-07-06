@@ -128,6 +128,21 @@ Rest should be able to figure out if not practice it by hand again
 ```c
 #include <stdio.h>
 #include <stdint.h>
+/*
+ * Revers order so 110 would be 011
+ */
+uint32_t reverse_bits(uint32_t n){
+	uint32_t result = 0;
+	for (int i = 0; i < 32; i++){
+		result <<= 1;
+		result |= (n & 1);
+		n >>= 1;
+	}
+	return result;
+}
+uint32_t reverse_bits_efficient(uint32_t n){
+
+}
 int powerTwo(int n){
 	int x = n & (n-1);
 	if (x == 0)
@@ -147,6 +162,7 @@ uint32_t roundPower(uint32_t n){
 	}
 	return n;
 	*/
+
 	/*
 	 * so uint32_t is 32 bits so we know this is a fixed size
 	 * the intuition is to push all of the 1's to the right side
@@ -163,11 +179,11 @@ uint32_t roundPower(uint32_t n){
 	return n;
 }
 int main(){
-	int n = 5;
-	printf("is power of two: %d\n",powerTwo(n));
-	printf("round power up: %d\n",roundPower(n));
-
-
+	int x = 8;
+	uint32_t n = 0x80000000;
+	printf("is power of two of %d: %d\n",x,powerTwo(x));
+	printf("round power up of %d: %d\n",x,roundPower(x));
+	printf("reverse bits of %d: %d\n", n, reverse_bits(n));
 	return 0;
 }
 

@@ -65,6 +65,15 @@ Bitwise operators work on the binary representation of integers, one bit at a ti
 
 > `~x` is equivalent to `-x - 1` in two's complement systems.
 
+### XNOR
+
+| A   | B   | A ⊙ B (XNOR) |
+| --- | --- | ------------ |
+| 0   | 0   | 1            |
+| 0   | 1   | 0            |
+| 1   | 0   | 0            |
+| 1   | 1   | 1            |
+
 ---
 
 ## Worked Example
