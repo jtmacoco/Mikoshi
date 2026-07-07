@@ -9,6 +9,12 @@ created: 2026-07-04
 
 Knowledge arsenal — references, snippets, and tech notes to pull from on any job
 
+## Concept
+```dataview
+LIST FROM "Mikoshi/Netrunner" 
+WHERE notetype = "concept" OR type = "concept"
+SORT created DESC
+```
 ## References
 ```dataview
 LIST FROM "Mikoshi/Netrunner" 
