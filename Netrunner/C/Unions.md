@@ -5,7 +5,7 @@ tags:
   - c
   - unions
 created: 2026-07-03
-type: reference
+type: concept
 ---
 ## What is Unions
 

@@ -21,7 +21,7 @@ LIST FROM "Mikoshi/Netrunner"
 WHERE notetype = "reference" OR type = "reference"
 SORT created DESC
 ```
-## CheatSheets
+## Cheat Sheets
 ```dataview
 LIST FROM "Mikoshi/Netrunner" 
 WHERE notetype = "cheatsheet" OR type="cheatsheet"
