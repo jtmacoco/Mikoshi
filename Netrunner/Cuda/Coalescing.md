@@ -1,6 +1,6 @@
 ---
 title: Coalescing
-source: "[[CUDA]]"
+source: "[[Mikoshi/Netrunner/Cuda/Cuda|Cuda]]"
 tags:
   - "#parallel"
   - cuda

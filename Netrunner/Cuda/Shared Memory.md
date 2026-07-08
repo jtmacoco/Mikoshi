@@ -1,6 +1,6 @@
 ---
 title: Shared Memory
-source: "[[CUDA]]"
+source: "[[Mikoshi/Netrunner/Cuda/Cuda|Cuda]]"
 tags:
   - cuda
   - memory
@@ -25,16 +25,6 @@ __global__ void kernel(float *data) {
     // now safely read tile[...] cooperatively
 }
 ```
-
----
-
-## When to Use
-
-
----
-
-## Watch Out For
-
 
 
 
