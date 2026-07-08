@@ -11,7 +11,7 @@ created: 2026-07-07
 
 ## What is Coalescing
 
-Memory coalescing is the GPUs ability to combine multiple memory accesses from threads in a warp into fewer, larger memory transactions, improving effective memory bandwidth.
+Memory coalescing is the GPUs ability to combine multiple memory accesses from threads in a warp into fewer, larger memory transactions, improving effective memory bandwidth. Refers to global memory not shared. It refers to how threads in a warp access **global memory**. 
 
 ## Core Idea
 
