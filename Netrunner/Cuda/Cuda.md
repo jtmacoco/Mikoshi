@@ -9,6 +9,12 @@ created: 2026-07-06
 
 Cuda Reference Guide
 
+---
+## What is CUDA
+
+CUDA is a parallel computing platform and programming model to increase computing performance.
+
+---
 ## All Notes
 
 ```dataview
