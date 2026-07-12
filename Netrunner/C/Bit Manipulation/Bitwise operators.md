@@ -2,6 +2,7 @@
 title: Bitwise operators
 source: "[[C]]"
 tags:
+  - bit-manipulation
 type: cheatsheet
 created: 2026-07-05
 ---

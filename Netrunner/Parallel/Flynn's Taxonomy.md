@@ -2,6 +2,7 @@
 title: Flynn's Taxonomy
 source: "[[Parallel]]"
 tags:
+  - "#parallel"
 type: concept
 created: 2026-07-07
 ---
