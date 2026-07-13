@@ -1,0 +1,224 @@
+/* ── MIKOSHI CYBERPUNK THEME ────────────────────────────── */
+
+:root {
+  /* Core colors */
+  --color-base-00: #0a0a0f;      /* void black background */
+  --color-base-05: #0d0d14;
+  --color-base-10: #11111a;
+  --color-base-20: #1a1a2e;      /* deep navy panels */
+  --color-base-25: #1f1f35;
+  --color-base-30: #252540;
+  --color-base-35: #2a2a4a;
+  --color-base-40: #3a3a5c;
+  --color-base-50: #6b6b8a;
+  --color-base-60: #9090b0;
+  --color-base-70: #b0b0cc;
+  --color-base-100: #e0e0ff;     /* soft white text */
+
+  /* Accent — neon cyan */
+  --color-accent: #00f5ff;
+  --color-accent-1: #00c8d4;
+  --color-accent-2: #00ffff;
+
+  /* Links — neon purple */
+  --link-color: #bf5fff;
+  --link-color-hover: #d97bff;
+  --link-unresolved-color: #ff2d6b;  /* hot pink = dead link */
+
+  /* Tags — neon green */
+  --tag-color: #00ff9f;
+  --tag-background: rgba(0, 255, 159, 0.08);
+  --tag-border-color: rgba(0, 255, 159, 0.3);
+  --tag-border-width: 1px;
+  --tag-border-radius: 3px;
+  --tag-padding-x: 6px;
+  --tag-padding-y: 2px;
+
+  /* Checkboxes */
+  --checkbox-color: #00f5ff;
+  --checkbox-color-hover: #00ffff;
+
+  /* Fonts */
+  --font-text-theme: 'JetBrains Mono', 'Fira Code', monospace;
+  --font-interface-theme: 'JetBrains Mono', 'Fira Code', monospace;
+  --font-monospace-theme: 'JetBrains Mono', 'Fira Code', monospace;
+  --font-text-size: 15px;
+  --line-height-normal: 1.7;
+
+  /* Borders & radius */
+  --radius-s: 2px;
+  --radius-m: 3px;
+  --radius-l: 4px;
+  --border-color: rgba(0, 245, 255, 0.15);
+
+  /* Scrollbar */
+  --scrollbar-thumb-bg: rgba(0, 245, 255, 0.2);
+}
+
+/* ── BACKGROUND & PANELS ────────────────────────────────── */
+
+.workspace-leaf-content,
+.mod-root .workspace-leaf-content {
+  background-color: var(--color-base-00);
+}
+
+.nav-files-container,
+.workspace-ribbon,
+.workspace-tab-header-container {
+  background-color: var(--color-base-05);
+  border-right: 1px solid var(--border-color);
+}
+
+/* ── HEADINGS ───────────────────────────────────────────── */
+
+.cm-header-1, h1 {
+  color: #00f5ff;
+  font-size: 1.8em;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  text-shadow: 0 0 20px rgba(0, 245, 255, 0.4);
+  border-bottom: 1px solid rgba(0, 245, 255, 0.2);
+  padding-bottom: 4px;
+}
+
+.cm-header-2, h2 {
+  color: #bf5fff;
+  font-size: 1.4em;
+  letter-spacing: 0.05em;
+  text-shadow: 0 0 15px rgba(191, 95, 255, 0.3);
+}
+
+.cm-header-3, h3 {
+  color: #00ff9f;
+  font-size: 1.15em;
+  text-shadow: 0 0 10px rgba(0, 255, 159, 0.3);
+}
+
+.cm-header-4, h4 { color: #ff2d6b; }
+.cm-header-5, h5 { color: #ffd700; }
+.cm-header-6, h6 { color: #ff8c00; }
+
+/* ── BOLD & ITALIC ──────────────────────────────────────── */
+
+strong, .cm-strong { color: #00f5ff; }
+em, .cm-em { color: #bf5fff; }
+
+/* ── CODE BLOCKS ────────────────────────────────────────── */
+
+code, .cm-inline-code {
+  background-color: rgba(0, 245, 255, 0.06);
+  color: #00ff9f;
+  border: 1px solid rgba(0, 245, 255, 0.15);
+  border-radius: 3px;
+  padding: 1px 5px;
+  font-size: 0.9em;
+}
+
+pre, pre code {
+  background-color: #0d0d18 !important;
+  border: 1px solid rgba(0, 245, 255, 0.15);
+  border-left: 3px solid #00f5ff;
+  border-radius: 4px;
+  color: #c8c8ff;
+}
+
+/* ── BLOCKQUOTES ────────────────────────────────────────── */
+
+blockquote {
+  border-left: 3px solid #bf5fff;
+  background-color: rgba(191, 95, 255, 0.05);
+  color: #b0b0cc;
+  border-radius: 0 4px 4px 0;
+  padding: 8px 16px;
+}
+
+/* ── HORIZONTAL RULE ────────────────────────────────────── */
+
+hr {
+  border: none;
+  border-top: 1px solid rgba(0, 245, 255, 0.2);
+  box-shadow: 0 0 8px rgba(0, 245, 255, 0.1);
+}
+
+/* ── TABLES ─────────────────────────────────────────────── */
+
+th {
+  background-color: rgba(0, 245, 255, 0.08);
+  color: #00f5ff;
+  border-bottom: 1px solid rgba(0, 245, 255, 0.3);
+  text-transform: uppercase;
+  font-size: 0.85em;
+  letter-spacing: 0.08em;
+}
+
+td { border-color: rgba(0, 245, 255, 0.1); }
+
+tr:hover td {
+  background-color: rgba(0, 245, 255, 0.04);
+}
+
+/* ── LINKS ──────────────────────────────────────────────── */
+
+a.internal-link {
+  color: #bf5fff;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(191, 95, 255, 0.3);
+}
+
+a.internal-link:hover {
+  color: #d97bff;
+  text-shadow: 0 0 8px rgba(191, 95, 255, 0.5);
+  border-bottom-color: #bf5fff;
+}
+
+a.is-unresolved {
+  color: #ff2d6b !important;
+  border-bottom-color: rgba(255, 45, 107, 0.3);
+}
+
+/* ── CHECKBOXES ─────────────────────────────────────────── */
+
+input[type="checkbox"]:checked {
+  background-color: #00f5ff;
+  border-color: #00f5ff;
+  box-shadow: 0 0 6px rgba(0, 245, 255, 0.5);
+}
+
+/* ── FILE EXPLORER ──────────────────────────────────────── */
+
+.nav-file-title:hover,
+.nav-folder-title:hover {
+  color: #00f5ff;
+  background-color: rgba(0, 245, 255, 0.06);
+}
+
+.nav-file-title.is-active {
+  color: #00f5ff;
+  background-color: rgba(0, 245, 255, 0.08);
+  border-left: 2px solid #00f5ff;
+}
+
+/* ── SCROLLBAR ──────────────────────────────────────────── */
+
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 245, 255, 0.2);
+  border-radius: 2px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 245, 255, 0.4);
+}
+
+/* ── CURSOR LINE HIGHLIGHT ──────────────────────────────── */
+
+.cm-active.cm-line {
+  background-color: rgba(0, 245, 255, 0.03) !important;
+}
+
+/* ── SEARCH HIGHLIGHT ───────────────────────────────────── */
+
+.search-result-file-matched-text {
+  background-color: rgba(0, 245, 255, 0.2);
+  color: #00f5ff;
+}

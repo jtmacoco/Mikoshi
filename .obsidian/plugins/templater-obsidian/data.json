@@ -1,0 +1,64 @@
+{
+  "command_timeout": 5,
+  "templates_folder": "Mikoshi/Templates",
+  "templates_pairs": [
+    [
+      "",
+      ""
+    ]
+  ],
+  "trigger_on_file_creation": true,
+  "auto_jump_to_cursor": false,
+  "enable_system_commands": false,
+  "shell_path": "",
+  "user_scripts_folder": "",
+  "enable_folder_templates": true,
+  "folder_templates": [
+    {
+      "folder": "/",
+      "template": "Mikoshi/Templates/Template-General.md"
+    },
+    {
+      "folder": "Mikoshi/ICEbreaker/Leetcode",
+      "template": "Mikoshi/Templates/Template-Leetcode.md"
+    },
+    {
+      "folder": "Mikoshi/Netrunner",
+      "template": "Mikoshi/Templates/Tempalte-Netrunner-Reference.md"
+    },
+    {
+      "folder": "Mikoshi/Directives",
+      "template": "Mikoshi/Templates/Template-Directive.md"
+    },
+    {
+      "folder": "Mikoshi/Contracts",
+      "template": "Mikoshi/Templates/Template-Contract.md"
+    },
+    {
+      "folder": "Mikoshi/Academy",
+      "template": "Mikoshi/Templates/Template-Academy.md"
+    },
+    {
+      "folder": "Mikoshi/ICEbreaker/System Design",
+      "template": "Mikoshi/Templates/Template-System-Design.md"
+    }
+  ],
+  "enable_file_templates": false,
+  "file_templates": [
+    {
+      "regex": ".*",
+      "template": ""
+    }
+  ],
+  "syntax_highlighting": true,
+  "syntax_highlighting_mobile": false,
+  "enabled_templates_hotkeys": [
+    "Mikoshi/Templates/Data-shard-reference.md",
+    "Mikoshi/Templates/Data-shard.md"
+  ],
+  "startup_templates": [
+    "Mikoshi/Templates/DailySetup.md"
+  ],
+  "intellisense_render": 1,
+  "ignore_folders_on_creation": []
+}
