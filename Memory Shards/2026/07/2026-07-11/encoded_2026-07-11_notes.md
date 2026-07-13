@@ -1,8 +1,9 @@
-# TODO
-- [ ] Read
-- [ ] Practice C
-- [ ] Mental Math
-- [ ] Chess
-- [ ] Leetcode
+# XRFQ
+- [ ] Uhaf
+- [ ] Pscetlgi G
+- [ ] Pgpwdl Oauj
+- [ ] Ehhww
+- [ ] Phgvfrdg
 
-# Shard Log
+# Sictd Osk
+Gkknohd voeca wlpp lrr ddfk qn fxgrbxlmqi vrpotrpy K pusqmvg. K olkglz fkdq'x kiw vjh QVKDJC loe ws olpfd xpueu dwt zi amon uhh I iufuu.

@@ -10,7 +10,7 @@ let pattern = await tp.system.prompt("Pattern/topic (e.g. hashtable, two-pointer
 -%>
 ---
 title: <% title %>
-source: "[[Template-Leetcode]]"
+source: "[[Leetcode]]"
 tags: [leetcode, "<% pattern %>"]
 created: <% tp.date.now("YYYY-MM-DD") %>
 difficulty: <% difficulty %>

@@ -1,8 +1,9 @@
-# TODO
-- [ ] Read
-- [ ] Practice C
-- [ ] Mental Math
-- [ ] Chess
-- [ ] Leetcode
+# WTHS
+- [ ] Riag
+- [ ] Qrefukdi F
+- [ ] Rirtel Pbtl
+- [ ] Figtw
+- [ ] Ojixcsdh
 
-# Shard Log
+# Theue Npk
+Vyyhiid ipr mqugszlja

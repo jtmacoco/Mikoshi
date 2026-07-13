@@ -8,5 +8,5 @@ created: 2026-07-04
 
 ## Currently Working On
 
-- [ ] Organize Academy Section #on-contract #academic #low
-- [ ] Linux Kernel Contribution Week 2 #on-contract #programming #high
+- [ ] Organize Academy Section #academic ⏬
+- [ ] Linux Kernel Contribution Week 2 #programming ⏫ 

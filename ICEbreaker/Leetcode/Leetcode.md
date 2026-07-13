@@ -1,21 +1,31 @@
 ---
 title: Leetcode
 source: "[[ICEbreaker]]"
-tags: 
+tags:
+  - moc
+  - leetcode
 created: 2026-07-04
-status: personal
 ---
-
-## Description
+## Overview
 
 Leetcode problems solutions
-## Notes
+
+## Completed
+
+```dataview
+LIST
+FROM "Mikoshi/ICEbreaker/Leetcode"
+WHERE status = "solved"
+SORT file.mtime DESC
+```
+
+## All Notes
+
+```dataview
+LIST
+FROM "Mikoshi/ICEbreaker/Leetcode"
+SORT file.name ASC
+```
 
 
-## Links
 
-- [[49. Group Anagrams]]
-- [[53. Maximum Subarray]]
-- [[146. LRU Cache]]
-- [[238. Product of Array Except Self]]
-- [[347. Top K Frequent Elements]]

@@ -1,8 +1,9 @@
-# TODO
-- [ ] Read
-- [ ] Practice C
-- [ ] Mental Math
-- [ ] Chess
-- [ ] Leetcode
+# VQFQ
+- [ ] Ridd
+- [ ] Ptbgwjfh E
+- [ ] Ogpteo Mavi
+- [ ] Gkfvv
+- [ ] Nggvcsge
 
-# Shard Log
+# Sjbvg Mrj
+Uvwfiig fot jrwfuykgy

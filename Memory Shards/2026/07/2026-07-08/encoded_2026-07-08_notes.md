@@ -1,8 +1,9 @@
-# TODO
-- [ ] Read
-- [ ] Practice C
-- [ ] Mental Math
-- [ ] Chess
-- [ ] Leetcode
+# YRET
+- [ ] Sjah
+- [ ] Pudculde H
+- [ ] Pfsufl Qawk
+- [ ] Cihts
+- [ ] Qhfydtdi
 
-# Shard Log
+# Skdre Opg
+Xwvijjd jou lnuhsvnhx

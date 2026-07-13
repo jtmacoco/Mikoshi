@@ -3,14 +3,26 @@ title: System Design
 source: "[[ICEbreaker]]"
 tags:
 created: 2026-07-04
-status: personal
 ---
-## Description
+## Overview
 
-Solutions to System Design problems
+Solutions & notes to System Design problems
 
-## Notes
+## Completed
 
+```dataview
+LIST
+FROM "Mikoshi/ICEbreaker/System Design"
+WHERE status = "solved"
+SORT file.mtime DESC
+```
 
-## Links
+## All Notes
+
+```dataview
+LIST
+FROM "Mikoshi/ICEbreaker/System Design"
+SORT file.name ASC
+```
+
 

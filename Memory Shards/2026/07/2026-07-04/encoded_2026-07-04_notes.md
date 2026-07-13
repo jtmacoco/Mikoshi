@@ -1,8 +1,9 @@
-# TODO
-- [ ] Read
-- [ ] Practice C
-- [ ] Mental Math
-- [ ] Chess
-- [ ] Leetcode
+# XSGP
+- [ ] Ujad
+- [ ] Uudhxjfg G
+- [ ] Qhowfl Mfwk
+- [ ] Hlfvu
+- [ ] Pihuftde
 
-# Shard Log
+# Xkdwh Mri
+Wxxeljd ftu lsxfuxmiz

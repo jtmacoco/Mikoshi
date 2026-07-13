@@ -1,11 +1,12 @@
 ---
-title: Contracts
+title: C
 source: "[[Linux Kernel Contribution]]"
 tags:
   - linux
 created: 2026-07-04
 status: on-contract
 ---
+
 
 | Day       | Task (≈30 min)                                                                                                                                                                                                                           |
 | --------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -123,7 +124,7 @@ Rest should be able to figure out if not practice it by hand again
 ---
 # Tuesday
 
-# Solution
+## Solution
 ```c
 #include <stdio.h>
 #include <stdint.h>
@@ -189,3 +190,131 @@ int main(){
 
 ```
 
+### Rounding Power Walk Through
+```c
+n = 19            = 00000000 00000000 00000000 00010011
+
+n--;              // n = 18 = 00010010
+                  // (subtracting 1 first ensures that if n is
+                  //  already a power of 2, e.g. 16, we don't
+                  //  accidentally round up to the next one)
+
+n |= n>>1;        // n>>1 = 00001001
+                  // n    = 00010010 | 00001001 = 00011011  (27)
+
+n |= n>>2;        // n>>2 = 00000110
+                  // n    = 00011011 | 00000110 = 00011111  (31)
+
+n |= n>>4;        // n>>4 = 00000001
+                  // n    = 00011111 | 00000001 = 00011111  (31, unchanged)
+
+n |= n>>8;        // n>>8 = 0
+                  // n    = 00011111 | 0 = 00011111  (31, unchanged)
+
+n |= n>>16;       // n>>16 = 0
+                  // n     = 00011111  (31, unchanged)
+
+n++;              // n = 32
+return n;         // 32 = 2^5, the next power of 2 >= 19
+```
+
+>[!important] why this works
+>-  each `n |= n >> k` step "smears" the highest set bit downward - irst by 1, then 2, then 4, then 8, then 16 — so that after all the shifts, every bit at or below the original highest set bit becomes a 1. This gives you $2^{m-1}$ 
+>-  **So basically this ensures that starting from the most significant bit that every bit after that is a 1**
+
+**Smearing**:  Once you find the **leftmost (highest) 1 bit**, you turn every bit to its right into a 1 as well — filling in a solid run of 1s from that point down to bit 0.
+
+---
+# Wednesday 
+## Solution
+
+```c
+#include <stdio.h>
+#include <stdlib.h>
+
+#define IS_ALIGNED(x,a) (((x) & ((a)-1))==0)
+#define ALIGN_DOWN(x,a) ((x)&(~((a)-1)))
+#define ALIGN_UP(x,a) ((( (a) - 1 )+ (x) )&(~((a)-1)))
+
+
+int main(int argc, char **argv){
+	if (argc < 2){
+		printf("USAGE: a, x\n");
+		return 1;
+	}
+	int a = atoi(argv[1]);
+	int x = atoi(argv[2]);
+	int is_aligned= IS_ALIGNED(x, a);
+	int align_down= ALIGN_DOWN(x, a);
+	int align_up = ALIGN_UP(x, a);
+	printf("IS ALIGNED %d \n",is_aligned);
+	printf("ALIGN DOWN %d \n",align_down);
+	printf("ALIGN UP %d \n",align_up);
+	return 0;
+}
+```
+
+### Core idea
+
+For a power of two `a = 2^n`, a number is a multiple of `a` **only if its bottom `n` bits are 0**.
+
+Example: `a = 8` → bottom 3 bits must be `000`.
+
+- `24` = `011000`  aligned
+- `20` = `010100`  not aligned
+
+### The magic mask: `a - 1`
+
+- `a = 8` → `a - 1 = 7 = 000111`
+- This is **1's in exactly the low n bits, 0 elsewhere**
+- `~(a-1)` flips it → **0's in the low n bits, 1's elsewhere** → used to _clear_ those bits
+
+### IS_ALIGNED(x, a)
+
+**Checks:** are the low bits of `x` already 0?
+
+```c
+#define IS_ALIGNED(x,a) (((x) & ((a)-1)) == 0)
+```
+
+- `x & (a-1)` keeps only the low n bits of `x`
+- if that's `0` → aligned
+
+---
+
+### ALIGN_DOWN(x, a)
+
+**Does:** clear the low bits → rounds down to nearest multiple of `a`
+
+```c
+#define ALIGN_DOWN(x,a) ((x) & ~((a)-1))
+```
+
+- masking always "drops" you to the floor tile below (or stays if already on one)
+
+---
+
+### ALIGN_UP(x, a)
+
+**Does:** same as ALIGN_DOWN, but nudge `x` up first so it lands on the _next_ boundary instead
+
+```c
+#define ALIGN_UP(x,a) (((x) + ((a)-1)) & ~((a)-1))
+```
+
+- add `a-1` first = "just enough" to push an unaligned value past the next boundary
+- **but not enough** to push an already-aligned value further (since its low bits are already 0)
+
+---
+### Quick mental model
+
+| Macro        | Like...           |
+| ------------ | ----------------- |
+| `IS_ALIGNED` | "is remainder 0?" |
+| `ALIGN_DOWN` | `floor()`         |
+| `ALIGN_UP`   | `ceil()`          |
+###  Watch Out For 
+
+Always wrap params in parens inside the macro (`(x)`, `(a)`), or passing an expression (like `y+1`) can silently break the math.
+
+---

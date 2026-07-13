@@ -1,8 +1,9 @@
-# TODO
-- [ ] Read
-- [ ] Practice C
-- [ ] Mental Math
-- [ ] Chess
-- [ ] Leetcode
+# WTFS
+- [ ] Tidd
+- [ ] Qweevmcj F
+- [ ] Rgrveo Mbyl
+- [ ] Ejisx
+- [ ] Ojgxesge
 
-# Shard Log
+# Tmetf Pol
+Vywhkig fpw mpviraljy

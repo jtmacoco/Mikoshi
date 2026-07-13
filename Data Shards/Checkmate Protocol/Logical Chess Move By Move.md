@@ -11,7 +11,7 @@ author: " Irving Chernev"
 subject: chess
 status: reading
 rating:
-sto: page 13
+stopped: page 15
 ---
 
 ## Why I'm Reading This
@@ -27,3 +27,8 @@ To improve chess skills and strategy
 - Control of the center makes defense difficult for opponent 
 - **Resistance by an army thus disunited is usually not very effective**
 - **Develop knights before bishops** since knight takes shorter steps than bishop
+- **2 golden rules for opening play**
+	- Place each piece as quickly as possible on the square where it is most effective
+	- Move each piece only once in the opening
+- Castle early in the game, preferably on kingside
+- Develop all pieces before starting any combinations 

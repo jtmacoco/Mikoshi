@@ -4,7 +4,7 @@ source: "[[System Design]]"
 tags:
   - system-design
 created: 2026-07-07
-status: sovled
+status: solved
 ---
 
 ## Problem Statement
