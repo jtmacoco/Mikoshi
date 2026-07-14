@@ -1,6 +1,6 @@
 **Source**: [[SYSTEM MANIFEST]]
 **Tags**: #engrams
-**Description**: Daily notes 
+**Description**: All Daily Notes Entries
 # Years
 
 - [[Uplink 2026]]
