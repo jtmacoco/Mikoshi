@@ -3,6 +3,6 @@
 - [ ] Practice C
 - [ ] Mental Math
 - [x] Chess ✅ 2026-07-13
-- [ ] Leetcode
+- [x] Leetcode ✅ 2026-07-13
 
 # Shard Log
