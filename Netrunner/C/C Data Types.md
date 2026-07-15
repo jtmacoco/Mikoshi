@@ -9,19 +9,21 @@ type: cheatsheet
 ---
 ## Basic Integer Types
 
-| Type | Typical Size (bytes) | Range (typical, signed unless noted) | Format Specifier | Notes |
-|---|---|---|---|---|
-| `char` | 1 | -128 to 127 (implementation-defined signedness) | `%c` | Smallest addressable unit; size guaranteed to be 1 byte by standard |
-| `signed char` | 1 | -128 to 127 | `%c` / `%hhd` | Explicitly signed |
-| `unsigned char` | 1 | 0 to 255 | `%c` / `%hhu` | Often used for raw byte data |
-| `short` / `short int` | 2 | -32,768 to 32,767 | `%hd` | At least 16 bits guaranteed |
-| `unsigned short` | 2 | 0 to 65,535 | `%hu` | |
-| `int` | 4 | -2,147,483,648 to 2,147,483,647 | `%d` / `%i` | At least 16 bits guaranteed (4 on most modern systems) |
-| `unsigned int` | 4 | 0 to 4,294,967,295 | `%u` | |
-| `long` / `long int` | 4 (Windows) / 8 (Linux/macOS) | -2,147,483,648 to 2,147,483,647 (32-bit) | `%ld` | At least 32 bits guaranteed; size varies by platform/OS |
-| `unsigned long` | 4 or 8 | 0 to 4,294,967,295 (32-bit) | `%lu` | |
-| `long long` / `long long int` | 8 | -9.2×10¹⁸ to 9.2×10¹⁸ | `%lld` | At least 64 bits guaranteed (C99+) |
-| `unsigned long long` | 8 | 0 to 1.8×10¹⁹ | `%llu` | |
+- **8 bits in a byte**
+
+| Type                          | Typical Size (bytes)          | Range (typical, signed unless noted)            | Format Specifier | Notes                                                               |
+| ----------------------------- | ----------------------------- | ----------------------------------------------- | ---------------- | ------------------------------------------------------------------- |
+| `char`                        | 1                             | -128 to 127 (implementation-defined signedness) | `%c`             | Smallest addressable unit; size guaranteed to be 1 byte by standard |
+| `signed char`                 | 1                             | -128 to 127                                     | `%c` / `%hhd`    | Explicitly signed                                                   |
+| `unsigned char`               | 1                             | 0 to 255                                        | `%c` / `%hhu`    | Often used for raw byte data                                        |
+| `short` / `short int`         | 2                             | -32,768 to 32,767                               | `%hd`            | At least 16 bits guaranteed                                         |
+| `unsigned short`              | 2                             | 0 to 65,535                                     | `%hu`            |                                                                     |
+| `int`                         | 4                             | -2,147,483,648 to 2,147,483,647                 | `%d` / `%i`      | At least 16 bits guaranteed (4 on most modern systems)              |
+| `unsigned int`                | 4                             | 0 to 4,294,967,295                              | `%u`             |                                                                     |
+| `long` / `long int`           | 4 (Windows) / 8 (Linux/macOS) | -2,147,483,648 to 2,147,483,647 (32-bit)        | `%ld`            | At least 32 bits guaranteed; size varies by platform/OS             |
+| `unsigned long`               | 4 or 8                        | 0 to 4,294,967,295 (32-bit)                     | `%lu`            |                                                                     |
+| `long long` / `long long int` | 8                             | -9.2×10¹⁸ to 9.2×10¹⁸                           | `%lld`           | At least 64 bits guaranteed (C99+)                                  |
+| `unsigned long long`          | 8                             | 0 to 1.8×10¹⁹                                   | `%llu`           |                                                                     |
 
 ## Floating-Point Types
 
@@ -87,3 +89,4 @@ type: cheatsheet
 - `sizeof(char)` is always exactly `1` byte by definition (though a "byte" isn't always 8 bits on exotic systems).
 - Use `<stdint.h>` fixed-width types (`int32_t`, `uint64_t`, etc.) when you need guaranteed, portable sizes.
 - Data model naming for reference: `LP64` (Linux/macOS 64-bit: long & pointer = 8 bytes), `LLP64` (Windows 64-bit: long = 4 bytes, long long & pointer = 8 bytes), `ILP32` (32-bit systems: int, long, pointer = 4 bytes).
+- **8 bits in a byte**

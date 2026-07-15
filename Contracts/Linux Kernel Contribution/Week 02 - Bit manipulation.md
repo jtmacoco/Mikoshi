@@ -317,3 +317,5 @@ Example: `a = 8` → bottom 3 bits must be `000`.
 Always wrap params in parens inside the macro (`(x)`, `(a)`), or passing an expression (like `y+1`) can silently break the math.
 
 ---
+# Thursday 
+## Solution
