@@ -1,7 +1,7 @@
 # TODO
 - [ ] Read
 - [ ] Practice C
-- [ ] Mental Math
+- [x] Mental Math ✅ 2026-07-14
 - [x] Chess ✅ 2026-07-14
 - [ ] Leetcode
 
