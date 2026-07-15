@@ -1,0 +1,16 @@
+---
+title: Mental Math Log
+source: "[[Data Shards]]"
+tags:
+  - mental-math
+  - math
+created: 2026-07-14
+status: personal
+---
+# Overview
+
+Track my quiz progress
+
+| Date       | Chapter                            | Score | Time (s) | Accuracy |
+| ---------- | ---------------------------------- | ----- | -------- | -------- |
+| 2026-06-15 | Chapter 1 - Addition & Subtraction | 20/25 | 528.5    | 80%      |

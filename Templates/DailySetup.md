@@ -16,7 +16,7 @@ const sectorName = `Sector ${month}`;
 const sectorPath = `${monthPath}/${sectorName}.md`;
 const uplinkName = `Uplink ${year}`;
 const uplinkPath = `${yearPath}/${uplinkName}.md`;
-const shardsPath = `${base}/Shards.md`;
+const shardsPath = `${base}/Memory Shards.md`;
 
 // Create folders
 for (const path of [yearPath, monthPath, dayPath]) {

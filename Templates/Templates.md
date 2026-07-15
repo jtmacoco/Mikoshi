@@ -31,3 +31,5 @@
 # [[Template-System-Design]]
 
 # [[Template-Sub_MOC]]
+
+# [[Template-Daily-Math]]

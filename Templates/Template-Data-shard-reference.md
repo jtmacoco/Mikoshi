@@ -11,7 +11,7 @@ let status = await tp.system.suggester(
 -%>
 ---
 title: <% title %>
-source: "[[Data Shards a]]"
+source: "[[Data Shards]]"
 tags: [book, reference]
 created: <% tp.date.now("YYYY-MM-DD") %>
 author: <% author %>

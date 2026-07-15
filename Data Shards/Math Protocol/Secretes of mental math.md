@@ -5,6 +5,7 @@ tags:
   - book
   - reference
   - math
+  - mental-math
 created: 2026-07-05
 author: Benjamin and Michael Shermer
 subject: mental math
