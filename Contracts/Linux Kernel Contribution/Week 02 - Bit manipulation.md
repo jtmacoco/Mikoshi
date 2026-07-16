@@ -319,3 +319,235 @@ Always wrap params in parens inside the macro (`(x)`, `(a)`), or passing an expr
 ---
 # Thursday 
 ## Solution
+
+```c
+#include <stdio.h>
+#include <stdint.h>
+#define BITS_PER_WORD 64
+void bitmap_set(uint64_t *map, int n){
+	map[n/BITS_PER_WORD] |= 1ULL << (n%BITS_PER_WORD);
+}
+//01000
+//10111
+void bitmap_clear(uint64_t *map, int n){
+	map[n/BITS_PER_WORD] &= ~(1ULL << (n % BITS_PER_WORD));
+}
+//01000
+//01000
+//bitmap_test just reads the value of one bit — it doesn't change anything, unlike set and clear. It answers the question: "is bit n currently 1 or 0?"
+int bitmap_test(uint64_t *map, int n){
+	return map[n/BITS_PER_WORD] >> (n % BITS_PER_WORD) & 1ULL;//not int 1 would also work
+}
+//01000
+//
+long bitmap_find_first_zero(uint64_t *map, int n){
+	for(int i = 0; i < n; i++){
+		for (int b = 0; b < BITS_PER_WORD; b++){
+			if(!((map[i] >> b) & 1ULL)){
+				return i * BITS_PER_WORD + b;
+			}
+		}
+	}
+	return -1;
+}
+
+int main(){
+	uint64_t map[1024];
+	for (int i = 0; i < 1024; i++){
+		map[i] = 0;
+	}
+	bitmap_set(map, 0); //mark page 0 as used
+	bitmap_set(map, 2); //mark page 0 as used
+	bitmap_set(map, 130); //mark page 0 as used
+	printf("%d\n", bitmap_test(map, 1));
+	printf("%d\n", bitmap_test(map, 5));
+	long free_page = bitmap_find_first_zero(map,1024);
+	printf("Find free page: %ld\n", free_page);
+	return 0;
+}
+```
+
+## What is a bitmap?
+
+- A bitmap is just a way to represent things 
+- Typically used in graphics and OS development where bit maps represent used pages
+- So it's a long row of 0's and 1's where each position (bit) is a yes or no for one thing
+- Kernel programming use it to represent pages of memory `0` = free `1` = used
+
+## Solution Notes
+
+- `BITS_PER_WORD` is not about page size
+	- It describes the container using for storage in this case `uint64_t`
+	
+### What each thing represents
+
+- **Page** = a chunk of physical memory (4KB) This is real world thing tracking
+- **Bit** = one yes/no flag representing one page's status. One bit per page not related to the page's actual byte size at all
+- **Word** (`map[0]`,`map[1]`, ...) = a storage container that holds 64 of these bits at once 
+### Concrete Example
+
+If `BITS_PER_WORD = 64` and you have `map[1024]`:
+
+- Total bits available = `1024 * 64 = 65,536`
+- That means you can track **65,536 pages**, each represented by exactly 1 bit
+- Page `n`'s bit lives at `map[n / 64]`, bit position `n % 64`
+- Have 1024 words
+
+### bitmap_set
+
+- Shift's 1 over by the specific bit position given
+- Use `1ULL` since this guarantee's 64 bits 
+
+### bitmap_clear
+
+- Does the same thing as set but takes the & with ~ since anything that is a 1 will remain an 1 and this clears a specific bi'ts position 
+Ex:
+
+Same setup: pretend `BITS_PER_WORD = 8` for a small, easy-to-see example.
+
+```
+word = 0b01011100
+```
+
+Bit positions (from the right, starting at 0):
+
+```
+position:  7  6  5  4  3  2  1  0
+bit:       0  1  0  1  1  1  0  0
+```
+
+**Calling `bitmap_clear(map, 2)`**
+
+c
+
+```c
+map[0] &= ~(1ULL << 2);
+```
+
+Step 1 — build the mask (`1` shifted into position 2):
+
+```
+mask:   00000100
+```
+
+Step 2 — invert the mask (`~mask`) — flip every bit, so position 2 is the _only_ 0, everything else is 1:
+
+```
+~mask:  11111011
+```
+
+Step 3 — AND the original word with `~mask`:
+
+```
+  01011100
+& 11111011
+= 01011000
+```
+
+**Result: `0b01011000`** → bit 2 is now `0` (cleared). Every other bit is untouched — compare `01011100` → `01011000`, only position 2 changed.
+
+
+**Why `~mask` works — the key idea**
+
+- The mask has a single `1` at the target position, `0` everywhere else.
+- Inverting it flips that: now it's `0` at the target position, `1` everywhere else.
+- AND-ing with this means: "force the target position to 0 (since anything AND 0 is 0), and leave every other bit as-is (since anything AND 1 stays the same)."
+
+### bitmap_test
+
+- bitmap_test just reads the value of one bit — it doesn't change anything, unlike set and clear. It answers the question: "is bit n currently 1 or 0?"
+- This performs the **shift first** then the `&`
+- So it' shifting the page by the number of bits for a specific bit position then &'ing it with 1 to check to see if that value is a 1 or 0.
+Ex:
+`word = 0b01011100`
+
+```
+position:  7  6  5  4  3  2  1  0
+bit:       0  1  0  1  1  1  0  0
+```
+
+Calling `bitmap_test(map, 2)`
+
+`return (map[0] >> 2) & 1ULL;`
+
+Step 1 — shift right by 2 (slide everything toward position 0):
+
+```
+before:  01011100
+after:   00010111   <- original bit 2 is now sitting at position 0
+```
+
+Step 2 — mask with `1` (keep only position 0, zero out the rest):
+
+```
+00010111
+&
+00000001
+=
+00000001
+```
+
+**Result: `1`** → bit 2 was set (used).
+
+**Takeaway**
+
+> `bitmap_test(map, n)` = shift the word right by `n` (drag the bit you care about down to position 0), then `& 1` to read just that bottom bit. Result is `1` if that page is used, `0` if it's free
+> 
+### bitmap_find_first_zero
+
+- Loop through entire map so each word and check if it has been set to a 1 so if it's in use basically
+
+**`bitmap_find_first_zero` — 8-bit Example**
+
+Same small setup: `BITS_PER_WORD = 8`, and let's use two words this time so you can see the loop cross from one word to the next.
+
+```
+map[0] = 0b11111111   (all 8 pages in this word are used)
+map[1] = 0b00001011   (pages 0,1,3 used; page 2 is free)
+```
+
+Bit positions in `map[1]` (from the right, starting at 0):
+
+```
+position:  7  6  5  4  3  2  1  0
+bit:       0  0  0  0  1  0  1  1
+```
+
+**Walking through the function**
+
+c
+
+```c
+long bitmap_find_first_zero(uint64_t *map, int n){
+	for(int i = 0; i < n; i++){
+		for (int b = 0; b < BITS_PER_WORD; b++){
+			if(!((map[i] >> b) & 1ULL)){
+				return i * BITS_PER_WORD + b;
+			}
+		}
+	}
+	return -1;
+}
+```
+
+**Outer loop, `i = 0`** — checking `map[0] = 0b11111111`
+
+Inner loop tries `b = 0` through `b = 7`. At every single position, the bit is `1`, so `!((...) & 1ULL)` is `!1` = `false` each time. The inner loop finishes without ever returning — `map[0]` has no free bits at all.
+
+**Outer loop, `i = 1`** — checking `map[1] = 0b00001011`
+
+- `b=0`: shift by 0 → `00001011` → `&1` → `1` → not zero, keep going
+- `b=1`: shift by 1 → `00000101` → `&1` → `1` → not zero, keep going
+- `b=2`: shift by 2 → `00000010` → `&1` → `0` → **zero found!**
+
+Return value: `i * BITS_PER_WORD + b = 1 * 8 + 2 = 10`
+
+**Result: `10`**
+
+That's the overall bit index counting across both words: `map[0]` covers positions 0–7 (all used), and `map[1]` covers positions 8–15 — bit 2 _within_ `map[1]` is overall position `8 + 2 = 10`, which is the first free page across the whole bitmap.
+
+**Takeaway**
+
+> `bitmap_find_first_zero` scans word by word (outer loop), and bit by bit within each word (inner loop), always checking lowest index first. The moment it finds a `0` bit, it converts the (word, position) pair back into one overall page number with `i * BITS_PER_WORD + b`, and returns immediately — it does not need to finish scanning once it finds a hit.
+
+---
