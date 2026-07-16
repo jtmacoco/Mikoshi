@@ -10,125 +10,153 @@ status: personal
 
 
 ```dataviewjs
-// ====== Load config from external file ======
-const configFile = app.vault.getAbstractFileByPath("Mikoshi/Data Shards/Math Protocol/Mental Math Config.md");
-if (!configFile) {
-  dv.paragraph("⚠️ Mental Math Config.md not found. Create it first.");
+const file = app.vault.getAbstractFileByPath(dv.current().file.path);
+const cache = app.metadataCache.getFileCache(file);
+const fm = cache?.frontmatter;
+
+// ====== CHECK IF QUIZ ALREADY COMPLETED ======
+if (fm && fm.quizCompleted) {
+  const saved = JSON.parse(fm.quizData);
+  const container = dv.container;
+  container.empty();
+  container.createEl("h3", { text: `Mental Math Quiz — ${fm.quizChapter} (Completed)` });
+  container.createEl("p").innerHTML = `<b>Score: ${fm.quizScore} — Time: ${fm.quizTimeSec}s</b>`;
+
+  saved.forEach((p, i) => {
+    const row = container.createEl("div");
+    row.style.margin = "4px 0";
+    row.style.color = p.correct ? "#5cb85c" : "#d9534f";
+    row.setText(`${i + 1}. ${p.question} = ${p.userAnswer}  ${p.correct ? "✓" : `✗ (correct: ${p.answer})`}`);
+  });
+
 } else {
+  // ====== NORMAL QUIZ GENERATION (existing logic) ======
+  const configFile = app.vault.getAbstractFileByPath("Mikoshi/Data Shards/Math Protocol/Mental Math Config.md");
   const raw = await app.vault.read(configFile);
   const match = raw.match(/```js\s*([\s\S]*?)```/);
-  if (!match) {
-    dv.paragraph("⚠️ Couldn't find a js code block in the config file.");
-  } else {
-    const config = new Function(match[1] + "; return config;")();
+  const config = new Function(match[1] + "; return config;")();
 
-    function randInt(digits) {
-      const min = digits === 1 ? 1 : Math.pow(10, digits - 1);
-      const max = Math.pow(10, digits) - 1;
-      return Math.floor(Math.random() * (max - min + 1)) + min;
+  function randInt(digits) {
+    const min = digits === 1 ? 1 : Math.pow(10, digits - 1);
+    const max = Math.pow(10, digits) - 1;
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+
+  function generateProblem(section) {
+    let a, b, question, answer;
+    switch (section.op) {
+      case "add":
+        a = randInt(section.digitsA); b = randInt(section.digitsB);
+        question = `${a} + ${b}`; answer = a + b; break;
+      case "sub":
+        a = randInt(section.digitsA); b = randInt(section.digitsB);
+        if (b > a) [a, b] = [b, a];
+        question = `${a} − ${b}`; answer = a - b; break;
+      case "mult":
+        a = randInt(section.digitsA); b = randInt(section.digitsB);
+        question = `${a} × ${b}`; answer = a * b; break;
+      case "mult11":
+        a = randInt(section.digitsA || 2);
+        question = `${a} × 11`; answer = a * 11; break;
+      case "mult5":
+        a = randInt(section.digitsA || 2);
+        question = `${a} × 5`; answer = a * 5; break;
+      case "mult9":
+        a = randInt(section.digitsA || 2);
+        question = `${a} × 9`; answer = a * 9; break;
+      case "square":
+        a = randInt(section.digits || 2);
+        question = `${a}²`; answer = a * a; break;
+      case "square5":
+        a = randInt(section.digits || 1) * 10 + 5;
+        question = `${a}²`; answer = a * a; break;
+      case "div":
+        b = randInt(section.digitsB || 1);
+        answer = randInt(section.digitsA || 2);
+        a = answer * b;
+        question = `${a} ÷ ${b}`; break;
+      case "estimate":
+        a = randInt(section.digitsA || 3); b = randInt(section.digitsB || 3);
+        question = `Estimate: ${a} × ${b}`; answer = a * b; break;
     }
+    return { question, answer };
+  }
 
-    function generateProblem(section) {
-      let a, b, question, answer;
-      switch (section.op) {
-        case "add":
-          a = randInt(section.digitsA);
-          b = randInt(section.digitsB);
-          question = `${a} + ${b}`;
-          answer = a + b;
-          break;
-        case "sub":
-          a = randInt(section.digitsA);
-          b = randInt(section.digitsB);
-          if (b > a) [a, b] = [b, a];
-          question = `${a} − ${b}`;
-          answer = a - b;
-          break;
-        case "mult":
-          a = randInt(section.digitsA);
-          b = randInt(section.digitsB);
-          question = `${a} × ${b}`;
-          answer = a * b;
-          break;
-        case "mult11":
-          a = randInt(section.digitsA || 2);
-          question = `${a} × 11`;
-          answer = a * 11;
-          break;
-        case "square":
-          a = randInt(section.digits || 2);
-          question = `${a}²`;
-          answer = a * a;
-          break;
-      }
-      return { question, answer };
-    }
+  let problems = [];
+  config.sections.forEach(section => {
+    for (let i = 0; i < section.count; i++) problems.push(generateProblem(section));
+  });
+  problems = problems.sort(() => Math.random() - 0.5);
 
-    let problems = [];
-    config.sections.forEach(section => {
-      for (let i = 0; i < section.count; i++) {
-        problems.push(generateProblem(section));
-      }
+  const container = dv.container;
+  container.empty();
+  container.createEl("h3", { text: `Mental Math Quiz — ${config.chapter}` });
+  const startBtn = container.createEl("button", { text: "Start Quiz" });
+  const quizDiv = container.createEl("div");
+  quizDiv.style.marginTop = "10px";
+
+  let startTime, inputs = [];
+
+  startBtn.addEventListener("click", () => {
+    startBtn.remove();
+    startTime = Date.now();
+
+    problems.forEach((p, i) => {
+      const row = quizDiv.createEl("div");
+      row.style.margin = "6px 0";
+      row.createEl("span", { text: `${i + 1}. ${p.question} = ` });
+      const input = row.createEl("input", { type: "text" });
+      input.style.width = "80px";
+      inputs.push(input);
     });
-    problems = problems.sort(() => Math.random() - 0.5);
 
-    const container = dv.container;
-    container.empty();
+    const submitBtn = quizDiv.createEl("button", { text: "Submit" });
+    submitBtn.style.marginTop = "10px";
 
-    container.createEl("h3", { text: `Mental Math Quiz — ${config.chapter}` });
-    const startBtn = container.createEl("button", { text: "Start Quiz" });
-    const quizDiv = container.createEl("div");
-    quizDiv.style.marginTop = "10px";
-
-    let startTime, inputs = [];
-
-    startBtn.addEventListener("click", () => {
-      startBtn.remove();
-      startTime = Date.now();
+    submitBtn.addEventListener("click", async () => {
+      const elapsedSec = ((Date.now() - startTime) / 1000).toFixed(1);
+      let correct = 0;
+      const results = [];
 
       problems.forEach((p, i) => {
-        const row = quizDiv.createEl("div");
-        row.style.margin = "6px 0";
-        row.createEl("span", { text: `${i + 1}. ${p.question} = ` });
-        const input = row.createEl("input", { type: "text" });
-        input.style.width = "80px";
-        inputs.push(input);
-      });
-
-      const submitBtn = quizDiv.createEl("button", { text: "Submit" });
-      submitBtn.style.marginTop = "10px";
-
-      submitBtn.addEventListener("click", async () => {
-        const elapsedSec = ((Date.now() - startTime) / 1000).toFixed(1);
-        let correct = 0;
-
-        problems.forEach((p, i) => {
-          const userAnswer = parseInt(inputs[i].value, 10);
-          const isCorrect = userAnswer === p.answer;
-          if (isCorrect) correct++;
-          inputs[i].style.backgroundColor = isCorrect ? "#c8f7c5" : "#f7c5c5";
-          if (!isCorrect) {
-            inputs[i].insertAdjacentHTML("afterend", ` <span style="color:red">(${p.answer})</span>`);
-          }
-        });
-
-        submitBtn.remove();
-        const resultEl = quizDiv.createEl("p");
-        resultEl.innerHTML = `<b>Score: ${correct}/${problems.length} — Time: ${elapsedSec}s</b>`;
-
-        const logPath = "Mikoshi/Data Shards/Math Protocol/Mental Math Log.md";
-        let logFile = app.vault.getAbstractFileByPath(logPath);
-        if (!logFile) {
-          await app.vault.create(logPath, "| Date | Chapter | Score | Time (s) | Accuracy |\n|---|---|---|---|---|\n");
-          logFile = app.vault.getAbstractFileByPath(logPath);
+        const userAnswer = parseFloat(inputs[i].value);
+        const tolerance = p.question.startsWith("Estimate") ? p.answer * 0.1 : 0;
+        const isCorrect = Math.abs(userAnswer - p.answer) <= tolerance;
+        if (isCorrect) correct++;
+        inputs[i].style.backgroundColor = isCorrect ? "#c8f7c5" : "#f7c5c5";
+        if (!isCorrect) {
+          inputs[i].insertAdjacentHTML("afterend", ` <span style="color:red">(${p.answer})</span>`);
         }
-        const today = new Date().toISOString().split("T")[0];
-        const accuracy = ((correct / problems.length) * 100).toFixed(0);
-        const row = `| ${today} | ${config.chapter} | ${correct}/${problems.length} | ${elapsedSec} | ${accuracy}% |\n`;
-        const content = await app.vault.read(logFile);
-        await app.vault.modify(logFile, content + row);
+        results.push({ question: p.question, answer: p.answer, userAnswer, correct: isCorrect });
       });
+
+      submitBtn.remove();
+      const resultEl = quizDiv.createEl("p");
+      resultEl.innerHTML = `<b>Score: ${correct}/${problems.length} — Time: ${elapsedSec}s</b>`;
+
+      // ====== SAVE RESULTS INTO FRONTMATTER SO IT PERSISTS ======
+      await app.fileManager.processFrontMatter(file, (frontmatter) => {
+        frontmatter.quizCompleted = true;
+        frontmatter.quizChapter = config.chapter;
+        frontmatter.quizScore = `${correct}/${problems.length}`;
+        frontmatter.quizTimeSec = elapsedSec;
+        frontmatter.quizData = JSON.stringify(results);
+      });
+
+      // ====== LOG TO RUNNING HISTORY ======
+      const logPath = "Mikoshi/Data Shards/Math Protocol/Mental Math Log.md";
+      let logFile = app.vault.getAbstractFileByPath(logPath);
+      if (!logFile) {
+        await app.vault.create(logPath, "| Date | Chapter | Score | Time (s) | Accuracy |\n|---|---|---|---|---|\n");
+        logFile = app.vault.getAbstractFileByPath(logPath);
+      }
+      const today = new Date().toISOString().split("T")[0];
+      const accuracy = ((correct / problems.length) * 100).toFixed(0);
+      const row = `| ${today} | ${config.chapter} | ${correct}/${problems.length} | ${elapsedSec} | ${accuracy}% |\n`;
+      const content = await app.vault.read(logFile);
+      await app.vault.modify(logFile, content + row);
     });
-  }
+  });
 }
 ```
+
