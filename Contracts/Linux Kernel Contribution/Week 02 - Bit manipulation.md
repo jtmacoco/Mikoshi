@@ -551,3 +551,4 @@ That's the overall bit index counting across both words: `map[0]` covers positio
 > `bitmap_find_first_zero` scans word by word (outer loop), and bit by bit within each word (inner loop), always checking lowest index first. The moment it finds a `0` bit, it converts the (word, position) pair back into one overall page number with `i * BITS_PER_WORD + b`, and returns immediately — it does not need to finish scanning once it finds a hit.
 
 ---
+# Friday
