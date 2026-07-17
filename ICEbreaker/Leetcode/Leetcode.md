@@ -17,6 +17,7 @@ FROM "Mikoshi/ICEbreaker/Leetcode"
 WHERE status = "unsolved"
 SORT file.mtime DESC
 ```
+
 ## Completed
 
 ```dataview
