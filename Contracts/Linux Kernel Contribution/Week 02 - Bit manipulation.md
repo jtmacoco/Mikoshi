@@ -552,3 +552,32 @@ That's the overall bit index counting across both words: `map[0]` covers positio
 
 ---
 # Friday
+
+## Solution
+
+>[!danger] Finish Tommorrow
+>- still need to handle IEEE-754 layout
+
+```c
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+const unsigned char * hexdump(const void *ptr, size_t size){
+	const unsigned char *bytes = (unsigned char *)ptr;
+	for (size_t i = 0; i < size; i++){
+		printf("%02x ", bytes[i]);
+	}
+	printf("\n");
+	return bytes;
+}
+int main(){
+	int val = 1.0;
+	const unsigned char *bytes = hexdump(&val,sizeof(val));
+	if (bytes[0] < bytes[sizeof(val)-1] ){
+		printf("Big Endian\n");
+	}else{
+		printf("Little Endian\n");
+	}
+	return 0;
+}
+```
