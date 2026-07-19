@@ -11,11 +11,11 @@ created: 2026-07-19
 
 Tracking items
 
---
+---
 
 ## Wanted Assets
 
-- [ ] USB (OS os)   
+- [ ] USB (OS on it)   
 - [ ] 50 series GPU 
 
 --- 
@@ -23,3 +23,4 @@ Tracking items
 
 - [ ] Backpack 
 - [ ] Work pants
+- [ ] Light bulb
