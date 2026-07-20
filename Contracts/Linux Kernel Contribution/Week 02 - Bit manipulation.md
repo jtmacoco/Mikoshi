@@ -555,13 +555,11 @@ That's the overall bit index counting across both words: `map[0]` covers positio
 
 ## Solution
 
->[!danger] Finish Tommorrow
->- still need to handle IEEE-754 layout
-
 ```c
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+
 const unsigned char * hexdump(const void *ptr, size_t size){
 	const unsigned char *bytes = (unsigned char *)ptr;
 	for (size_t i = 0; i < size; i++){
@@ -570,14 +568,39 @@ const unsigned char * hexdump(const void *ptr, size_t size){
 	printf("\n");
 	return bytes;
 }
+
 int main(){
-	int val = 1.0;
-	const unsigned char *bytes = hexdump(&val,sizeof(val));
-	if (bytes[0] < bytes[sizeof(val)-1] ){
-		printf("Big Endian\n");
-	}else{
+	// --- Endianness check ---
+	uint32_t endian_val = 1;
+	const unsigned char *ebytes = hexdump(&endian_val, sizeof(endian_val));
+	if (ebytes[0] == 1) {
 		printf("Little Endian\n");
+	} else {
+		printf("Big Endian\n");
 	}
+
+	printf("\n");
+
+	// --- IEEE-754 float decode ---
+	float val = 1.0f;
+	const unsigned char *bytes = hexdump(&val, sizeof(val));
+	uint32_t as_int = (bytes[3] << 24) | (bytes[2] << 16) | (bytes[1] << 8) | bytes[0];
+	uint32_t sign_bit = (as_int >> 31) & 1;
+	uint32_t exponent  = (as_int >> 23) & 0xFF;
+	uint32_t mantissa  = as_int & 0x7FFFFF;
+
+	printf("as int: %u\n", as_int);
+	printf("sign_bit: %u\n", sign_bit);
+	printf("exponent: %u (unbiased: %d)\n", exponent, (int)exponent - 127);
+	printf("mantissa: %u\n", mantissa);
+
 	return 0;
 }
+
 ```
+
+- The mistake I made was casting each individual val as different types i.e `float`, `int`, etc.. 
+- Need to using `uint32_t`
+- Endianness is about byte order — how a multi-byte value's bytes get arranged in memory addresses. It applies to any multi-byte type equally (`int`, `float`, `uint32_t`, pointers, struct fields) and doesn't care what the bits mean.
+- IEEE-754 is about bit meaning — once you have the bytes in the correct logical order, how those bits are carved up into sign/exponent/mantissa to represent a real number. It doesn't care what order the bytes were physically stored in — that's why the first step of decoding a float was always "reassemble into as_int correctly, accounting for endianness" before doing any bit-splitting
+**IEEE-754**: 1 Sign Bit, 8 Exponent Bits, 23 Mantissa bits, 32 total bits
