@@ -603,4 +603,4 @@ int main(){
 - Need to using `uint32_t`
 - Endianness is about byte order — how a multi-byte value's bytes get arranged in memory addresses. It applies to any multi-byte type equally (`int`, `float`, `uint32_t`, pointers, struct fields) and doesn't care what the bits mean.
 - IEEE-754 is about bit meaning — once you have the bytes in the correct logical order, how those bits are carved up into sign/exponent/mantissa to represent a real number. It doesn't care what order the bytes were physically stored in — that's why the first step of decoding a float was always "reassemble into as_int correctly, accounting for endianness" before doing any bit-splitting
-**IEEE-754**: 1 Sign Bit, 8 Exponent Bits, 23 Mantissa bits, 32 total bits
+- **IEEE-754**: 1 Sign Bit, 8 Exponent Bits, 23 Mantissa bits, 32 total bits
