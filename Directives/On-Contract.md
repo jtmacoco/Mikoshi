@@ -9,4 +9,5 @@ created: 2026-07-04
 ## Currently Working On
 
 - [ ] Organize Academy Section #academic ⏬
-- [ ] Linux Kernel Contribution Week 2 #programming ⏫ 
+- [x] Linux Kernel Contribution Week 2 #programming ⏫ ✅ 2026-07-19
+- [ ] Linux Kernel Contribution Week 3⏫ 

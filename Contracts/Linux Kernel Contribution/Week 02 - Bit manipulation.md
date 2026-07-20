@@ -4,7 +4,7 @@ source: "[[Linux Kernel Contribution]]"
 tags:
   - linux
 created: 2026-07-04
-status: on-contract
+status: completed
 ---
 
 | Day       | Task (≈30 min)                                                                                                                                                                                                                           |

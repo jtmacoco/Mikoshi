@@ -6,7 +6,7 @@ created: 2026-07-04
 ---
 
 ## Overview
-
+- Stores notes on various topics
 
 
 ## Active
@@ -17,14 +17,7 @@ FROM "Mikoshi/Data Shards"
 WHERE status = "active" OR status = "on-contract" OR status = "reading"
 SORT file.mtime DESC
 ```
-## Completed
 
-```dataview
-LIST
-FROM "Mikoshi/Data Shards"
-WHERE status = "completed"
-SORT file.mtime DESC
-```
 
 ## All Notes
 
