@@ -17,10 +17,11 @@ Tracking items
 
 - [ ] USB (OS on it)   
 - [ ] 50 series GPU 
+- [ ] Jacket with hood
+- [ ] New mouse pad
 
 --- 
 ## Core Dependencies
 
 - [ ] Backpack 
 - [ ] Work pants
-- [ ] Light bulb

@@ -11,7 +11,7 @@ author: Benjamin and Michael Shermer
 subject: mental math
 status: reading
 rating:
-stopped: page 23
+stopped: page 35
 ---
 
 ## Why I'm Reading This
@@ -75,3 +75,65 @@ $$
 2. Result $225$
 3. Add back complement so $32$
 4. Result $257$
+
+---
+# Chapter 2
+
+## 2 By 1 Multiplication
+
+$$
+\begin{array}{r}
+42 & \ (40+2) \\ 
+\times7 \\
+\hline
+40\times7=280\\
+2\times7=+14\\
+\hline
+294
+
+
+\end{array}
+$$
+- Same concept of breaking up from left to right
+- Make sure to add 0's based on digit place
+- Multiplication with 5 is easier since ends in 0 or 5
+
+## Rounding Up
+- Rounding helps but only when rounding numbers that end with an 8 or 9
+### Normal
+$$
+\begin{array}{r}
+69 & \ (60+9) \\ 
+\times 6 \\
+\hline
+60\times6=360\\
+9\times6=+54\\
+\hline
+414
+\end{array}
+$$
+### Rounded Up 9
+$$
+\begin{array}{r}
+69 & \ (70-1) \\ 
+\times 6 \\
+\hline
+70\times6=420\\
+-1\times6=-6\\
+\hline
+414
+\end{array}
+$$
+### Rounded Up 8
+$$
+\begin{array}{r}
+78 & \ (80-2) \\ 
+\times9 \\
+\hline
+80\times9=720\\
+-2\times9=-18\\
+\hline
+702
+\end{array}
+$$
+

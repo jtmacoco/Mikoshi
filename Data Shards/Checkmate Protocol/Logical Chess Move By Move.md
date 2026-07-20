@@ -32,3 +32,8 @@ To improve chess skills and strategy
 	- Move each piece only once in the opening
 - Castle early in the game, preferably on kingside
 - Develop all pieces before starting any combinations 
+- Try not to move pawns in from of the castled king
+- Develop with a threat whenever possible
+
+---
+## Game 2 Liubarski - Soultanbeiff
