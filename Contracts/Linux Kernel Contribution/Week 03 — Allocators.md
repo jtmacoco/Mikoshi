@@ -19,3 +19,8 @@ status: on-contract
 # Monday
 
 ## Solution
+
+- CPU read memory in fixed size chunks (8 byte chunks on a 64 bit machine)
+- Reason for offset is to prevent fetching multiple chunks
+- Ex: Here's a concrete way to think about it: CPUs read memory in fixed-size chunks (say, 8-byte chunks on a 64-bit machine) — like reading a book one full line at a time, not one character at a time. If a `double` (8 bytes) starts at address 3, then those 8 bytes span _across_ two different 8-byte chunks (bytes 3–7 are in one chunk, bytes 8–10 are in the next chunk)
+ //NEXT
