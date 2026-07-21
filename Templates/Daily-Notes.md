@@ -1,8 +1,8 @@
 # TODO
 - [ ] Read
 - [ ] Practice C
+- [ ] Practice CUDA
 - [ ] Mental Math
-- [ ] Chess
 - [ ] Leetcode
 
 # Shard Log

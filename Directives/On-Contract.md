@@ -11,3 +11,4 @@ created: 2026-07-04
 - [ ] Organize Academy Section #academic ⏬
 - [x] Linux Kernel Contribution Week 2 #programming ⏫ ✅ 2026-07-19
 - [ ] Linux Kernel Contribution Week 3⏫ 
+- [ ] CUDA Refresher Week 1⏫ 
