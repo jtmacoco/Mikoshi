@@ -16,3 +16,6 @@ status: on-contract
 | Fri       | Add block splitting (don't hand out a 4 KB block for a 16-byte request). Write a stress test: random alloc/free loop, assert no corruption.                                             |
 | Sat (lab) | Replace the static buffer with real memory from `mmap(NULL, ..., MAP_ANONYMOUS)`. You now have a toy malloc. Run your stress test under ASan.                                           |
 | Sun       | Rest / catch-up.                                                                                                                                                                        |
+# Monday
+
+## Solution
