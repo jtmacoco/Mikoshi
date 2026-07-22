@@ -7,7 +7,7 @@ tags:
 type: concept
 created: 2026-07-07
 ---
-## What is a Block
+# What is a Block
 
 A block is a group of threads that run together on one SM. Each thread in a block has a unique ID (`threadIdx`), and blocks themselves have an ID too (`blockIdx`), so every thread can figure out its position in the whole grid.
 

@@ -11,7 +11,7 @@ author: Benjamin and Michael Shermer
 subject: mental math
 status: reading
 rating:
-stopped: page 35
+stopped: page 43
 ---
 
 ## Why I'm Reading This
@@ -136,4 +136,8 @@ $$
 702
 \end{array}
 $$
+---
+## 3 By 1 Multiplication
 
+- Same process as the 2 digit but there is an extra 0
+- Difficult part is remember the first sum, with time this will get easier, no trick
