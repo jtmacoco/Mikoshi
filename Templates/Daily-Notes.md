@@ -1,5 +1,5 @@
 # TODO
-- [x] Read ✅ 2026-07-21
+- [ ] Read
 - [ ] Practice C
 - [ ] Practice CUDA
 - [ ] Mental Math
