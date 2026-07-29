@@ -77,14 +77,58 @@ void *arena_alloc(Arena *a,size_t n){
 }
 
 int main(){
-	Arena a;
-	char buffer[1024];
-	arena_init(&a, buffer, 1024);
-	char *test = (char *)arena_alloc(&a, 3);
-	arena_reset(&a);
-	return 0;
+    Arena a;
+    char buffer[1024];
+    arena_init(&a, buffer, 1024);
+
+    printf("buffer base = %p, size = %zu, offset = %zu\n\n",
+           (void *)a.buffer, a.size, a.offset);
+
+    char *p1 = (char *)arena_alloc(&a, 3);
+    char *p2 = (char *)arena_alloc(&a, 5);
+    char *p3 = (char *)arena_alloc(&a, 1);
+
+    printf("\np1=%p p2=%p p3=%p\n", (void *)p1, (void *)p2, (void *)p3);
+    printf("p2 - p1 = %ld (should be >= 3, rounded up to multiple of 8)\n", p2 - p1);
+    printf("p3 - p2 = %ld\n", p3 - p2);
+
+    arena_reset(&a);
+    printf("\nafter reset: offset = %zu (should be 0)\n", a.offset);
+
+    return 0;
 }
 ```
 
+**p1 = arena_alloc(3):**
+
+- offset starts at 0 → `(0+7) & ~7 = 0` (already aligned)
+- p1 = buffer + 0 = `0x7ffe88d36d60` ✓
+- offset becomes 0 + 3 = 3
+
+**p2 = arena_alloc(5):**
+
+- offset is 3 → `(3+7) & ~7 = 10 & ~7 = 8`
+- p2 = buffer + 8 = `0x7ffe88d36d68` ✓ (matches: `d60 + 8 = d68`)
+- offset becomes 8 + 5 = 13
+
+**p3 = arena_alloc(1):**
+
+- offset is 13 → `(13+7) & ~7 = 20 & ~7 = 16`
+- p3 = buffer + 16 = `0x7ffe88d36d70` ✓ (matches: `d60 + 16 = d70`)
+- offset becomes 16 + 1 = 17
+
+```c title=output
+buffer base = 0x7ffe88d36d60, size = 1024, offset = 0
+
+
+p1=0x7ffe88d36d60 p2=0x7ffe88d36d68 p3=0x7ffe88d36d70
+p2 - p1 = 8 (should be >= 3, rounded up to multiple of 8)
+p3 - p2 = 8
+
+after reset: offset = 0 (should be 0)
+```
+
+
 ---
 # Tuesday
+
