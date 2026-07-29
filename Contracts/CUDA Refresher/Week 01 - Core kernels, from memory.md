@@ -207,6 +207,9 @@ So to directly answer: for `cudaMemcpy` purposes, `float A[3][5]` is already fla
 
 ## Solution
 
+>[!danger] Go back
+> Check the grid and block calculation again as to why that size I forgot
+
 ```c
 #include <cuda.h>
 #include <stdio.h>
