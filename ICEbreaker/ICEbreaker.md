@@ -6,6 +6,9 @@ created: 2026-07-04
 ---
 
 ## Overview
+
+Practice for interview questions
+
 ## Unsolved
 
 ```dataview
