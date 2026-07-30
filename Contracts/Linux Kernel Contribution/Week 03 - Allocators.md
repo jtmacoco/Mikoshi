@@ -344,3 +344,46 @@ p->free_list = buffer;  // = 1000
 So `free_list` points at Slot 0 — the head of the chain.
 
 **Why loop to `n-1` and handle the last one separately?** Because each iteration writes "pointer to _next_ slot," and slot 3 has no next slot — it needs to terminate the list with `NULL` instead of pointing off the end of the buffer into garbage memory. If the loop ran the full `n` times, `i=3` would try to compute `base + 4*16 = 1064`, which is one slot past the buffer's actual end — an address you don't own.
+
+# Wednesday
+
+## Solution
+
+```c
+#include <stdio.h>
+
+#define POOL_SIZE 1024
+static char memory_pool[POOL_SIZE];
+
+
+typedef struct block_header{
+	struct block_header *next;
+	size_t size;
+} block_header;
+
+block_header *free_list;
+void init(void){
+	free_list = (block_header *)memory_pool;
+	free_list->size = POOL_SIZE - sizeof(block_header);
+	free_list->next = NULL;
+}
+void *my_malloc(size_t n){
+	block_header *cur = free_list;
+	while (cur){
+		if(cur->size >= n){
+			return (void *)(cur+1);
+		}
+		cur = cur->next;
+	}
+	return NULL;
+}
+int main(){
+	init();
+	int *test = my_malloc(sizeof(int)*4);
+	test[0] = 2;
+	printf("Free List Allocator\n");
+	printf("test: %d\n",test[0]);
+}
+```
+//NEXT
+still need to finish moving the pointer so setting up the linked list

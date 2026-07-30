@@ -292,3 +292,53 @@ int main() {
   return 0;
 }
 ```
+
+# Wednesday
+
+>[!danger] GO BACK
+> I only kind of understood this code I need to go back and take better notes before moving on
+
+## Solution
+
+```c
+#include <cuda.h>
+#include <stdio.h>
+__device__ float warpSum(float var) {
+  unsigned mask = 0xffffffff;
+  for (int diff = warpSize / 2; diff > 0; diff /= 2) {
+    var += __shfl_down_sync(mask, var, diff);
+  }
+  return var;
+}
+__global__ void warpSumKernel(float *in, float *out) {
+  int tid = blockDim.x * blockIdx.x + threadIdx.x;
+  float val = in[tid];
+  float sum = warpSum(val);
+  if (threadIdx.x % warpSize == 0) {
+    out[tid / warpSize] = sum;
+  }
+}
+
+int main() {
+  const int N = 256;
+  const int threadsPerBlock = 256;
+  const int numBlocks = (N + threadsPerBlock - 1) / threadsPerBlock;
+  const int WARP_SIZE = 32;
+  const int numWarps = (N + WARP_SIZE - 1) / WARP_SIZE;
+  float h_in[N];
+  for (int i = 0; i < N; i++)
+    h_in[i] = 1.0f; // test data
+  float *d_in, *d_out;
+  cudaMalloc((void **)&d_in, N * sizeof(float));
+  cudaMalloc((void **)&d_out, numWarps * sizeof(float));
+  cudaMemcpy(d_in, h_in, sizeof(float) * N, cudaMemcpyHostToDevice);
+  warpSumKernel<<<numBlocks, threadsPerBlock>>>(d_in, d_out);
+  float h_out[8]; // numWarps for N=256, threadsPerBlock=256 → 8 warps
+  cudaMemcpy(h_out, d_out, numWarps * sizeof(float), cudaMemcpyDeviceToHost);
+
+  for (int i = 0; i < numWarps; i++)
+    printf("warp %d sum: %f\n", i, h_out[i]);
+
+  return 0;
+}
+```
