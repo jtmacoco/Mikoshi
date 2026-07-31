@@ -368,12 +368,23 @@ void init(void){
 	free_list->next = NULL;
 }
 void *my_malloc(size_t n){
-	block_header *cur = free_list;
+	block_header *cur  = free_list;
+	block_header *prev = NULL;
+	size_t needed = sizeof(block_header) + 1;
 	while (cur){
-		if(cur->size >= n){
+		if(cur->size >= n+needed){
+			block_header *new_free = (block_header *)((char *)(cur+1)+n);//calculate the address
+			new_free->size = cur->size - n - sizeof(block_header);//calculate how much memory left over,
+			new_free->next = cur->next;
+			if (prev == NULL) free_list=new_free;
+			else prev->next = new_free;
+
 			return (void *)(cur+1);
 		}
-		cur = cur->next;
+		else{
+			prev = cur;
+			cur = cur->next;
+		}
 	}
 	return NULL;
 }
@@ -385,5 +396,253 @@ int main(){
 	printf("test: %d\n",test[0]);
 }
 ```
-//NEXT
-still need to finish moving the pointer so setting up the linked list
+
+- `cur->size` describes how many bytes there are right and with that we can calculate the address space
+- Currently shrinks the address space doesn't create any new blocks
+- `block_header *new_free = (block_header *)((char *)(cur+1)+n)` calculates the address
+
+### Example
+
+**Step 0: After `init()`**
+
+```
+free_list -> [Header @ 1000: size=1008, next=NULL]
+```
+
+One block. Usable space is bytes `1016`–`2023`.
+
+**Step 1: First call — `my_malloc(8)`**
+
+```c
+cur = free_list;      // cur = 1000
+prev = NULL;
+```
+
+Check: `cur->size (1008) >= 8 + 17` → true, split.
+
+```c
+new_free = (cur+1) + 8 = 1016 + 8 = 1024
+new_free->size = 1008 - 8 - 16 = 984
+new_free->next = cur->next = NULL       // Block A's next was NULL, so this stays NULL
+free_list = new_free;                   // since prev == NULL
+return (cur+1) = 1016;                  // caller gets 8 bytes at 1016
+```
+
+**State after call 1:**
+
+```
+[old header, orphaned][8 bytes: given to caller][new header @1024: size=984, next=NULL]
+    @1000                  @1016                        @1024
+
+free_list -> [Header @1024: size=984, next=NULL]
+```
+
+Still just **one block in the free list** — it just moved from address `1000` to `1024`, and shrank. Nothing points to `1000` anymore; that memory is "spoken for" by the caller.
+
+**Step 2: Second call — `my_malloc(8)` again**
+
+```c
+cur = free_list;      // cur = 1024
+prev = NULL;
+```
+
+Check: `cur->size (984) >= 8 + 17` → true, split again.
+
+```c
+new_free = (cur+1) + 8 = (1024+16) + 8 = 1048
+new_free->size = 984 - 8 - 16 = 960
+new_free->next = cur->next = NULL      // again, was NULL
+free_list = new_free;                  // prev == NULL again
+return (cur+1) = 1040;                 // caller gets 8 bytes at 1040
+```
+
+**State after call 2:**
+
+```
+free_list -> [Header @1048: size=960, next=NULL]
+```
+
+Still one block! It keeps sliding forward and shrinking, because every call so far has been splitting off from the _front_ of the list, and `next` has stayed `NULL` the whole time since there was never a second block to link to.
+
+**So when would you actually get a real 2+ block list, where `cur->next` is non-`NULL`?**
+
+That requires **freeing** memory (which sounds like part 2 of your assignment) — e.g., if you `my_free()` the block from call 1 (the 8 bytes at `1016`), that freed chunk gets _inserted back_ into the free list, typically at the front:
+
+```c
+freed_block->next = free_list;   // freed_block now points at whatever the head currently is
+free_list = freed_block;         // and becomes the new head
+```
+
+_That's_ the moment `next` becomes non-`NULL` for the first time — because now there are genuinely two separate free regions (the newly-freed 8-byte chunk, and the big remaining pool), linked together.
+
+So to be accurate: with only `my_malloc`/splitting and no `my_free` yet, your free list will actually always stay at exactly **one block** (just sliding and shrinking) — my earlier "Block A / Block B" example was really describing what happens _after_ freeing gets added. Does that make sense — that splitting alone doesn't grow the list, only freeing (re-inserting freed nodes) does?
+
+### How Prev works
+
+lose, but let's untangle one part — "new_free" isn't "the block we're going to malloc," it's the _opposite_: it's the **leftover free space** after we take memory out for the malloc. Let's trace `prev` concretely using the two-block list you just built.
+
+**Recall the state after `my_free(a)`:**
+
+```
+free_list (1000) -> [Block1: size=16, next=1032] -> [Block2: size=976, next=NULL] -> NULL
+```
+
+**Now call `my_malloc(500)`** — too big for Block1 (16 bytes), so first-fit has to walk past it to Block2.
+
+```c
+cur = free_list;   // cur = 1000 (Block1)
+prev = NULL;
+```
+
+**Iteration 1:** `cur->size (16) >= 500 + needed`? No. So:
+
+```c
+prev = cur;        // prev = 1000  (remembering Block1, since we're passing over it)
+cur = cur->next;   // cur = 1032   (move to Block2)
+```
+
+**Iteration 2:** `cur->size (976) >= 500 + needed`? Yes — found our fit. Now `cur = 1032` (Block2) is the block we're allocating from, and `prev = 1000` (Block1) is the block _right before it in the list_.
+
+Here's the key thing `prev` is for: **Block1's `next` field currently says `1032`** (pointing at Block2). We're about to replace Block2 with a _smaller_ free block (`new_free`) at some new address — say `1032 + 500 + 16 = 1548`. If nothing updates Block1's `next`, Block1 would still say `next = 1032` — pointing at a stale address that's about to become part of the _allocated_ region, not a free block anymore. That would corrupt the list.
+
+So:
+
+```c
+new_free = (cur+1) + 500 = ...;   // = 1548, the LEFTOVER free space, not the malloc'd part
+new_free->size = 976 - 500 - 16;
+new_free->next = cur->next;        // = Block2's old next, which was NULL
+```
+
+And now the relinking — this is where `prev` gets used:
+
+```c
+if (prev == NULL) free_list = new_free;
+else prev->next = new_free;        // prev = Block1, so: Block1->next = 1548
+```
+
+Since `prev` is `1000` (not `NULL`), we take the `else` branch: **Block1's `next` field gets updated from `1032` to `1548`** — pointing at the new leftover free block instead of the stale, now-allocated address.
+
+**Result:**
+
+```
+free_list (1000) -> [Block1: size=16, next=1548] -> [new_free @1548: size=460, next=NULL] -> NULL
+```
+
+**So to correct your phrasing:** `prev` isn't about "the block we're going to malloc" — `cur` is that block (the one satisfying the request). `prev` is simply "whichever block came _right before `cur`_ in the chain" (or `NULL` if `cur` was the head). Its whole job is: after `cur` gets consumed/split, `prev` is the thing whose `next` field needs to be _redirected_ — either to `new_free` (the leftover piece), or to `cur->next` (if `cur` is fully consumed with no split) — so the chain doesn't end up pointing at stale/invalid addresses.
+
+"Attaching the chain" — yes, that's a good way to put it, as long as we're precise about _what's_ getting reattached to _what_.
+
+Think of the free list as a physical chain of blocks linked by pointers. When you remove/shrink a link in the middle of that chain (`cur`), the link _before_ it (`prev`) is the one holding onto it — so if you don't update `prev`'s grip, it's left holding onto something that's no longer valid (either fully allocated now, or replaced by a smaller leftover piece at a different address).
+
+So `prev->next = new_free` is literally: **"detach `prev` from `cur`, and reattach it to `new_free` instead."** The chain has to stay unbroken — every node needs to correctly point at whatever the _actual next free block_ is, otherwise a future `my_malloc` walking the list would either miss a valid free block, or worse, get send off to a bad address.
+
+One more precision, since it matters: `prev` is only relevant when `cur` **isn't** the head of the list. If `cur` _is_ the head (`prev == NULL`), there's no `prev` link to reattach — instead you update `free_list` itself, since that's the thing "holding onto" `cur` in that case. That's the whole reason for the `if/else`:
+
+```c
+if (prev == NULL) free_list = new_free;   // cur was the head — the list's front pointer needs updating
+else prev->next = new_free;                // cur was mid-chain — the block before it needs updating
+```
+
+Both branches are doing the same conceptual thing — "make whatever was pointing at `cur` now point at `new_free` instead" — just via two different variables, depending on whether that "whatever" is the global `free_list` pointer or another block's `next` field.
+
+# Thursday
+
+## Solution
+
+```c
+#include <stdio.h>
+
+#define POOL_SIZE 1024
+static char memory_pool[POOL_SIZE];
+
+
+typedef struct block_header{
+	struct block_header *next;
+	size_t size;
+} block_header;
+
+block_header *free_list;
+void init(void){
+	free_list = (block_header *)memory_pool;
+	free_list->size = POOL_SIZE - sizeof(block_header);
+	free_list->next = NULL;
+}
+void *my_malloc(size_t n){
+	block_header *cur  = free_list;
+	block_header *prev = NULL;
+	size_t needed = sizeof(block_header) + 1;
+	while (cur){
+		if(cur->size >= n+needed){
+			block_header *new_free = (block_header *)((char *)(cur+1)+n);//calculate the address
+			new_free->size = cur->size - n - sizeof(block_header);//calculate how much memory left over, ur->size describes how many bytes there are right and with that we can calculate the address space?
+			new_free->next = cur->next;
+			if (prev == NULL) free_list=new_free;
+			else prev->next = new_free;
+
+			cur->size = n;
+			return (void *)(cur+1);
+		}
+		else{
+			prev = cur;
+			cur = cur->next;
+		}
+	}
+	return NULL;
+}
+void my_free(void *ptr){
+	block_header *bh = (block_header *)ptr-1;//-1 since currently points one over in malloc
+	bh->next = free_list;//bh->next, set the next value to what ever free list is
+	free_list = bh;//set free_list to bh
+	//bh->free_list
+
+}
+int main(){
+	init();
+	int *test = my_malloc(sizeof(int)*4);
+	test[0] = 2;
+	printf("Free List Allocator\n");
+	printf("test: %d\n",test[0]);
+}
+```
+
+- `my_free` recovers the original header address from the pointer the caller has. If `a` points to `1016` (the malloc'd data), the header is always exactly `sizeof(block_header)` bytes before it — `1016 - 16 = 1000`. This works via `(block_header*)ptr - 1`, where `-1` in pointer arithmetic on a `block_header*` automatically means "-sizeof(block_header) bytes," not "-1 byte" — that's just how pointer arithmetic scales by type. This walk-back distance is _always_ one header's size, regardless of how big `n` was — it's not related to the malloc'd size at all. Once we have `bh` (= 1000), we insert it at the front of the free list: `bh->next = free_list` makes it point at whatever was previously the head (Block2 @ 1032), then `free_list = bh` makes it the new head.
+
+### Example
+
+**State right before `my_free(a)` runs** (continuing the trace from before):
+
+```
+addr 1000-1015: header (orphaned — nothing points to it right now)
+addr 1016-1031: a's 16 bytes (still allocated, caller has this pointer)
+addr 1032-1047: header, size=976, next=NULL   <- free_list points HERE
+addr 1048-2023: 976 bytes of free usable space
+```
+
+So right now, `free_list = 1032`. This is a **header**, not raw data — it has a `size` field and a `next` field.
+
+**Now `my_free(a)` runs:**
+
+
+```c
+bh = (block_header*)a - 1;   // bh = 1016 - 16 = 1000
+bh->next = free_list;         // bh->next = 1032
+free_list = bh;                // free_list = 1000
+```
+
+Let's be precise about that middle line: `bh->next = free_list` doesn't mean "bh points at 16 bytes of usable data" — it means the `next` _field_ inside the header at `1000` now stores the value `1032`, which is the **address of another header**. That's it — one pointer field getting one address written into it.
+
+**State after `my_free(a)`:**
+
+```
+free_list = 1000
+
+[Header @1000: size=16, next=1032] -> [Header @1032: size=976, next=NULL] -> NULL
+        ^ freed block                      ^ the block that was never touched
+```
+
+So to directly answer your question: **yes, you now have two blocks in the list** — but not because freeing "created" a new block out of nowhere. It's because:
+
+- The block at `1032` (976 bytes) existed the whole time, untouched since Step 1's split.
+- The block at `1000` (16 bytes) is the _same block `a` was allocated from_ — it's just being _returned_ to the list, not newly made.
+
+Both were always distinct regions of memory (`1000`-`1015`+data vs `1032`-`1047`+data) — freeing just re-attached the first one back into the chain via its `next` pointer, so now walking `free_list` visits two separate headers instead of one.
