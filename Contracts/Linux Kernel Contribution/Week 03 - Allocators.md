@@ -647,7 +647,9 @@ So to directly answer your question: **yes, you now have two blocks in the list*
 
 Both were always distinct regions of memory (`1000`-`1015`+data vs `1032`-`1047`+data) — freeing just re-attached the first one back into the chain via its `next` pointer, so now walking `free_list` visits two separate headers instead of one.
 # Friday
+
 - Already done block splitting in Thursday so look there
+# Solution
 ```c
 #include <stdio.h>
 
