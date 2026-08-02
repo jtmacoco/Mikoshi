@@ -32,6 +32,7 @@ const chapters = {
     sections: [
       { op: "mult", digitsA: 2, digitsB: 1, count: 10 },
       { op: "mult", digitsA: 3, digitsB: 1, count: 8 },
+	  { op: "square", digitsA: 2, count: 7 },
     ]
   },
   3: {
@@ -74,6 +75,6 @@ const chapters = {
 };
 
 // ====== CHANGE ONLY THIS LINE TO SWITCH CHAPTERS ======
-const config = chapters[1];
+const config = chapters[2];
 ```
 

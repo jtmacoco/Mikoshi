@@ -11,7 +11,7 @@ author: Benjamin and Michael Shermer
 subject: mental math
 status: reading
 rating:
-stopped: page 43
+stopped: page 53
 ---
 
 ## Why I'm Reading This
@@ -141,3 +141,28 @@ $$
 
 - Same process as the 2 digit but there is an extra 0
 - Difficult part is remember the first sum, with time this will get easier, no trick
+
+## Squaring Two Digit Numbers
+
+- So you try to round a value to it's nearest 10
+
+Ex:
+```mermaid
+flowchart LR
+    A["41²"] -->|"+1"| B["42"]
+    A -->|"−1"| C["40"]
+    B --> D["1680 + 1² = 1681"]
+    C --> D
+```
+
+```mermaid
+flowchart LR
+    A["77²"] -->|"+3"| B["80"]
+    A -->|"−3"| C["74"]
+    B --> D["5920 + 3² = 5929"]
+    C --> D
+```
+
+
+- Notice how we add a number to make it whole 
+- Then that number we add just square since 1 digit is easy

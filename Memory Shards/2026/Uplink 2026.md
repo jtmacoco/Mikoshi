@@ -4,3 +4,4 @@
 # Month
 - [[Sector 06]]
 - [[Sector 07]]
+- [[Sector 08]]
