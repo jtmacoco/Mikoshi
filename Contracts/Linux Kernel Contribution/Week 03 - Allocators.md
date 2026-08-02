@@ -646,3 +646,70 @@ So to directly answer your question: **yes, you now have two blocks in the list*
 - The block at `1000` (16 bytes) is the _same block `a` was allocated from_ — it's just being _returned_ to the list, not newly made.
 
 Both were always distinct regions of memory (`1000`-`1015`+data vs `1032`-`1047`+data) — freeing just re-attached the first one back into the chain via its `next` pointer, so now walking `free_list` visits two separate headers instead of one.
+# Friday
+- Already done block splitting in Thursday so look there
+```c
+#include <stdio.h>
+
+#define POOL_SIZE 1024
+static char memory_pool[POOL_SIZE];
+
+
+typedef struct block_header{
+	struct block_header *next;
+	size_t size;
+} block_header;
+
+block_header *free_list;
+void init(void){
+	free_list = (block_header *)memory_pool;
+	free_list->size = POOL_SIZE - sizeof(block_header);
+	free_list->next = NULL;
+}
+void *my_malloc(size_t n){
+	block_header *cur  = free_list;
+	block_header *prev = NULL;
+	size_t needed = sizeof(block_header) + 1;
+	while (cur){
+		if(cur->size >= n+needed){
+			block_header *new_free = (block_header *)((char *)(cur+1)+n);//calculate the address
+			new_free->size = cur->size - n - sizeof(block_header);//calculate how much memory left over, ur->size describes how many bytes there are right and with that we can calculate the address space?
+			new_free->next = cur->next;
+			if (prev == NULL) free_list=new_free;
+			else prev->next = new_free;
+
+			cur->size = n;
+			return (void *)(cur+1);
+		}
+		else if(cur->size >= n){
+			// not enough for a leftover block, but the whole block fits n
+			// just hand out the whole block (a little internal fragmentation)
+			if (prev == NULL) free_list = cur->next;
+			else prev->next = cur->next;
+			return (void *)(cur+1);
+		}
+		else{
+			prev = cur;
+			cur = cur->next;
+		}
+	}
+	return NULL;
+}
+void my_free(void *ptr){
+	block_header *bh = (block_header *)ptr-1;//-1 since currently points one over in malloc
+	bh->next = free_list;//bh->next, set the next value to what ever free list is
+	free_list = bh;//set free_list to bh
+	//bh->free_list
+
+}
+int main(){
+	init();
+	int *test = my_malloc(sizeof(int)*4);
+	test[0] = 2;
+	printf("Free List Allocator\n");
+	printf("test: %d\n",test[0]);
+}
+
+```
+- The change is on lines 33 with the else if statement
+- Basically if there is room for the requested bytes in the block but not enough room for the header still allocate the memory since there is enough room
