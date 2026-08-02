@@ -649,7 +649,7 @@ Both were always distinct regions of memory (`1000`-`1015`+data vs `1032`-`1047`
 # Friday
 
 - Already done block splitting in Thursday so look there
-# Solution
+## Solution
 ```c
 #include <stdio.h>
 
@@ -715,3 +715,118 @@ int main(){
 ```
 - The change is on lines 33 with the else if statement
 - Basically if there is room for the requested bytes in the block but not enough room for the header still allocate the memory since there is enough room
+# Saturday
+## Solution
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
+#include <sys/mman.h>
+
+#define POOL_SIZE 1024
+#define NUM_PTRS 50
+static char memory_pool[POOL_SIZE];
+
+
+typedef struct block_header{
+	struct block_header *next;
+	size_t size;
+} block_header;
+
+block_header *free_list;
+void init(void){
+	free_list = mmap(NULL,POOL_SIZE,PROT_READ|PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+	if (free_list == MAP_FAILED){
+		perror("mmap");
+		exit(1);
+	}
+	free_list->size = POOL_SIZE - sizeof(block_header);
+	free_list->next = NULL;
+}
+void *my_malloc(size_t n){
+	block_header *cur  = free_list;
+	block_header *prev = NULL;
+	size_t needed = sizeof(block_header) + 1;
+	while (cur){
+		if(cur->size >= n+needed){
+			block_header *new_free = (block_header *)((char *)(cur+1)+n);//calculate the address
+			new_free->size = cur->size - n - sizeof(block_header);//calculate how much memory left over, ur->size describes how many bytes there are right and with that we can calculate the address space?
+			new_free->next = cur->next;
+			if (prev == NULL) free_list=new_free;
+			else prev->next = new_free;
+
+			cur->size = n;
+			return (void *)(cur+1);
+		}
+		else if(cur->size >= n){
+			// not enough for a leftover block, but the whole block fits n
+			// just hand out the whole block (a little internal fragmentation)
+			if (prev == NULL) free_list = cur->next;
+			else prev->next = cur->next;
+			return (void *)(cur+1);
+		}
+		else{
+			prev = cur;
+			cur = cur->next;
+		}
+	}
+	return NULL;
+}
+void my_free(void *ptr){
+	block_header *bh = (block_header *)ptr-1;//-1 since currently points one over in malloc
+	bh->next = free_list;//bh->next, set the next value to what ever free list is
+	free_list = bh;//set free_list to bh
+	//bh->free_list
+
+}
+int main(){
+    init();
+    srand(time(NULL));
+
+    void *ptrs[NUM_PTRS] = {0};
+    size_t sizes[NUM_PTRS] = {0};
+
+    printf("Free List Allocator Stress Test\n");
+
+    for (int round = 0; round < 200; round++){
+        int i = rand() % NUM_PTRS;
+
+        if (ptrs[i] == NULL){
+            // allocate a random size
+            size_t n = (rand() % 40) + 1;
+            void *p = my_malloc(n);
+            if (p){
+                memset(p, 0xAA, n);      // fill it, so ASan/overflow shows up on next block
+                ptrs[i] = p;
+                sizes[i] = n;
+            }
+            // p == NULL is expected sometimes (pool exhausted/fragmented) — not a bug by itself
+        } else {
+            // verify the fill pattern is intact before freeing (catches corruption)
+            unsigned char *bytes = (unsigned char *)ptrs[i];
+            for (size_t k = 0; k < sizes[i]; k++){
+                if (bytes[k] != 0xAA){
+                    printf("CORRUPTION at ptrs[%d], byte %zu\n", i, k);
+                }
+            }
+            my_free(ptrs[i]);
+            ptrs[i] = NULL;
+        }
+    }
+
+    // free anything still outstanding
+    for (int i = 0; i < NUM_PTRS; i++){
+        if (ptrs[i]) my_free(ptrs[i]);
+    }
+
+    printf("Stress test complete\n");
+    return 0;
+}
+```
+
+- Simple stress test
+- `mmap` is a system call that gets memory basically
+- `mmap` is like fundamental way programmers grab memory from the oss 
+- Your process doesn't inherently "own" a big blob of RAM. Instead, it has a _virtual address space_, and different regions of that space get mapped to actual physical memory (or files) by the kernel. `mmap` is how you ask the kernel to create one of these mappings.
+- `mmap` happens at run time

@@ -342,3 +342,40 @@ int main() {
   return 0;
 }
 ```
+
+### **The mask**:
+
+`0xffffffff` is used to tell which threads are participating in the `__shfl_down_sync` since a warp consist of 32 threads. The mask in binary is just 32 ones s so `11111111111111111111111111111111` which means all 32 lanes in this warp are active and taking part.
+
+### The reduction loop
+
+- Think of the 32 threads in a warp sitting in a row, each holding one number. Goal: add them all together, ending with lane 0 holding the total.
+- `__shfl_down_sync(mask, var, diff)` means: "grab the value called `var` from the thread `diff` lanes _ahead_ of me, and hand it to me directly through a register — no shared memory needed."
+- Walk through it with `diff` starting at 16:
+
+	- Lane 0 grabs lane 16's value, adds it to its own.
+	- Lane 1 grabs lane 17's value, adds it to its own.
+	- ...
+	- Lane 15 grabs lane 31's value, adds it to its own.
+	- Lanes 16–31 also do a shuffle (grabbing from lanes 32–47, which don't exist) but their results don't matter anymore — we only care about lanes 0–15 going forward.
+- Now `diff` becomes 8 (next iter):
+	- Lane 0 grabs lane 8 (which already holds lane8+lane24's sum), adds it in.
+	- Lane 1 grabs lane 9, etc.
+- It's like a knockout bracket: round 1 pairs up 32 into 16 sums, round 2 pairs those into 8, and so on — except instead of writing to shared memory and syncing between rounds, `__shfl_down_sync` passes values directly register-to-register, which is why this is faster than the shared-memory version once you're down to a single warp.
+
+- **Why `threadIdx.x % warpSize == 0`**
+- Only lane 0 of each warp ends up with the meaningful total (every other lane also has _a_ value after the loop, but it's just a partial sum, not the full warp sum). So only thread 0, 32, 64, ... within each block actually writes to `out`.
+
+### Interesting note about branches
+
+As a hex value that's whatever those specific bits happen to pack into — not a clean "half the warp" pattern like `0x0000ffff` unless the data genuinely worked out that way.
+
+**The key point: you don't write this mask by hand.** You can't know at compile time which lanes will pass `val > 0` — it depends on the actual data at runtime. That's exactly what `__activemask()` is for:
+
+```c
+if (val > 0) { unsigned mask = __activemask(); // asks hardware: "who's actually here right now?" sum += __shfl_down_sync(mask, val, diff); }
+```
+
+`__activemask()` is called _after_ the divergent branch, from inside it — so it returns precisely the bitmask of lanes that took this path, whatever that turned out to be. You're not constructing the mask from logic about the condition; you're asking the hardware to report which lanes are currently standing in the room with you.
+
+So to directly answer "would you split it 16/16" — no, there's no deliberate splitting at all. The mask is a _report_ of an outcome (how many lanes happened to satisfy the branch), not a _plan_ you design (like "let's put half in each group").
