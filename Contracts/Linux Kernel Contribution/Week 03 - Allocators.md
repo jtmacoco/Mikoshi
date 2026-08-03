@@ -4,7 +4,7 @@ source: "[[Contracts]]"
 tags:
   - contract
 created: 2026-07-19
-status: on-contract
+status: completed
 ---
 
 | Day       | Task (≈30 min)                                                                                                                                                                          |
