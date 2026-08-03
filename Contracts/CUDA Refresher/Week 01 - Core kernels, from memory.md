@@ -295,9 +295,6 @@ int main() {
 
 # Wednesday
 
->[!danger] GO BACK
-> I only kind of understood this code I need to go back and take better notes before moving on
-
 ## Solution
 
 ```c
