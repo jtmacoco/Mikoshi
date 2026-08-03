@@ -26,3 +26,4 @@ Tracking items
 - [ ] Backpack Herschel one
 - [ ] Work pants/jeans 
 - [ ] Motorcycle gear
+- [ ] Vacuum for car
