@@ -11,3 +11,10 @@ created: 2026-07-04
 ### June
 
 - [x] Linux Kernel Contribution Week 1 #contract
+
+### July
+- [x] Linux Kernel Contribution Week 2 #contract  #programming ⏫ ✅ 2026-07-19
+
+### August
+- [x] Linux Kernel Contribution Week 3  #contract #programming ⏫ ✅ 2026-08-02
+- [x] CUDA Refresher Week 1 #programming ⏫ ✅ 2026-08-02

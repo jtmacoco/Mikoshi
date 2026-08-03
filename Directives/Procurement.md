@@ -24,4 +24,5 @@ Tracking items
 ## Core Dependencies
 
 - [ ] Backpack Herschel one
-- [ ] Work pants
+- [ ] Work pants/jeans 
+- [ ] Motorcycle gear
