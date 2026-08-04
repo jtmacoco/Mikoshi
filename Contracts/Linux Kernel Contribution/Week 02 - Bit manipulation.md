@@ -3,6 +3,7 @@ title: C
 source: "[[Linux Kernel Contribution]]"
 tags:
   - linux
+  - completed
 created: 2026-07-04
 status: completed
 ---

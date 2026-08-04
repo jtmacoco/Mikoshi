@@ -2,12 +2,12 @@
 title: Kernel-idiom data structures
 source: "[[Contracts]]"
 tags:
-  - contract
+  - on-contract
 created: 2026-08-02
 status: on-contract
-client:
+client: personal
 deadline:
-stack:
+stack: C
 ---
 
 ## Objective
@@ -23,15 +23,115 @@ stack:
 | Sat (lab) | Read [`include/linux/list.h`](https://github.com/torvalds/linux/blob/master/include/linux/list.h) top to bottom — you'll understand all of it now. Compare with yours.                               |
 | Sun       | Rest / catch-up. Phase 1 done — you now write C the way the kernel does.                                                                                                                             |
 
-## Stack / Tools
-
-
 ## Progress Log
 
 - 2026-08-02: Contract initialized
 
+# Monday 
+
+## Solution
+
 ## Notes
+- Should return a pointer but instead uses `({})` block with two statments in it, this i GNU extension called **braced group within expression**. The compiler evals the whole block and uses the value of the last statement contained in the block
+- Basically GCC lets us wrap a block in parentheses, so the whole thing acts like one expression 
+- The last statement is the return value
+- `typeof` takes one arg and returns its type so `int`, `double`, etc.
+### Zero Pointer Dereference
 
+```c 
+struct s {
+        char m1;
+        char m2;
+};
 
-## Links
+/* This will print 1 */
+printf("%d\n", &((struct s*)0)->m2);
+```
 
+**The Struct**:
+```c
+struct s {
+    char m1;   // 1 byte, sits at offset 0
+    char m2;   // 1 byte, sits at offset 1
+};
+```
+
+**The Expression**:
+```c
+&((struct s*)0)->m2
+```
+
+**1. `(struct s*)0`**  
+Take the integer `0` and reinterpret it as a `struct s *`. This doesn't read any memory — it's just telling the compiler "pretend there's a `struct s` sitting at address `0`." No struct actually needs to exist there for this cast to happen.
+
+**2. `((struct s*)0)->m2`**  
+This says "get me the `m2` field of the struct at address `0`." If this were actually _evaluated_ (i.e., its value read), the CPU would compute address `0 + offset_of(m2)` = `0 + 1` = `1`, then try to read a byte from memory address `1` — which would crash, since that's not valid memory.
+
+**3. `&(...)`**  
+But we never ask for the _value_ at that address — we ask for the **address itself**, via `&`. And computing an address is just arithmetic: `base_address + offset`. The compiler doesn't need to touch memory location `1` to know its address is `1` — it just does the math:
+
+```C
+address of m2 = address of struct (0) + offset of m2 within struct (1) = 1
+```
+
+No memory read happens. The CPU never tries to access address `1`. It's purely computing a number.
+
+**4. `printf("%d\n", ...)`**  
+So `&((struct s*)0)->m2` evaluates to the pointer value `1` (as an address), and printing it as `%d` just shows the number `1`.
+
+---
+
+## Notes Continued
+
+- `((type *)0)->member` is an expression that, _if actually executed_ (read or write), would try to access address `offset` and crash. But `typeof(...)` never executes it — it only inspects what _type_ the expression would have, entirely at compile time, so no memory access — read or write — ever happens.
+- Think of `typeof` like asking someone "if you _were_ to open that door, what room would be behind it?" — you get the answer without ever actually opening the door.
+- Basically cast 0 as `type *` so whatever that input is then it uses we grab the type of the member from whatever was re-interpreted in the `(type *) 0`
+- `__mptr` is just a variable name the macro invents, not anything special in the language
+
+> [!important] why we need the weird cast 0
+>-   `typeof` needs an expression not a type name
+>-  `typeof` doesn't work on types directly — it works by looking at an **expression** and asking "what type would this expression evaluate to?"
+
+- `offsetof` grabs the offset starting from address 0
+- the `container_of` macro returns the starting address of a struct
+
+To tie the whole thing together end to end:
+
+```c
+#define container_of(ptr, type, member) ({ \
+    const typeof(((type *)0)->member) *__mptr = (ptr); \
+    (type *)((char *)__mptr - offsetof(type, member)); \
+})
+```
+
+1. `__mptr = (ptr)` — store the incoming pointer (which points at some `member` field _inside_ a struct), with type-checking via `typeof`.
+2. `(char *)__mptr - offsetof(type, member)` — take that member's address and walk backward by the member's offset, landing on the struct's starting address.
+3. `(type *)(...)` — cast that address to a proper `type *`, so you get back a correctly-typed pointer to the whole struct.
+4. The `({ ... })` statement-expression makes the **last statement's value** — that final casted pointer — the value the entire macro evaluates to.
+
+That's the whole purpose of the macro: **given a pointer to a member, recover a pointer to the struct that contains it.** This is heavily used in the Linux kernel for things like intrusive linked lists, where a generic `struct list_head` is embedded inside many different larger structs, and you need to get back to "which struct actually owns this list node."
+
+Given a pointer to a field somewhere inside a struct, and knowing what struct type it's supposedly part of and which field it is, walk backward by exactly that field's offset to recover a pointer to the struct itself.
+
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <stddef.h>
+#define container_of(ptr, type, member) ({ \
+	const typeof ( ((type *)0)->member) *__mptr = (ptr); \
+	(type *) ( ( char *)__mptr - offsetof(type, member ) ) ; } )	
+struct s {
+        char m1;
+        char m2;
+};
+int main(){
+	int x = 5;
+	typeof(x) y = 6;
+	printf("%d %d\n", x, y);
+	printf("%d\n", &((struct s*)0)->m2);
+	struct s *s2 = malloc(sizeof (struct s));
+	char *m1_ptr = &s2->m1;//char * since member var is char
+	struct s *s3 = container_of(m1_ptr, struct s, m1);
+	return 0;
+}
+```

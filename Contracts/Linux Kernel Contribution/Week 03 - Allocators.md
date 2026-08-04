@@ -2,7 +2,7 @@
 title: Week 3 — Allocators
 source: "[[Contracts]]"
 tags:
-  - contract
+  - completed
 created: 2026-07-19
 status: completed
 ---

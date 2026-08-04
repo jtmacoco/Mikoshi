@@ -5,9 +5,9 @@ tags:
   - contract
 created: 2026-08-02
 status: on-contract
-client:
+client: personal
 deadline:
-stack:
+stack: C
 ---
 
 ## Objective

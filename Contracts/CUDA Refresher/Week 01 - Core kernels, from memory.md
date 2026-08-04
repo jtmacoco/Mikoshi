@@ -2,7 +2,7 @@
 title: Week 01 - Core kernels, from memory
 source: "[[Contracts]]"
 tags:
-  - contract
+  - completed
 created: 2026-07-20
 status: completed
 client: personal
