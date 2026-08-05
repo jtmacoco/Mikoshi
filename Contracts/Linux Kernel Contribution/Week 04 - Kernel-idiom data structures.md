@@ -135,3 +135,93 @@ int main(){
 	return 0;
 }
 ```
+
+# Tuesday
+
+- Basically this returns the address of the struct right like it's original address. So every node is paired with a task right in this linked list. Then since we grab the original address for each task and print out their values
+
+### Circular Doubly Linked List Visual
+
+```mermaid
+graph LR
+    A["Node A<br/>prev | data | next"]
+    B["Node B<br/>prev | data | next"]
+    C["Node C<br/>prev | data | next"]
+    D["Node D<br/>prev | data | next"]
+
+    A -->|next| B
+    B -->|next| C
+    C -->|next| D
+    D -->|next| A
+
+    B -.->|prev| A
+    C -.->|prev| B
+    D -.->|prev| C
+    A -.->|prev| D
+```
+
+## Solution
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <stddef.h>
+
+#define container_of(ptr, type, member) ({ \
+	const typeof ( ((type *)0)->member) *__mptr = (ptr); \
+	(type *) ( ( char *)__mptr - offsetof(type, member ) ) ; } )
+
+typedef struct list_head{
+	struct list_head *next; 
+	struct list_head *prev;
+} list_head;
+static inline void list_init(list_head *head){
+	head->next = head;
+	head->prev = head;
+}
+/*Do this by hand if need confirmation*/
+static inline void list_add(list_head *head, list_head *new){
+	list_head *next = head->next; // next = head ( not NULL - head points to itself)
+
+	new->prev = head; //A.prev = head
+	new->next = next; //A.next = head (since next was head)
+	next->prev = new; // head->prev = A <-- this is head.prev, since next = head
+	head->next = new; // head.next  = A
+}
+
+static inline void list_add_tail(list_head *head, list_head *new){
+	list_add(head->prev,new);
+}
+static inline void list_del(list_head *entry){
+	list_head *prev = entry->prev;
+	list_head *next = entry->next;
+
+	prev->next = next;
+	next->prev = prev;
+}
+
+typedef struct task{
+	int pid;
+	char name[16];
+	struct list_head node;
+} task;
+
+int main(){
+	list_head tasks; // anchor not embedded in any task
+
+	list_init (&tasks);
+	task t1 = { .pid = 1, .name = "alice"};
+	task t2 = { .pid = 2, .name = "bob"};
+	task t3 = { .pid = 3, .name = "carol"};
+
+	list_add (&tasks, &t1.node);
+	list_add (&tasks, &t2.node);
+	list_add (&tasks, &t3.node);
+
+	list_head *pos;
+	for (pos = tasks.next; pos != &tasks; pos = pos->next){
+		task *t = container_of(pos, task, node);
+		printf("pid=%d, name=%s\n",t->pid,t->name);
+	}
+	return 0;
+}
+```
