@@ -225,3 +225,86 @@ int main(){
 	return 0;
 }
 ```
+
+# Wednesday
+
+- The rule of thumb: **if the thing needs a `type` argument to compute an offset or produce a typed pointer, it has to be a macro. If it only moves `list_head` pointers around, it should be a function.**
+- **Issue 1: You wrapped it in `({ ... })`.** That's a GNU statement-expression (same trick your `container_of` uses) — it's for when a macro needs to _produce a value_, like `container_of` producing a pointer. (I fucked up) 
+- Macros run in preprocessing time 
+```c
+source.c  →  [preprocessor]  →  expanded source (pure C, no macros)  →  [compiler]  →  object code  →  [linker]  →  executable
+```
+- **Rule of thumb:** ask "does this macro need to produce a value I can assign or pass around?" If yes → it needs to be an expression, possibly via `({ })`. If it's meant to expand into control flow (a loop, a branch) that the call site completes with its own body → it should be a bare statement, no `({ })` wrapper.
+- . Plain `( )` (no braces) always means "this is an expression" in C's grammar.
+
+## Solution
+
+```c
+#include <stdio.h>
+#include <stddef.h>
+
+#define container_of(ptr, type, member) ({ \
+	const typeof ( ((type *)0)->member) *__mptr = (ptr); \
+	(type *) ( ( char *)__mptr - offsetof(type, member ) ) ; } )
+
+#define list_for_each(pos, head) \
+    for (pos = (head)->next; pos != (head); pos = pos->next)
+
+#define list_entry(ptr, type, member) container_of(ptr, type, member)
+
+typedef struct list_head{
+	struct list_head *next; 
+	struct list_head *prev;
+} list_head;
+static inline void list_init(list_head *head){
+	head->next = head;
+	head->prev = head;
+}
+/*Do this by hand if need confirmation*/
+static inline void list_add(list_head *head, list_head *new){
+	list_head *next = head->next; // next = head ( not NULL - head points to itself)
+
+	new->prev = head; //A.prev = head
+	new->next = next; //A.next = head (since next was head)
+	next->prev = new; // head->prev = A <-- this is head.prev, since next = head
+	head->next = new; // head.next  = A
+}
+
+static inline void list_add_tail(list_head *head, list_head *new){
+	list_add(head->prev,new);
+}
+static inline void list_del(list_head *entry){
+	list_head *prev = entry->prev;
+	list_head *next = entry->next;
+
+	prev->next = next;
+	next->prev = prev;
+}
+
+typedef struct task{
+	int pid;
+	char name[16];
+	struct list_head node;
+} task;
+
+int main(){
+	list_head tasks; // anchor not embedded in any task
+
+	list_init (&tasks);
+	task t1 = { .pid = 1, .name = "alice"};
+	task t2 = { .pid = 2, .name = "bob"};
+	task t3 = { .pid = 3, .name = "carol"};
+
+	list_add (&tasks, &t1.node);
+	list_add (&tasks, &t2.node);
+	list_add (&tasks, &t3.node);
+
+	list_head *pos;
+
+	list_for_each(pos, &tasks){ 
+		task *t = container_of(pos, task, node);
+		printf("pid=%d, name=%s\n",t->pid,t->name);
+	}
+	return 0;
+}
+```
