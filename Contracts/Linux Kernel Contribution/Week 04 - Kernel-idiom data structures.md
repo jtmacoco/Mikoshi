@@ -310,3 +310,80 @@ int main(){
 ```
 
 # Thursday
+
+- So RB_SIZE is chosen to be a power of 2 since this allows for basic bit arithmetic to handle wrapping around indexs
+
+**Why it works, concretely**
+
+Say `RB_SIZE = 16`. In binary, `16 - 1 = 15 = 0b00001111`.
+
+Now take any index, say `head = 37`. In binary: `37 = 0b00100101`.
+
+```
+   00100101   (37)
+ & 00001111   (15, i.e. RB_SIZE-1)
+ ----------
+   00000101   (5)
+```
+
+`37 & 15 = 5`. And indeed `37 % 16 = 5` too — same answer. The mask just "keeps the low 4 bits and zeroes everything above," which is _exactly_ what mod-16 does, because 16 is `2^4`.
+
+This only works because `size - 1` is a run of all-1-bits (`00001111`), which only happens when `size` itself is a power of two (`16 = 0b00010000`). If `size` were, say, 12, then `size - 1 = 11 = 0b1011` — masking with that does _not_ give you the same result as `% 12`. Try it: `37 & 11 = 1`, but `37 % 12 = 1`... coincidence for that number, but it breaks for others, e.g. `20 & 11 = 0` while `20 % 12 = 8`. So the trick is only valid for power-of-two sizes.
+
+**So to directly answer your question:**
+
+- The array itself is `RB_SIZE` slots (16, 64, 256, whatever) — fixed, chosen up front.
+- `head` and `tail` are just counters that keep incrementing forever (1, 2, 3, ..., 36, 37, 38...) — they do _not_ get rounded or wrapped themselves.
+- Only when you actually touch the array — `rb->buf[rb->head & (RB_SIZE - 1)]` — do you fold that ever-growing counter down into the valid range `[0, RB_SIZE-1]`. That's the "index into the array" step, and masking is a fast way to do that folding _because_ the array size is a power of two.
+
+So: buffer size → power of two (chosen by you). Index value → arbitrary, unbounded, grows freely. Masking → the fast way to map that arbitrary index into the buffer's valid slot range.
+
+## Solution 
+
+```c
+#include <stdint.h>
+#include <stddef.h>
+#include <stdlib.h>
+#include <stdio.h>
+
+#define RB_SIZE 16
+
+typedef struct{
+	uint8_t buf[RB_SIZE];
+	uint32_t head;
+	uint32_t tail;
+} ring_buffer_t;
+static inline int rb_is_full(const ring_buffer_t *rb){
+	return (rb->head - rb->tail) == RB_SIZE;
+}
+static inline int rb_is_empty(const ring_buffer_t *rb){
+	return (rb->head == rb->tail);
+}
+int rb_put(ring_buffer_t *rb, uint8_t data){
+	if (rb_is_full(rb)){return -1;}
+	rb->buf[rb->head & (RB_SIZE-1)] = data;
+	rb->head++;
+	return 0;
+}
+int rb_get(ring_buffer_t *rb, uint8_t *data){
+	if (rb_is_empty(rb)){return -1;}
+	*data = rb->buf[rb->tail & (RB_SIZE-1)];
+	rb->tail++;
+	return 0;
+}
+
+int main(){
+	ring_buffer_t *rb = calloc(1,sizeof(ring_buffer_t));
+	uint8_t data = 10;
+	for (uint8_t i = 0; i < 10; i++)
+		rb_put(rb,i);
+	uint8_t output;
+	rb_get(rb,&output);
+	printf("output: %d\n", output);
+	rb_get(rb,&output);
+	printf("output: %d\n", output);
+}
+```
+
+- `inline` avoids function call overhead
+- 
