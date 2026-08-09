@@ -7,7 +7,7 @@ created: 2026-07-20
 status: completed
 client: personal
 deadline:
-stack:
+stack: cuda
 ---
 
 ## Objective

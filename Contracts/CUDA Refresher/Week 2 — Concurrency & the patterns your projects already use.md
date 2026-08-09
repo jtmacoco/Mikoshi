@@ -7,7 +7,7 @@ created: 2026-08-02
 status: on-contract
 client: personal
 deadline:
-stack: C
+stack: cuda
 ---
 
 ## Objective
