@@ -1,8 +1,9 @@
-# TODO
-- [ ] Read
-- [ ] Practice C
-- [ ] Practice CUDA
-- [x] Mental Math ✅ 2026-08-06
-- [x] Leetcode ✅ 2026-08-06
+# UPDP
+- [ ] Wibg
+- [ ] Uvcdyjch D
+- [ ] Qrbhxjfj GWEF
+- [y] Mhouam Reuk ✅ 2026-08-06
+- [c] Pgfydogf ✅ 2026-08-06
 
-# Shard Log
+# Thbwh Mrl
+M ybx uo wjsee ys ndpi hjsjsk uiit qsh vtvtz gso.

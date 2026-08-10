@@ -15,6 +15,7 @@ A block is a group of threads that run together on one SM. Each thread in a bloc
 - Threads in the same block can share data through `__shared__` memory and sync with `__syncthreads()`.
 - Blocks can never have more than 1024 threads.
 - Blocks run independently of each other — you can't rely on a specific order between blocks, or on one block "seeing" another block's data (unless you go back through global memory).
+- `blockDim.x` tells you how many threads are in the x direction, can work with y and z directions as well
 
 ---
 

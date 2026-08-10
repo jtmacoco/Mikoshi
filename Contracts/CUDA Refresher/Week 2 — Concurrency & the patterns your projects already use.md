@@ -18,7 +18,7 @@ stack: cuda
 | Tue       | Re-read your **N-body sim** force-calculation kernel cold. Same exercise as Thursday last week — note what's fuzzy.                                                                                                                                                                                                                      |
 | Wed       | Re-profile the N-body sim at a couple of particle counts (700 → 20k). Confirm scaling behavior still matches what you originally measured.                                                                                                                                                                                               |
 | Thu       | **Mini-project, part 1:** power-iteration eigenvalue solver. Write a GEMV kernel (matrix-vector multiply), then the normalize step: dot product + norm via warp-shuffle reduction (`__shfl_down_sync`) — this is the warp-primitives review, just applied to something concrete instead of abstract.                                     |
-| Fri       | **Mini-project, part 2:** wrap GEMV + normalize in a loop (repeated multiply-and-normalize converges to the dominant eigenvector/eigenvalue). Add a convergence check (stop when the eigenvalue estimate stops changing). Validate against NumPy's `eigh`/`eig` on a small test matrix.                                                  |
+| Fri       | **Mini-project, part 2:** wrap GEMV + normalize in a loop (repeated multiply-and-normalize converges to the dominant eigenvector/eigenvalue). Add a convergence check (stop when the eigenvalue estimate stops changing). Validate against NumPy's `eigh`/`eig` on a small test matrix.]()                                               |
 | Sat (lab) | Full Nsight Compute pass on your N-body force-calc kernel (occupancy, memory throughput, stall reasons — compute-bound vs memory-bound compared to your GPT-2 kernels), then a quick profile of Friday's power-iteration kernel too — small enough to be fast, but worth seeing whether the GEMV or the reduction dominates the runtime. |
 | Sun       | Rest / catch-up.                                                                                                                                                                                                                                                                                                                         |
 
@@ -158,3 +158,47 @@ int main() {
   return 0;
 }
 ```
+
+# Friday
+
+why `block_reduce_sum` rather than `warpReduceSum`
+- t becomes necessary the moment `blockDim.x > 32`. Say you launch `<<<1, 128>>>` — 4 warps:
+
+```c
+warp 0 (threads 0-31):   warpReduceSum -> lane 0 has warp 0's total
+warp 1 (threads 32-63):  warpReduceSum -> thread 32 has warp 1's total
+warp 2 (threads 64-95):  warpReduceSum -> thread 64 has warp 2's total
+warp 3 (threads 96-127): warpReduceSum -> thread 96 has warp 3's total
+```
+
+Four separate totals, in four separate warps. `__shfl_down_sync` **cannot** combine them — the instruction is scoped to a warp by hardware, it physically cannot read a register in another warp. So if you called only `warpReduceSum` and then did `if (tid == 0) norm = sqrtf(local)`, thread 0 would take the square root of _warp 0's partial only_ — say the sum of the first quarter of the vector — and you'd normalize by a wrong, too-small norm. Silently wrong output, no crash.
+
+`block_reduce_sum` fixes exactly this by adding the cross-warp hop:
+
+
+```c
+__device__ float block_reduce_sum(float val) {
+    __shared__ float warp_sums[32];
+    int lane = threadIdx.x % 32;
+    int warp_id = threadIdx.x / 32;
+
+    val = warp_reduce_sum(val);              // stage 1: within each warp
+    if (lane == 0) warp_sums[warp_id] = val; // each warp posts its total
+    __syncthreads();                          // now all warps' totals visible
+
+    int num_warps = (blockDim.x + 31) / 32;
+    val = (threadIdx.x < num_warps) ? warp_sums[lane] : 0.0f;
+    if (warp_id == 0) val = warp_reduce_sum(val);  // stage 2: warp 0 combines
+    return val;   // valid in thread 0 only
+}
+```
+
+Shared memory is the _only_ channel warps have to communicate, so the pattern is forced: shuffle inside warps (fast, no sync), shared memory between warps (the sync point), shuffle once more to finish.
+
+- So the sequence is:
+
+1. Each thread computes its own partial → private registers, scattered
+2. `warpReduceSum` funnels them → thread 0 has the total
+3. `sqrtf` → thread 0 has the norm
+4. **But phase 2 needs every thread to divide its slice by that norm** → shared memory + `__syncthreads()` to get it out to everyone
+5. Each thread divides its own elements
