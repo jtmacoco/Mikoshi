@@ -2,6 +2,7 @@
 title: Git
 source: "[[Git]]"
 tags:
+  - git
 type: cheatsheet
 created: 2026-08-02
 ---
@@ -11,3 +12,4 @@ created: 2026-08-02
 	- `add`: Action telling Git to create a new shortcut/link
 	- `upstream`: Default name given to the original repo
 	- `[URL]`: Web address of og repo
+	- Used for when forked repo usually 

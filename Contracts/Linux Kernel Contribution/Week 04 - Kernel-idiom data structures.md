@@ -4,7 +4,7 @@ source: "[[Contracts]]"
 tags:
   - on-contract
 created: 2026-08-02
-status: on-contract
+status: completed
 client: personal
 deadline:
 stack: C
