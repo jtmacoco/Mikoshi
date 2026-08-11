@@ -70,15 +70,15 @@
 
 ### Week 5 — Syscalls & file I/O
 
-|Day|Task (≈30 min)|
-|---|---|
-|Mon|`cat` clone using raw `open`/`read`/`write`/`close` (no stdio). Handle short reads correctly.|
-|Tue|Run your cat clone under `strace`. Read every line of output until each syscall makes sense. Then `strace ls` and skim.|
-|Wed|**hexdump utility** like `xxd`: offset column, 16 hex bytes, ASCII column.|
-|Thu|Rewrite the cat clone with `mmap` instead of read. Compare both under strace.|
-|Fri|Parse a binary file format: read a BMP or WAV header into a packed struct (`__attribute__((packed))`), print its fields.|
-|Sat (lab)|`stat` clone: print file size, permissions (decode the mode bits yourself), timestamps. Add error handling with `errno`/`perror` everywhere.|
-|Sun|Rest / catch-up.|
+| Day       | Task (≈30 min)                                                                                                                               |
+| --------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| Mon       | `cat` clone using raw `open`/`read`/`write`/`close` (no stdio). Handle short reads correctly.                                                |
+| Tue       | Run your cat clone under `strace`. Read every line of output until each syscall makes sense. Then `strace ls` and skim.                      |
+| Wed       | **hexdump utility** like `xxd`: offset column, 16 hex bytes, ASCII column.                                                                   |
+| Thu       | Rewrite the cat clone with `mmap` instead of read. Compare both under strace.                                                                |
+| Fri       | Parse a binary file format: read a BMP or WAV header into a packed struct (`__attribute__((packed))`), print its fields.                     |
+| Sat (lab) | `stat` clone: print file size, permissions (decode the mode bits yourself), timestamps. Add error handling with `errno`/`perror` everywhere. |
+| Sun       | Rest / catch-up.                                                                                                                             |
 
 ### Week 6 — Processes & signals
 
