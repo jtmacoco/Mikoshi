@@ -2,7 +2,7 @@
 - [ ] Read
 - [ ] Practice C
 - [ ] Practice CUDA
-- [ ] Mental Math
-- [ ] Leetcode
+- [x] Mental Math ✅ 2026-08-10
+- [x] Leetcode ✅ 2026-08-10
 
 # Shard Log
