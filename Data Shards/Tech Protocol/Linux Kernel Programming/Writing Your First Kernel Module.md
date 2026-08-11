@@ -143,8 +143,13 @@ dev_err(dev, "Failed to read register: %d\n", err);
 ```
 ### Writing to the console
 `printk` output can go to 3 locations
-1. kernel memory log buffer (always)
+1. kernel memory log buffer (always) (dmesg)
 2. non-volatile log files (typical)
-3. console device
+3. console device (like the terminal)
 
 **console**: Is whatever device Linux is using as a primary human interface, it doesn't have to be a screen it can be a cable connecting to another computer
+
+- **teletype terminal**: tty, is a terminal device in Linux, an interface the kernel provides for text base I/O, aka a terminal
+- `sysctl` : A proc-based mechanism, `sysctl` is the mechanism for **reading and modifying kernel parameters at runtime**, without needing to recompile the kernel or reboot the system. It covers things like networking behavior, virtual memory tuning, filesystem limits, security settings, and more.
+
+### Writing output to Raspberry Pi Console
