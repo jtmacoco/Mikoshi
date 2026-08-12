@@ -103,4 +103,6 @@ Not in the `read()` call itself — that call already naturally gives you the co
 n = read(fd, buf, BUF_SIZE);   // ask for up to 4096, get back however many exist
 ```
 
-- ✅ Correct: `write_all(1, buf, n)` — write exactly the `n` bytes that were actually read
+- Correct: `write_all(1, buf, n)` — write exactly the `n` bytes that were actually read
+
+# Tuesday
