@@ -1,6 +1,6 @@
 ---
 title: Git
-source: "[[Git]]"
+source: "[[Quick Hacks]]"
 tags:
   - git
 type: cheatsheet
