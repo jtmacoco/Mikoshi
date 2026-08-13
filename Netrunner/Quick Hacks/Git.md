@@ -301,4 +301,23 @@ git branch <branch1> branch2>^^2^ # go back 2 commits then take the second paren
 
 ```
 
+**`git branch -f <b1> <b2>`**
+
+Force-moves branch `<b1>` to point at wherever `<b2>` (branch, commit hash, `HEAD~2`, etc.) is pointing — no checkout needed.
+
+```bash
+git branch -f main HEAD~3
+```
+
+→ `main` now points 3 commits back from where you currently are.
+
+```bash
+git branch -f main feature
+```
+
+→ `main` now points to the same commit as `feature`.
+
+ Doesn't touch your working directory or `HEAD` — it just relocates the branch pointer. If you're currently _on_ `<b1>`, you won't see the change reflected until you check it out again or move around.
+
+---
 
