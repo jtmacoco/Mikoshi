@@ -161,3 +161,38 @@ exit_group(0)                           = ?
 - `exit_group(0)` — process exits cle
 
 # Wednesday
+
+## Solution
+```c
+#include <unistd.h>
+#include <fcntl.h>
+#include <errno.h>
+#include <stdio.h>
+#define BUF_SIZE 4090
+
+void hexDump(int fd, char *buf){
+	size_t n;
+	unsigned long offset = 0;
+	while((n = read(fd,buf,16))>0){
+		printf("%08lx ", offset);
+		for(int i = 0 ; i < n; i++){
+			printf("%02x ", (unsigned char)buf[i]);
+		}
+		for(int i = 0 ; i < n; i++){
+			printf("%c", (unsigned char)buf[i]);
+		}
+		printf("\n");
+		offset += n;
+	}
+}
+int main(int argc, char **argv){
+	int fd = open(argv[1],O_RDONLY);
+	char buf[BUF_SIZE];
+	hexDump(fd,buf);
+	return 0;
+}
+```
+
+## Notes
+- `read` returns the number of bytes read
+- `write` returns number of bytes written
