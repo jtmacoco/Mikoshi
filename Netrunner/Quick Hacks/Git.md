@@ -6,13 +6,14 @@ tags:
 type: cheatsheet
 created: 2026-08-02
 ---
+**Practice URL**: [learn git branching](https://learngitbranching.js.org/?)
 
 - `git remote add upstream [URL]`: 
 	- `git remote`: Command used to manage links to external repos
 	- `add`: Action telling Git to create a new shortcut/link
 	- `upstream`: Default name given to the original repo
 	- `[URL]`: Web address of og repo
-
+---
 # git rebase
 
 `git rebase <branch>`  replay your branch's commits on top of `<branch>`'s latest commit, for a clean, linear history (no merge commit).
@@ -66,6 +67,7 @@ If `main` is fully contained in `feature`'s history, `main` just fast-forwards t
 
 This only kicks in when there's nothing to replay — if your branch has its own unique commits, rebase does the normal thing: replay them on top of the new base.
 
+---
 # git cherry-pick
 
 **`git cherry-pick <commit-hash>`** — apply a specific commit from another branch onto your current branch, without merging the whole branch.
@@ -103,6 +105,7 @@ git cherry-pick --abort
 
 **Use case**: you need one bug fix from another branch without pulling in all its other commits.
 
+---
 # git reset \<Commit\>
 
 `git reset <commit>`
@@ -117,6 +120,7 @@ git reset --hard HEAD~1   # undo commit, discard changes entirely
 
 ️ Rewrites history — don't use on commits already pushed/shared.
 
+---
 # git revert \<commit\>
 
 Creates a _new_ commit that undoes the changes from `<commit>`, leaving history intact.
@@ -130,6 +134,7 @@ Safe for shared/pushed branches — nothing gets rewritten.
  
 In order to reverse changes and _share_ those reversed changes with others, we need to use `git revert`. 
 
+---
 # HEAD
 
 A special ref that points to your current commit — basically "where you are right now."
@@ -144,6 +149,8 @@ git checkout main   # HEAD now points to branch main
 git checkout a1b2c3 # detached HEAD — points directly at that commit
 ``` 
 
+
+---
 # `~`(tilde)
 
 ~ (tilde) — walk back through first parents
@@ -156,6 +163,7 @@ HEAD~2   # 2 commits before HEAD
 HEAD~    # same as HEAD~1
 ```
 
+---
 # `^` (caret) -picks specific parent
 
 ^ (caret) — pick a specific parent
@@ -172,6 +180,7 @@ Combine them:
 
 Rule of thumb: use `~` for simple "go back N commits," use `^` only when you need to navigate a merge commit's specific parent.
 
+---
 # Staging Area
 Git splits work into three zones: working directory (where you edit files), staging area (a loading dock for what goes into the next commit), and repository (permanent history).
 
@@ -187,6 +196,7 @@ git restore --staged <file>   # unstage a file (keep the edits)
 
 Flow: edit file (working dir) → git add (staging) → git commit (repository).
 
+---
 # git restore
 
 The modern, purpose-built undo button for your working directory and staging area.
@@ -201,3 +211,53 @@ Unstage — moves a file back out of the staging area, no edits lost.
 Discard — reverts a file in your working directory back to its last committed state. Careful, this is destructive.
 
 Quick rule of thumb: staged something by mistake → --staged. Want to throw away changes → plain restore.
+
+---
+# git ammend
+
+Replaces last commit with a new one combining any staged changes with the prev commit, or just editing its message
+
+```bash
+git commit --amend # opens editor to update commit
+message
+git commit --amend -m "new msg" # skip editor, set message
+```
+
+**Common flow**: forgot to add a file, or made a typo in the last commit:
+```bash
+git add forgotten-file.txt
+git commit --amend --no-edit
+```
+Rewrites history (new commit hash) same rules as rebase: don't amend commits already pushed/shared
+
+---
+
+# git tag
+
+A way to **permanently** mark historical points in project's history. Helpful since branches are constantly changing
+
+Helps keep track of major releases ore big merges
+
+```bash
+git tag v1 c1
+```
+
+where `v1` is tag name and `c1` is the commit (hash)
+
+---
+# git describe
+
+A way to describe where you are relative to the closest `tag`
+
+Helpful after returning from a vacation or getting your bearings after moved many commits backwards
+
+```bash
+git describe <ref>
+```
+
+`<ref>` is anything git can resolve into a comit. If no ref is specified then git uses `HEAD`
+
+**Output**: `<tag>-<numCommits>-g<gash>`
+
+Where `tag` is the closest ancestor tag in history, `numCommits` is how many commits away that tag is, and `<hash>` is the hash of the commit being described.
+
