@@ -8,6 +8,31 @@ created: 2026-08-02
 ---
 **Practice URL**: [learn git branching](https://learngitbranching.js.org/?)
 
+# git flags
+| Flag                 | Full name        | Used with                        | What it does                                                        | Danger                        |
+| -------------------- | ---------------- | -------------------------------- | ------------------------------------------------------------------- | ----------------------------- |
+| `-f`                 | `--force`        | `push`                           | Overwrites remote branch history — dangerous, use with care         | 🔴 Destructive                |
+| `--force-with-lease` | —                | `push`                           | Safer force push — fails if remote has commits you haven't seen     | 🟡 Caution                    |
+| `-i`                 | `--interactive`  | `rebase`                         | Lets you pick, reword, squash, fixup, drop commits before replaying | 🟡 Caution                    |
+| `-n`                 | `--no-commit`    | `cherry-pick`                    | Applies changes but doesn't commit — stages only                    | 🟢 Safe                       |
+| `-e`                 | `--edit`         | `cherry-pick`                    | Opens editor to change commit message before committing             | 🟢 Safe                       |
+| `-x`                 | —                | `cherry-pick`                    | Appends "(cherry picked from commit ...)" to the message            | 🟢 Safe                       |
+| `--soft`             | —                | `reset`                          | Undo commit, keep changes staged                                    | 🟢 Safe                       |
+| `--mixed`            | —                | `reset`                          | Undo commit, keep changes unstaged (default)                        | 🟡 Caution                    |
+| `--hard`             | —                | `reset`                          | Undo commit, discard changes entirely                               | 🔴 Destructive                |
+| `-p`                 | `--patch`        | `add`, `checkout`, `restore`     | Interactively stage/discard changes in chunks                       | 🟢 Safe                       |
+| `--staged`           | —                | `restore`                        | Target the staging area instead of working directory                | 🟢 Safe                       |
+| `--no-edit`          | —                | `commit --amend`                 | Keep existing commit message, just update contents                  | 🟡 Caution (rewrites history) |
+| `-m`                 | `--message`      | `commit`                         | Set commit message directly, skip editor                            | 🟢 Safe                       |
+| `-a`                 | `--all`          | `commit`                         | Auto-stage tracked, modified files before committing                | 🟢 Safe                       |
+| `-b`                 | `--branch`       | `checkout`, `switch`             | Create a new branch and switch to it                                | 🟢 Safe                       |
+| `-d`                 | `--delete`       | `branch`                         | Delete a branch (fails if unmerged)                                 | 🟡 Caution                    |
+| `-D`                 | —                | `branch`                         | Force-delete a branch, even if unmerged                             | 🔴 Destructive                |
+| `-u`                 | `--set-upstream` | `push`                           | Link local branch to a remote branch for future `push`/`pull`       | 🟢 Safe                       |
+| `--abort`            | —                | `rebase`, `cherry-pick`, `merge` | Cancel the in-progress operation, return to prior state             | 🟢 Safe                       |
+| `--continue`         | —                | `rebase`, `cherry-pick`, `merge` | Resume after resolving a conflict                                   | 🟢 Safe                       |
+
+---
 - `git remote add upstream [URL]`: 
 	- `git remote`: Command used to manage links to external repos
 	- `add`: Action telling Git to create a new shortcut/link
@@ -261,5 +286,19 @@ git describe <ref>
 
 Where `tag` is the closest ancestor tag in history, `numCommits` is how many commits away that tag is, and `<hash>` is the hash of the commit being described.
 
+---
+
+# git branch
+
+A way to branch off and work on separate features
+
+```bash
+git checkout -b <branch> # create branch and checkout to the new branch
+git branch <branch> # create a branch but don't checkout to it
+git branch <branch1> <branch2> # create branch1 from from branch2
+
+git branch <branch1> branch2>^^2^ # go back 2 commits then take the second parent of that commit then the first parent of that
+
+```
 
 
