@@ -1,7 +1,8 @@
 ---
 title: Quick Hacks
-source: "[[SYSTEM MANIFEST]]"
-tags: [moc]
+source: "[[Netrunner]]"
+tags:
+  - moc
 created: 2026-08-13
 ---
 

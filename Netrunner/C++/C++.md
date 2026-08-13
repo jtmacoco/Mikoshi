@@ -1,7 +1,8 @@
 ---
 title: C++
-source: "[[SYSTEM MANIFEST]]"
-tags: [moc]
+source: "[[Netrunner]]"
+tags:
+  - moc
 created: 2026-07-06
 ---
 
