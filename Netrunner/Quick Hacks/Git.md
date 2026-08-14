@@ -321,3 +321,14 @@ git branch -f main feature
 
 ---
 
+# git fetch
+
+`git fetch` performs two main steps
+1. Downloads the commits that the remote has but are missing from our local repo
+2. Updates where our remote branches point (for instance `o/main`)
+
+`git fetch` brings local representation of the remote repo into sync with what the actual repo looks like
+
+`git fetch` downloads the latest state of the remote (GitHub, etc.) and updates your local _notes_ about it — without touching any of your own work.
+
+`git fetch` does not change anything about local state. It won't update the `main` branch or change anything about how the file system looks right now
