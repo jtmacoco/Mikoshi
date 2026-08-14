@@ -196,3 +196,103 @@ int main(int argc, char **argv){
 ## Notes
 - `read` returns the number of bytes read
 - `write` returns number of bytes written
+
+# Thursday
+
+# Solution
+
+```c
+#include <unistd.h>
+#include <fcntl.h>
+#include <errno.h>
+#include <stdio.h>
+#include <sys/mman.h>
+#include <sys/stat.h>
+
+#define BUF_SIZE 4096
+static char buf[BUF_SIZE];
+size_t write_all(int fd, const char *buf, size_t count){
+	size_t total = 0;
+	while (total < count){
+		ssize_t n = write(fd, buf+total, count-total);
+		if (n < 0){
+			if(errno == EINTR) continue;
+			return -1;
+		}
+		total+=n;
+	}
+	return total;
+}
+int main(int argc, char **argv){
+	int fd = open(argv[1], O_RDONLY);
+	struct stat st;
+	if (fstat(fd, &st) < 0){
+		perror("fstat");
+		close(fd);
+		return 1;
+	}
+	void *addr = mmap(NULL, st.st_size, PROT_READ, MAP_PRIVATE, fd, 0);
+	close(fd);
+	if (write_all(1,addr, st.st_size) < 0){
+		perror("write");
+		munmap(addr,st.st_size);
+		return 1;
+	}
+	munmap(addr,st.st_size);
+	return 0;
+}
+```
+
+## Notes
+
+`mmap` has two different personalities
+
+1. **Anonymous mapping** (`MAP_ANONYMOUS`) — this is the "give me a chunk of blank memory" use case. This is actually what `malloc` uses under the hood for large allocations. No file involved.
+2.  **File-backed mapping** (what we're doing here) — this is the one that replaces `read()`. Instead of asking for blank memory, you're asking the kernel: "take this file's contents, and make them appear as a block of memory at some address."
+
+In this case think of it as **Projecting a file into your address space**
+
+**Why this replaces `read()`**
+
+Normally:
+
+- The file's bytes live on disk.
+- `read()` copies a chunk of those bytes into a buffer you own (`buf`).
+- You loop, because `read` only gives you up to `BUF_SIZE` at a time.
+- The kernel does the work of finding the data and copying it into your buffer.
+
+With `mmap`:
+
+- The file's bytes still live on disk, but the kernel maps them so that a pointer (`addr`) in your program directly corresponds to those bytes.
+- `addr[0]` is the first byte of the file, `addr[1]` is the second, etc. — no loop, no copying into your own buffer.
+- The kernel loads pages from disk into memory lazily, behind the scenes, the first time you touch each part of that memory. You never see this happen — it just looks like the whole file is sitting in a giant array.
+
+**`struct stat st;` and `fstat`**
+
+`read()` doesn't care how big the file is — it just reads until it gets 0 bytes back (EOF), whatever size that turns out to be.
+
+`mmap`, on the other hand, needs to know **the length to map** _before_ it maps anything — you're asking the kernel "map N bytes of this file," so you need N in advance.
+
+`stat` (or `fstat` for an already-open fd) is how you ask the OS for metadata about a file — size, permissions, timestamps, etc. — without reading its contents. `struct stat` is just a plain C struct the kernel fills in with that info. The field we care about is `st.st_size`, the file size in bytes. Other fields exist (`st_mode`, `st_mtime`, `st_uid`...) but we ignore them here.
+
+So:
+
+```c
+struct stat st;
+fstat(fd, &st);   // fills in st based on the open file descriptor fd
+// st.st_size now holds the file's size in bytes
+```
+
+is the mmap equivalent of "how much am I even reading" — since unlike `read()`, `mmap()` won't tell you as you go, you have to ask up front.
+
+
+**The mental model, side by side**
+
+| `read()` loop                          | `mmap()`                                          |                                                               |
+| -------------------------------------- | ------------------------------------------------- | ------------------------------------------------------------- |
+| Where's the data                       | On disk                                           | On disk                                                       |
+| Do you know the size upfront?          | No, don't need to                                 | Yes, must call `fstat` first                                  |
+| How do you get bytes into your program | Kernel copies chunks into your buffer, repeatedly | Kernel maps the file's pages directly into your address space |
+| Your code's job                        | Loop until EOF                                    | Just use the pointer like an array                            |
+| Cleanup                                | `close(fd)`                                       | `munmap(addr, len)` (and can `close(fd)` right away)          |
+
