@@ -9,5 +9,5 @@ created: 2026-07-04
 ## Currently Working On
 
 - [ ] Organize Academy Section #academic ⏬
-- [ ] CUDA Refresher Week 3 #on-contract #high ⏫ 
-- [ ] Linux Kernel Contribution Week 4 #on-contract #high  ⏫ 
+- [x] CUDA Refresher Week 3 #on-contract #high ⏫ ✅ 2026-08-15
+- [x] Linux Kernel Contribution Week 5 #on-contract #high ⏫ ✅ 2026-08-15
