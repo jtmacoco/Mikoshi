@@ -9,8 +9,6 @@ created: 2026-08-15
 ---
 ---
 
-## tags: [cpp, cheatsheet, casting]
-
 # C++ Casting Operators — Cheat Sheet
 
 > [!summary] Quick Reference
@@ -30,6 +28,8 @@ created: 2026-08-15
 ### What is
 
 The general-purpose, compile-time-checked cast. Converts between related types (numeric types, pointer up/downcasts, enum ↔ int, etc.) where the compiler can verify the conversion makes sense.
+
+Basically tell the compiler these two types are related enough that this conversion makes sense. The compiler checks that conversion is reasonable at compile time, but it doesn't do any safety checks while the program is running.
 
 ### Example / Usage
 
