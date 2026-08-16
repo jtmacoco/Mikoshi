@@ -296,3 +296,38 @@ is the mmap equivalent of "how much am I even reading" — since unlike `read()`
 | Your code's job                        | Loop until EOF                                    | Just use the pointer like an array                            |
 | Cleanup                                | `close(fd)`                                       | `munmap(addr, len)` (and can `close(fd)` right away)          |
 
+
+# Saturday
+
+## Solution
+
+```c
+#include <stdio.h>
+#include <errno.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/stat.h>
+
+int main(int argc, char **argv){
+	struct stat sb;
+	if (stat(argv[1],&sb) == -1){
+		perror("stat");
+		return EXIT_FAILURE;
+	}
+	printf("File: %s\n", argv[1]);
+	printf("Size: %lld bytes\n", (long long)sb.st_size);
+	printf("Mode (octal): %o\n", sb.st_mode & 07777);
+	printf("Inode: %llu\n", (unsigned long long)sb.st_ino);
+	printf("Links: %lu\n", (unsigned long)sb.st_nlink);
+	printf("UID: %d  GID: %d\n", sb.st_uid, sb.st_gid);
+
+	return EXIT_SUCCESS;
+}
+```
+
+Key points on `struct stat`:
+
+- **`st_size`** — total size in bytes (for regular files)
+- **`st_mode`** — file type _and_ permission bits packed together (you'll decode this with the `S_IS*` macros and `S_IRUSR` etc. bitmasks — that's the "decode yourself" part)
+- **`st_mtime` / `st_atime` / `st_ctime`** (or `st_*tim` with nanosecond precision on Linux) — modify/access/change times, as `time_t`, which you'll feed to `localtime()` + `strftime()` to print
+- **`st_uid` / `st_gid`** — owner/group, which you'd resolve to names with `getpwuid()`/`getgrgid()` if you want `ls -l`-style output instead of raw numbers
