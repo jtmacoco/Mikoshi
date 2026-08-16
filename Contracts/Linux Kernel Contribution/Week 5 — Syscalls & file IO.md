@@ -328,6 +328,6 @@ int main(int argc, char **argv){
 Key points on `struct stat`:
 
 - **`st_size`** — total size in bytes (for regular files)
-- **`st_mode`** — file type _and_ permission bits packed together (you'll decode this with the `S_IS*` macros and `S_IRUSR` etc. bitmasks — that's the "decode yourself" part)
+- **`st_mode`** — file type _and_ permission bits packed together 
 - **`st_mtime` / `st_atime` / `st_ctime`** (or `st_*tim` with nanosecond precision on Linux) — modify/access/change times, as `time_t`, which you'll feed to `localtime()` + `strftime()` to print
 - **`st_uid` / `st_gid`** — owner/group, which you'd resolve to names with `getpwuid()`/`getgrgid()` if you want `ls -l`-style output instead of raw numbers
