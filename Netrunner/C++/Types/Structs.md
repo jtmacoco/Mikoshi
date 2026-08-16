@@ -32,8 +32,6 @@ Point p1 {3.0, 4.0};
 - When you want a lightweight, public-by-default aggregate (e.g., a 3D vector, a config struct, a return type bundling multiple values).
 - Conventionally signals "this is just data" to other developers, even though the compiler doesn't enforce that meaning.
 
-cpp
-
 ```cpp
 struct Config {
     int width = 800;

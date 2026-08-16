@@ -11,8 +11,6 @@ created: 2026-08-16
 
 Namespaces group related names (functions, [[Classes|classes]], variables) to avoid naming collisions.
 
-cpp
-
 ```cpp
 namespace geometry {
     struct Point { double x, y; };
@@ -36,6 +34,8 @@ geometry::Point p{1.0, 2.0};
 - Organizing a library or large codebase into logical modules (`app::ui`, `app::network`, etc.).
 - Avoiding symbol clashes when integrating multiple third-party libraries.
 - Preventing accidental use of internal-only helper functions (via anonymous namespaces).
+- Math functionality
+- No instances, no state, no behavior, just label scope
 
 ## Avoid
 
