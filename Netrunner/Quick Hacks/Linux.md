@@ -1,6 +1,6 @@
 ---
 title: Linux
-source: "[[Linux]]"
+source: "[[Quick Hacks]]"
 tags:
   - linux
 type: cheatsheet
