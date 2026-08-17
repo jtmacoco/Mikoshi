@@ -23,6 +23,8 @@ Develop an MLP from scratch using C++ and CUDA for the MNIST dataset
 
 - 2026-08-15: Contract initialized
 - 2026-08-15: Working on loading the dataset
+- 2026-08-16: Finished loading dataset
+- 2026-08-16: Working on forward pass
 
 ## Notes
 

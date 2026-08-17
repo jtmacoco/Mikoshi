@@ -39,9 +39,9 @@ private:
 
 ## Struct vs Class — rule of thumb
 
-|Use [[Structs\|struct]]|Use `class`|
-|---|---|
-|Passive data, no invariants|Data with invariants to enforce|
-|Public access is fine|Need to hide/protect internals|
-|Small, simple aggregates|Any complex behavior/logic|
+| Use [[Structs\|struct]]     | Use `class`                     |
+| --------------------------- | ------------------------------- |
+| Passive data, no invariants | Data with invariants to enforce |
+| Public access is fine       | Need to hide/protect internals  |
+| Small, simple aggregates    | Any complex behavior/logic      |
 ## Links
