@@ -1,5 +1,5 @@
 ---
-title: Week 5 — Syscalls & file IO
+title: Week 05 — Syscalls & file IO
 source: "[[Contracts]]"
 tags:
   - contract

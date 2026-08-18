@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>fork() Process Tree Animation</title>
+<style>
+  :root {
+    --bg: #1e1e2a;
+    --panel: #262635;
+    --node: #3a3a52;
+    --node-border: #5a5a78;
+    --accent-root: #6b7280;
+    --accent-parent: #2a9d8f;
+    --accent-child: #f4a261;
+    --accent-grandchild: #a78bfa;
+    --text: #e5e5f0;
+    --muted: #9a9ab0;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 20px;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+  .wrap {
+    max-width: 860px;
+    margin: 0 auto;
+    background: var(--panel);
+    border-radius: 14px;
+    padding: 20px 24px 24px;
+  }
+  h2 {
+    margin: 0 0 4px;
+    font-size: 18px;
+    font-weight: 600;
+  }
+  .subtitle {
+    color: var(--muted);
+    font-size: 13px;
+    margin-bottom: 16px;
+  }
+  svg { width: 100%; height: 320px; display: block; }
+  .controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+  }
+  button {
+    background: var(--node);
+    border: 1px solid var(--node-border);
+    color: var(--text);
+    padding: 7px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    transition: background 0.15s;
+  }
+  button:hover { background: #454564; }
+  button:disabled { opacity: 0.4; cursor: default; }
+  .step-label {
+    flex: 1;
+    min-width: 220px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .code-line {
+    background: #14141d;
+    border-radius: 8px;
+    padding: 10px 14px;
+    margin-top: 14px;
+    font-family: 'SF Mono', Consolas, monospace;
+    font-size: 13px;
+    color: #d4d4e0;
+    min-height: 20px;
+  }
+  .legend {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-top: 12px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .legend span { display: inline-flex; align-items: center; gap: 5px; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h2>fork() — process tree walkthrough</h2>
+  <div class="subtitle">Two fork() calls: one in main, one inside the first child</div>
+  <svg id="svg" viewBox="0 0 900 320"></svg>
+  <div class="code-line" id="codeLine">Click "Next" to begin</div>
+  <div class="controls">
+    <button id="prevBtn">◀ Back</button>
+    <button id="nextBtn">Next ▶</button>
+    <button id="resetBtn">Reset</button>
+    <div class="step-label" id="stepLabel">Step 0 / 0</div>
+  </div>
+  <div class="legend">
+    <span><i class="dot" style="background:var(--accent-root)"></i>original / ancestor</span>
+    <span><i class="dot" style="background:var(--accent-parent)"></i>parent</span>
+    <span><i class="dot" style="background:var(--accent-child)"></i>child</span>
+    <span><i class="dot" style="background:var(--accent-grandchild)"></i>grandchild</span>
+  </div>
+</div>
+
+<script>
+const svg = document.getElementById('svg');
+const NS = 'http://www.w3.org/2000/svg';
+
+// Fixed positions for the 5 possible node slots in the tree
+const POS = {
+  root:    { x: 450, y: 45  },
+  parentL: { x: 220, y: 165 },
+  childR:  { x: 680, y: 165 },
+  gpL:     { x: 520, y: 285 },
+  gcR:     { x: 840, y: 285 }
+};
+
+function n(slot, pid, role, ret, color, active, dim) {
+  return { slot, pid, role, ret, color, active: !!active, dim: !!dim };
+}
+
+const steps = [
+  {
+    nodes: [ n('root', 1000, 'Original process', null, 'var(--accent-root)', true) ],
+    edges: [],
+    code: 'pid_t pid = getpid();   // pid == 1000',
+    label: 'Step 1 / 9 — single process running'
+  },
+  {
+    nodes: [ n('root', 1000, 'Original process', null, 'var(--accent-root)', true) ],
+    edges: [],
+    code: 'pid_t pid1 = fork();   // about to split into two processes',
+    label: 'Step 2 / 9 — calling fork() #1'
+  },
+  {
+    nodes: [
+      n('root', 1000, 'ancestor', null, 'var(--accent-root)', false, true),
+      n('parentL', 1000, 'Parent', 'pid1 = 1001', 'var(--accent-parent)', true),
+      n('childR', 1001, 'Child', 'pid1 = 0', 'var(--accent-child)', true)
+    ],
+    edges: [['root','parentL'],['root','childR']],
+    code: 'fork() returns 1001 to the parent, and 0 to the child',
+    label: 'Step 3 / 9 — fork #1 executes, process splits in two'
+  },
+  {
+    nodes: [
+      n('root', 1000, 'ancestor', null, 'var(--accent-root)', false, true),
+      n('parentL', 1000, 'Parent', 'pid1 = 1001', 'var(--accent-parent)', true),
+      n('childR', 1001, 'Child', 'pid1 = 0', 'var(--accent-child)', false, true)
+    ],
+    edges: [['root','parentL'],['root','childR']],
+    code: 'if (pid1 == 0) → false → else branch runs here',
+    label: 'Step 4 / 9 — PID 1000 takes the parent branch, keeps going'
+  },
+  {
+    nodes: [
+      n('root', 1000, 'ancestor', null, 'var(--accent-root)', false, true),
+      n('parentL', 1000, 'Parent', 'pid1 = 1001', 'var(--accent-parent)', false, true),
+      n('childR', 1001, 'Child', 'pid1 = 0', 'var(--accent-child)', true)
+    ],
+    edges: [['root','parentL'],['root','childR']],
+    code: 'if (pid1 == 0) → true → child branch runs here',
+    label: 'Step 5 / 9 — PID 1001 takes the child branch, about to fork again'
+  },
+  {
+    nodes: [
+      n('root', 1000, 'ancestor', null, 'var(--accent-root)', false, true),
+      n('parentL', 1000, 'Parent', 'pid1 = 1001', 'var(--accent-parent)', false, true),
+      n('childR', 1001, 'ancestor (in this branch)', null, 'var(--accent-child)', false, true),
+      n('gpL', 1001, 'Parent (was Child)', 'pid2 = 1002', 'var(--accent-parent)', true),
+      n('gcR', 1002, 'Grandchild', 'pid2 = 0', 'var(--accent-grandchild)', true)
+    ],
+    edges: [['root','parentL'],['root','childR'],['childR','gpL'],['childR','gcR']],
+    code: 'pid_t pid2 = fork();   // called inside the pid1==0 branch',
+    label: 'Step 6 / 9 — fork #2 executes inside the child, splits again'
+  },
+  {
+    nodes: [
+      n('root', 1000, 'ancestor', null, 'var(--accent-root)', false, true),
+      n('parentL', 1000, 'Parent', 'pid1 = 1001', 'var(--accent-parent)', false, true),
+      n('childR', 1001, 'ancestor (in this branch)', null, 'var(--accent-child)', false, true),
+      n('gpL', 1001, 'Parent (was Child)', 'pid2 = 1002', 'var(--accent-parent)', true),
+      n('gcR', 1002, 'Grandchild', 'pid2 = 0', 'var(--accent-grandchild)', false, true)
+    ],
+    edges: [['root','parentL'],['root','childR'],['childR','gpL'],['childR','gcR']],
+    code: 'if (pid2 == 0) → false → else branch runs here',
+    label: 'Step 7 / 9 — PID 1001 is now a parent to PID 1002'
+  },
+  {
+    nodes: [
+      n('root', 1000, 'ancestor', null, 'var(--accent-root)', false, true),
+      n('parentL', 1000, 'Parent', 'pid1 = 1001', 'var(--accent-parent)', false, true),
+      n('childR', 1001, 'ancestor (in this branch)', null, 'var(--accent-child)', false, true),
+      n('gpL', 1001, 'Parent (was Child)', 'pid2 = 1002', 'var(--accent-parent)', false, true),
+      n('gcR', 1002, 'Grandchild', 'pid2 = 0', 'var(--accent-grandchild)', true)
+    ],
+    edges: [['root','parentL'],['root','childR'],['childR','gpL'],['childR','gcR']],
+    code: 'if (pid2 == 0) → true → grandchild branch runs here',
+    label: 'Step 8 / 9 — PID 1002 is the grandchild, deepest process'
+  },
+  {
+    nodes: [
+      n('root', 1000, 'ancestor', null, 'var(--accent-root)', false, true),
+      n('parentL', 1000, 'Parent', 'pid1 = 1001', 'var(--accent-parent)', false),
+      n('childR', 1001, 'ancestor (in this branch)', null, 'var(--accent-child)', false, true),
+      n('gpL', 1001, 'Parent (was Child)', 'pid2 = 1002', 'var(--accent-parent)', false),
+      n('gcR', 1002, 'Grandchild', 'pid2 = 0', 'var(--accent-grandchild)', false)
+    ],
+    edges: [['root','parentL'],['root','childR'],['childR','gpL'],['childR','gcR']],
+    code: 'Final tree: 3 live processes — 1000, 1001, and 1002',
+    label: 'Step 9 / 9 — done: two fork() calls made a 3-process tree'
+  }
+];
+
+let stepIdx = 0;
+
+function drawArrow(x1, y1, x2, y2) {
+  const path = document.createElementNS(NS, 'path');
+  const midY = (y1 + y2) / 2;
+  const d = `M ${x1} ${y1} C ${x1} ${midY}, ${x2} ${midY}, ${x2} ${y2}`;
+  path.setAttribute('d', d);
+  path.setAttribute('fill', 'none');
+  path.setAttribute('stroke', '#8a8aa8');
+  path.setAttribute('stroke-width', '2');
+  path.setAttribute('marker-end', 'url(#arrow)');
+  svg.appendChild(path);
+}
+
+function render() {
+  const step = steps[stepIdx];
+  svg.innerHTML = '';
+
+  const defs = document.createElementNS(NS, 'defs');
+  defs.innerHTML = `<marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+    <path d="M0,0 L6,3 L0,6 Z" fill="#8a8aa8" />
+  </marker>`;
+  svg.appendChild(defs);
+
+  const nodeMap = {};
+  step.nodes.forEach(node => { nodeMap[node.slot] = node; });
+
+  // edges first
+  step.edges.forEach(([fromSlot, toSlot]) => {
+    if (!nodeMap[fromSlot] || !nodeMap[toSlot]) return;
+    const p1 = POS[fromSlot], p2 = POS[toSlot];
+    drawArrow(p1.x, p1.y + 30, p2.x, p2.y - 30);
+  });
+
+  // nodes
+  step.nodes.forEach(node => {
+    const p = POS[node.slot];
+    const g = document.createElementNS(NS, 'g');
+    const w = 150, h = 60;
+
+    const rect = document.createElementNS(NS, 'rect');
+    rect.setAttribute('x', p.x - w / 2);
+    rect.setAttribute('y', p.y - h / 2);
+    rect.setAttribute('width', w);
+    rect.setAttribute('height', h);
+    rect.setAttribute('rx', 10);
+    rect.setAttribute('fill', node.color);
+    rect.setAttribute('opacity', node.dim ? 0.35 : 1);
+    rect.setAttribute('stroke', node.active ? '#ffffff' : '#00000000');
+    rect.setAttribute('stroke-width', node.active ? 2.5 : 0);
+    g.appendChild(rect);
+
+    const pidText = document.createElementNS(NS, 'text');
+    pidText.setAttribute('x', p.x);
+    pidText.setAttribute('y', p.y - 6);
+    pidText.setAttribute('text-anchor', 'middle');
+    pidText.setAttribute('fill', '#fff');
+    pidText.setAttribute('font-size', '14');
+    pidText.setAttribute('font-family', 'monospace');
+    pidText.setAttribute('font-weight', '700');
+    pidText.setAttribute('opacity', node.dim ? 0.6 : 1);
+    pidText.textContent = 'PID ' + node.pid;
+    g.appendChild(pidText);
+
+    const roleText = document.createElementNS(NS, 'text');
+    roleText.setAttribute('x', p.x);
+    roleText.setAttribute('y', p.y + 12);
+    roleText.setAttribute('text-anchor', 'middle');
+    roleText.setAttribute('fill', '#fff');
+    roleText.setAttribute('font-size', '11');
+    roleText.setAttribute('font-family', '-apple-system, sans-serif');
+    roleText.setAttribute('opacity', node.dim ? 0.6 : 0.95);
+    roleText.textContent = node.role;
+    g.appendChild(roleText);
+
+    if (node.ret) {
+      const retText = document.createElementNS(NS, 'text');
+      retText.setAttribute('x', p.x);
+      retText.setAttribute('y', p.y + h / 2 + 16);
+      retText.setAttribute('text-anchor', 'middle');
+      retText.setAttribute('fill', '#9a9ab0');
+      retText.setAttribute('font-size', '11');
+      retText.setAttribute('font-family', 'monospace');
+      retText.textContent = node.ret;
+      g.appendChild(retText);
+    }
+
+    svg.appendChild(g);
+  });
+
+  document.getElementById('codeLine').textContent = step.code;
+  document.getElementById('stepLabel').textContent = step.label;
+  document.getElementById('prevBtn').disabled = stepIdx === 0;
+  document.getElementById('nextBtn').disabled = stepIdx === steps.length - 1;
+}
+
+document.getElementById('nextBtn').onclick = () => {
+  if (stepIdx < steps.length - 1) { stepIdx++; render(); }
+};
+document.getElementById('prevBtn').onclick = () => {
+  if (stepIdx > 0) { stepIdx--; render(); }
+};
+document.getElementById('resetBtn').onclick = () => {
+  stepIdx = 0; render();
+};
+
+render();
+</script>
+</body>
+</html>

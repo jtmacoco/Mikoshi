@@ -30,17 +30,17 @@
 
 ### [[Week 02 - Bit manipulation]]
 
-|Day|Task (≈30 min)|
-|---|---|
-|Mon|Set/clear/toggle/test a bit at position n. Count set bits three ways: naive loop, Kernighan's `n & (n-1)` trick, lookup table.|
-|Tue|Check power-of-two, round up to next power of two, reverse the bits of a `uint32_t`.|
-|Wed|Write alignment macros: `ALIGN_UP(x, a)`, `ALIGN_DOWN(x, a)`, `IS_ALIGNED(x, a)` (assume `a` is a power of two). These appear constantly in kernel code.|
-|Thu|Implement a **bitmap**: `bitmap_set(map, n)`, `bitmap_clear`, `bitmap_test`, `bitmap_find_first_zero` over a `uint64_t` array. (The kernel tracks free pages this way.)|
-|Fri|Write a function that hexdumps the raw bytes of _any_ value (`float`, `struct`, pointer). Use it to: detect endianness, see struct padding, look at IEEE-754 float layout.|
-|Sat (lab)|Skim [`include/linux/bitops.h`](https://github.com/torvalds/linux/blob/master/include/linux/bitops.h) and `include/linux/bitmap.h`. Use `offsetof`/`sizeof` to inspect padding in a struct you define, then reorder fields to shrink it.|
-|Sun|Rest / catch-up.|
+| Day       | Task (≈30 min)                                                                                                                                                                                                                           |
+| --------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Mon       | Set/clear/toggle/test a bit at position n. Count set bits three ways: naive loop, Kernighan's `n & (n-1)` trick, lookup table.                                                                                                           |
+| Tue       | Check power-of-two, round up to next power of two, reverse the bits of a `uint32_t`.                                                                                                                                                     |
+| Wed       | Write alignment macros: `ALIGN_UP(x, a)`, `ALIGN_DOWN(x, a)`, `IS_ALIGNED(x, a)` (assume `a` is a power of two). These appear constantly in kernel code.                                                                                 |
+| Thu       | Implement a **bitmap**: `bitmap_set(map, n)`, `bitmap_clear`, `bitmap_test`, `bitmap_find_first_zero` over a `uint64_t` array. (The kernel tracks free pages this way.)                                                                  |
+| Fri       | Write a function that hexdumps the raw bytes of _any_ value (`float`, `struct`, pointer). Use it to: detect endianness, see struct padding, look at IEEE-754 float layout.                                                               |
+| Sat (lab) | Skim [`include/linux/bitops.h`](https://github.com/torvalds/linux/blob/master/include/linux/bitops.h) and `include/linux/bitmap.h`. Use `offsetof`/`sizeof` to inspect padding in a struct you define, then reorder fields to shrink it. |
+| Sun       | Rest / catch-up.                                                                                                                                                                                                                         |
 
-### Week 3 — Allocators (the big one)
+### [[Week 03 - Allocators]] (the big one)
 
 | Day       | Task (≈30 min)                                                                                                                                                                          |
 | --------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -52,23 +52,23 @@
 | Sat (lab) | Replace the static buffer with real memory from `mmap(NULL, ..., MAP_ANONYMOUS)`. You now have a toy malloc. Run your stress test under ASan.                                           |
 | Sun       | Rest / catch-up.                                                                                                                                                                        |
 
-### Week 4 — Kernel-idiom data structures
+### [[Week 04 - Kernel-idiom data structures]]
 
-|Day|Task (≈30 min)|
-|---|---|
-|Mon|Implement `container_of(ptr, type, member)` yourself using `offsetof`. Write a tiny demo proving it recovers the outer struct from a pointer to a member. **This is THE kernel idiom — don't skip.**|
-|Tue|Circular doubly linked list, kernel-style: the `struct list_head { *next, *prev }` is _embedded inside_ your data struct, not the other way around. Write `list_init`, `list_add`.|
-|Wed|Add `list_del`, `list_for_each`, and a `list_entry` macro built on your `container_of`.|
-|Thu|**Ring buffer** (power-of-two size, head/tail indices, index with `& (size-1)`): `rb_put`, `rb_get`, full/empty detection.|
-|Fri|Hash table with chaining, using your kernel-style list as the bucket chains.|
-|Sat (lab)|Read [`include/linux/list.h`](https://github.com/torvalds/linux/blob/master/include/linux/list.h) top to bottom — you'll understand all of it now. Compare with yours.|
-|Sun|Rest / catch-up. Phase 1 done — you now write C the way the kernel does.|
+| Day       | Task (≈30 min)                                                                                                                                                                                       |
+| --------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Mon       | Implement `container_of(ptr, type, member)` yourself using `offsetof`. Write a tiny demo proving it recovers the outer struct from a pointer to a member. **This is THE kernel idiom — don't skip.** |
+| Tue       | Circular doubly linked list, kernel-style: the `struct list_head { *next, *prev }` is _embedded inside_ your data struct, not the other way around. Write `list_init`, `list_add`.                   |
+| Wed       | Add `list_del`, `list_for_each`, and a `list_entry` macro built on your `container_of`.                                                                                                              |
+| Thu       | **Ring buffer** (power-of-two size, head/tail indices, index with `& (size-1)`): `rb_put`, `rb_get`, full/empty detection.                                                                           |
+| Fri       | Hash table with chaining, using your kernel-style list as the bucket chains.                                                                                                                         |
+| Sat (lab) | Read [`include/linux/list.h`](https://github.com/torvalds/linux/blob/master/include/linux/list.h) top to bottom — you'll understand all of it now. Compare with yours.                               |
+| Sun       | Rest / catch-up. Phase 1 done — you now write C the way the kernel does.                                                                                                                             |
 
 ---
 
 ## PHASE 2 — Weeks 5–8: Systems programming (userspace side of the boundary)
 
-### Week 5 — Syscalls & file I/O
+### [[Week 05 — Syscalls & file IO]]
 
 | Day       | Task (≈30 min)                                                                                                                               |
 | --------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -82,15 +82,15 @@
 
 ### Week 6 — Processes & signals
 
-|Day|Task (≈30 min)|
-|---|---|
-|Mon|`fork()` hello world: parent prints its PID and the child's; child prints its own and its parent's. Then fork twice and draw the process tree on paper.|
-|Tue|`fork` + `execvp` + `waitpid`: run a command given on argv and report its exit status.|
-|Wed|**Mini shell, part 1**: read a line, split into argv tokens (use your strtok!), fork/exec/wait in a loop. `exit` builtin.|
-|Thu|**Mini shell, part 2**: add `cd` builtin and `>` output redirection (`open` + `dup2`).|
-|Fri|Signals: install a `SIGINT` handler with `sigaction` so Ctrl-C prints a message instead of killing your shell. Read why you can only call async-signal-safe functions in handlers.|
-|Sat (lab)|**Mini shell, part 3**: pipes — support `cmd1|
-|Sun|Rest / catch-up.|
+| Day       | Task (≈30 min)                                                                                                                                                                     |
+| --------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Mon       | `fork()` hello world: parent prints its PID and the child's; child prints its own and its parent's. Then fork twice and draw the process tree on paper.                            |
+| Tue       | `fork` + `execvp` + `waitpid`: run a command given on argv and report its exit status.                                                                                             |
+| Wed       | **Mini shell, part 1**: read a line, split into argv tokens (use your strtok!), fork/exec/wait in a loop. `exit` builtin.                                                          |
+| Thu       | **Mini shell, part 2**: add `cd` builtin and `>` output redirection (`open` + `dup2`).                                                                                             |
+| Fri       | Signals: install a `SIGINT` handler with `sigaction` so Ctrl-C prints a message instead of killing your shell. Read why you can only call async-signal-safe functions in handlers. |
+| Sat (lab) | **Mini shell, part 3**: pipes — support `cmd1                                                                                                                                      |
+| Sun       | Rest / catch-up.                                                                                                                                                                   |
 
 ### Week 7 — /proc, /sys, and kernel interfaces
 
