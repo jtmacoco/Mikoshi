@@ -7,7 +7,7 @@ created: 2026-08-17
 status: on-contract
 client: personal
 deadline:
-stack:
+stack: c
 ---
 
 | Day       | Task (≈30 min)                                                                                                                                                                     |
@@ -58,5 +58,54 @@ Mikoshi/Contracts/Linux Kernel Contribution/Linux Kernel Contribution_Assets/for
 600
 ```
 
+# Tuesday
+
+## Solution
+
+```c
+#include <stdio.h>
+#include <unistd.h>
+#include <sys/wait.h>
+int main(int argc, char **argv){
+	pid_t pid;
+
+	pid = fork();
+	if (pid == 0){
+		execvp(argv[1],&argv[1]);
+		perror("execvp");
+		_exit(127);
+	}
+	else if (pid > 0){
+		int status;
+		waitpid(pid, &status, 0);
+		if (WIFEXITED(status)) {
+			printf("Exited with code %d\n", WEXITSTATUS(status));
+		} else if (WIFSIGNALED(status)) {
+			printf("Killed by signal %d\n", WTERMSIG(status));
+		}
+
+	}
+	else{
+		perror("fork failed");
+	}
+
+}
+```
+
+## Notes
+
+- `execvp`: replaces the currently running process's program with a different one, it doesn't create a new process, it transforms the existing one
+
+Breaking down the name:
+
+exec = execute a new program
+v = you pass arguments as a vector: a NULL-terminated array of strings (char *argv[]), rather than as separate arguments
+p = it searches your $PATH environment variable to find the executable, so you can write "ls" instead of typing out "/bin/ls"
+
+- `execvp` the second argument 
+
+- `waitpid()` is a system call that pauses a parent process until  a specific child process changes state
+
+`WIFEXITED` and `WIFSIGNALED` are macros that let you interpret the `status` value that `waitpid` fills in — because `status` isn't a simple "exit code," it's a packed integer that encodes _several_ possible outcomes, and you need these macros to safely pull out the right one.
 ## Links
 
