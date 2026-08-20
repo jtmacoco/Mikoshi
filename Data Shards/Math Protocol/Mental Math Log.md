@@ -42,3 +42,4 @@ Track my quiz progress
 | 2026-08-16 | Chapter 2 - Basic Multiplication | 25/25 | 529.1 | 100% |
 | 2026-08-18 | Chapter 2 - Basic Multiplication | 22/25 | 517.5 | 88% |
 | 2026-08-19 | Chapter 2 - Basic Multiplication | 19/25 | 530.7 | 76% |
+| 2026-08-20 | Chapter 2 - Basic Multiplication | 23/25 | 444.8 | 92% |

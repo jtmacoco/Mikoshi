@@ -107,5 +107,85 @@ p = it searches your $PATH environment variable to find the executable, so you c
 - `waitpid()` is a system call that pauses a parent process until  a specific child process changes state
 
 `WIFEXITED` and `WIFSIGNALED` are macros that let you interpret the `status` value that `waitpid` fills in — because `status` isn't a simple "exit code," it's a packed integer that encodes _several_ possible outcomes, and you need these macros to safely pull out the right one.
+
+
+# Wednesday
+
+## Solution
+
+```c
+#include <stdio.h>
+#include <unistd.h>
+#include <string.h>
+#include <wait.h>
+
+char *my_strtok(char *restrict str, const char *restrict delim){
+	size_t count = 0;
+	static char *saved = NULL;
+	if (str == NULL){
+		str = saved;
+	}
+	if (str == NULL){
+		return NULL;
+	}
+	str += strspn(str,delim);//moved after checks
+	if (*str == '\0'){
+		saved = NULL;
+		return NULL;
+	}
+	char *token_end = str + strcspn(str,delim);
+	if (*token_end == '\0'){
+		saved = NULL;
+	}
+	else{
+		*token_end = '\0';
+		saved = token_end+1;
+	}
+	return str;
+}
+
+int main(int argc, char **argv){
+	char line[1024];
+	while(1){
+		printf("myShel> ");
+		if (!fgets(line,sizeof(line),stdin)) break;
+		char *args[64];
+		int i = 0;
+		char *tok = my_strtok(line, " \t\n");
+		while (tok != NULL){
+			args[i++] = tok;
+			tok = my_strtok(NULL, " \t\n");
+		}
+		args[i] = NULL;//set end
+		if (i == 0) continue;                     
+		if (strcmp(args[0], "exit") == 0) break;
+		pid_t pid;
+		pid = fork();
+		if (pid == 0){//child
+			execvp(args[0], args);
+			perror("exec failed");
+			_exit(1);
+		}
+		else if (pid > 0){//parent
+			int status;
+			waitpid(pid,&status,0);
+		}else{
+			perror("fork failed");
+			continue;
+		}
+		
+	}
+}
+```
+
+## Notes
+
+- `fgets`: Function used to read line of text or string from specified input stream
+- `fgets` : `char *fgets(char *str, int n, FILE *stream);`
+- fixed `my_strtok`: had issue where would move str before the `NULL` check so moved it down after check
+
+
 ## Links
+
+
 
