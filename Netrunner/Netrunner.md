@@ -9,6 +9,12 @@ created: 2026-07-04
 
 Knowledge arsenal — references, snippets, and tech notes to pull from on any job
 
+## MOC Files
+
+```dataview
+LIST FROM "Mikoshi/Netrunner"
+WHERE contains(file.tags, "moc")
+```
 ## Concept
 ```dataview
 LIST FROM "Mikoshi/Netrunner" 
