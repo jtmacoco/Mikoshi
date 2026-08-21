@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Islands and Treasure — BFS Visualization</title>
+<style>
+  :root{
+    --bg:#0d1117;
+    --panel:#161b22;
+    --border:#30363d;
+    --text:#c9d1d9;
+    --muted:#8b949e;
+    --accent:#58a6ff;
+    --orange:#f0883e;
+    --purple:#8957e5;
+    --green:#3fb950;
+    --gold:#e3b341;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    padding:20px;
+  }
+  .wrap{max-width:900px;margin:0 auto;}
+  h1{font-size:20px;margin:0 0 2px 0;}
+  .subtitle{color:var(--muted);font-size:13px;margin-bottom:16px;}
+
+  .layout{display:flex;gap:20px;flex-wrap:wrap;align-items:flex-start;}
+  .board-col{flex:1 1 340px;display:flex;flex-direction:column;align-items:center;}
+  .code-col{flex:1 1 320px;min-width:280px;}
+
+  #board{
+    display:grid;
+    gap:6px;
+    background:var(--panel);
+    padding:14px;
+    border-radius:12px;
+    border:1px solid var(--border);
+  }
+  .cell{
+    width:64px;height:64px;
+    display:flex;align-items:center;justify-content:center;
+    border-radius:8px;
+    font-weight:700;
+    font-family:"SFMono-Regular",Consolas,Menlo,monospace;
+    font-size:18px;
+    transition:background .25s ease,border-color .25s ease,box-shadow .25s ease,transform .2s ease;
+  }
+  .land{background:#21262d;color:#8b949e;border:2px solid var(--border);}
+  .wall{background:#010409;color:#484f58;border:2px solid #21262d;font-size:22px;}
+  .treasure{background:linear-gradient(135deg,#e3b341,#bb8009);color:#111;border:2px solid var(--gold);font-size:22px;}
+  .treasure-found{background:var(--green);color:#fff;border:2px solid #56d364;box-shadow:0 0 20px rgba(63,185,80,.7);font-size:22px;animation:pulse .5s ease;}
+  .finalized{background:rgba(31,111,235,.18);color:var(--accent);border:2px solid #1f6feb;}
+  .source{background:var(--purple);color:#fff;border:2px solid #a371f7;box-shadow:0 0 16px rgba(137,87,229,.7);}
+  .bfs-frontier{background:var(--orange);color:#111;border:2px solid #ffa657;box-shadow:0 0 12px rgba(240,136,62,.7);transform:scale(1.05);}
+  .bfs-new{background:rgba(240,136,62,.35);color:#f0883e;border:2px dashed var(--orange);}
+  .bfs-visited{background:rgba(31,111,235,.28);color:var(--text);border:2px solid #388bfd;}
+
+  @keyframes pulse{0%{transform:scale(1);}50%{transform:scale(1.18);}100%{transform:scale(1);}}
+
+  .stats{
+    margin-top:12px;font-size:13px;color:var(--muted);
+    display:flex;gap:14px;flex-wrap:wrap;justify-content:center;
+  }
+  .stats b{color:var(--text);}
+
+  .message{
+    margin-top:14px;padding:10px 14px;background:var(--panel);
+    border:1px solid var(--border);border-radius:8px;
+    font-size:13.5px;min-height:20px;text-align:center;max-width:520px;
+  }
+
+  .controls{
+    margin-top:16px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:center;
+  }
+  button{
+    background:#21262d;color:var(--text);border:1px solid var(--border);
+    padding:8px 14px;border-radius:6px;cursor:pointer;font-size:13px;
+  }
+  button:hover{background:#30363d;}
+  button:active{transform:translateY(1px);}
+  #playBtn{background:#238636;border-color:#2ea043;color:#fff;font-weight:600;}
+  #playBtn:hover{background:#2ea043;}
+
+  .speedWrap{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);}
+  input[type=range]{accent-color:var(--accent);}
+
+  .frameCounter{font-size:12px;color:var(--muted);margin-top:8px;}
+
+  .code-panel{
+    background:var(--panel);border:1px solid var(--border);border-radius:10px;
+    padding:14px 16px;font-family:"SFMono-Regular",Consolas,Menlo,monospace;font-size:12.5px;
+    line-height:1.65;white-space:pre;overflow-x:auto;
+  }
+  .code-line{padding:1px 6px;border-radius:4px;color:var(--muted);}
+  .code-line.active{background:rgba(240,136,62,.18);color:#ffd8a8;border-left:3px solid var(--orange);padding-left:3px;}
+
+  .legend{
+    margin-top:16px;display:flex;flex-wrap:wrap;gap:10px 16px;font-size:12px;color:var(--muted);
+  }
+  .legend span{display:inline-flex;align-items:center;gap:6px;}
+  .swatch{width:14px;height:14px;border-radius:4px;display:inline-block;border:1px solid var(--border);}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>🏝️ Islands and Treasure — BFS Visualization</h1>
+  <div class="subtitle">Matches your exact code: for every unresolved land cell, run a fresh BFS outward until a treasure (0) is hit.</div>
+
+  <div class="layout">
+    <div class="board-col">
+      <div id="board"></div>
+      <div class="stats" id="stats"></div>
+      <div class="message" id="message"></div>
+      <div class="controls">
+        <button id="resetBtn">⏮ Reset</button>
+        <button id="backBtn">◀ Step</button>
+        <button id="playBtn">▶ Play</button>
+        <button id="stepBtn">Step ▶</button>
+        <div class="speedWrap">
+          Speed:
+          <input type="range" id="speedSlider" min="80" max="1200" value="450" step="10">
+          <span id="speedLabel">450 ms</span>
+        </div>
+      </div>
+      <div class="frameCounter" id="frameCounter"></div>
+
+      <div class="legend">
+        <span><i class="swatch" style="background:linear-gradient(135deg,#e3b341,#bb8009)"></i>Treasure (0)</span>
+        <span><i class="swatch" style="background:#010409"></i>Wall (-1)</span>
+        <span><i class="swatch" style="background:#21262d"></i>Unresolved land</span>
+        <span><i class="swatch" style="background:rgba(31,111,235,.18);border-color:#1f6feb"></i>Finalized distance</span>
+        <span><i class="swatch" style="background:#8957e5"></i>Current source</span>
+        <span><i class="swatch" style="background:#f0883e"></i>Frontier (checking)</span>
+        <span><i class="swatch" style="background:rgba(31,111,235,.28);border-color:#388bfd"></i>Visited this search</span>
+      </div>
+    </div>
+
+    <div class="code-col">
+      <div class="code-panel" id="codePanel"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const INF = 2147483647;
+
+  // ---- Edit this grid to try your own example ----
+  const initialGrid = [
+    [INF, -1,  0, INF],
+    [INF,INF,INF, -1],
+    [INF, -1,INF, -1],
+    [  0, -1,INF,INF]
+  ];
+  // --------------------------------------------------
+
+  const ROWS = initialGrid.length;
+  const COLS = initialGrid[0].length;
+  const dirs = [[1,0],[-1,0],[0,1],[0,-1]];
+
+  const codeLines = [
+    "for r in range(ROWS):",
+    "  for c in range(COLS):",
+    "    if grid[r][c] == INF:",
+    "      grid[r][c] = bfs(r, c)",
+    "",
+    "def bfs(row, col):",
+    "  q = deque([(row, col)])",
+    "  visited[row][col] = True",
+    "  steps = 0",
+    "  while q:",
+    "    for i in range(len(q)):",
+    "      r, c = q.popleft()",
+    "      if grid[r][c] == 0:",
+    "        return steps",
+    "      for dr, dc in dirs:",
+    "        if valid: visited[nr][nc]=True; q.append((nr,nc))",
+    "    steps += 1"
+  ];
+
+  // ---------- Frame generation (mirrors the Python exactly) ----------
+  function generateFrames(){
+    let grid = initialGrid.map(row=>row.slice());
+    let resolved = grid.map(row=>row.map(v=> v!==INF));
+    const frames = [];
+
+    function baseState(r,c){
+      const v = grid[r][c];
+      if(v===-1) return 'wall';
+      if(v===0) return 'treasure';
+      if(resolved[r][c]) return 'finalized';
+      return 'land';
+    }
+    function baseStates(){
+      const s=[];
+      for(let r=0;r<ROWS;r++){ const row=[]; for(let c=0;c<COLS;c++) row.push(baseState(r,c)); s.push(row); }
+      return s;
+    }
+    function push(overlay,msg,line,info){
+      const states = baseStates();
+      if(overlay) for(const key in overlay){
+        const [r,c] = key.split(',').map(Number);
+        states[r][c] = overlay[key];
+      }
+      frames.push({grid:grid.map(r=>r.slice()), states, msg, line, info: info||{}});
+    }
+
+    push(null, "Scan the grid row by row, looking for unresolved land cells (INF).", 0, {});
+
+    for(let r=0;r<ROWS;r++){
+      for(let c=0;c<COLS;c++){
+        if(grid[r][c] !== INF) continue;
+
+        push({[`${r},${c}`]:'source'}, `grid[${r}][${c}] is INF → start a fresh BFS from (${r},${c})`, 2, {source:[r,c]});
+
+        let visited = Array.from({length:ROWS},()=>Array(COLS).fill(false));
+        let q = [[r,c]];
+        visited[r][c] = true;
+        let steps = 0;
+
+        push({[`${r},${c}`]:'source'}, `Initialize queue = [(${r},${c})], visited[${r}][${c}] = True, steps = 0`, 8, {source:[r,c], steps});
+
+        let foundSteps = INF;
+
+        while(q.length){
+          let overlay = {};
+          for(let i=0;i<ROWS;i++) for(let j=0;j<COLS;j++) if(visited[i][j] && !(i===r&&j===c)) overlay[`${i},${j}`]='bfs-visited';
+          overlay[`${r},${c}`]='source';
+          for(const [qr,qc] of q) overlay[`${qr},${qc}`]='bfs-frontier';
+
+          push(overlay, `Checking ${q.length} cell(s) at distance ${steps} from the source`, 11, {source:[r,c], steps, queueSize:q.length});
+
+          const levelSize = q.length;
+          let treasureCell = null;
+          let newlyAdded = [];
+          let found = false;
+
+          for(let i=0;i<levelSize;i++){
+            const [cr,cc] = q.shift();
+            if(grid[cr][cc] === 0){
+              treasureCell = [cr,cc];
+              found = true;
+              break;
+            }
+            for(const [dr,dc] of dirs){
+              const nr=cr+dr, nc=cc+dc;
+              if(nr>=0&&nr<ROWS&&nc>=0&&nc<COLS&&!visited[nr][nc]&&grid[nr][nc]!==-1){
+                visited[nr][nc]=true;
+                q.push([nr,nc]);
+                newlyAdded.push([nr,nc]);
+              }
+            }
+          }
+
+          if(found){
+            let overlay2 = {};
+            for(let i=0;i<ROWS;i++) for(let j=0;j<COLS;j++) if(visited[i][j] && !(i===r&&j===c)) overlay2[`${i},${j}`]='bfs-visited';
+            overlay2[`${treasureCell[0]},${treasureCell[1]}`]='treasure-found';
+            overlay2[`${r},${c}`]='source';
+            push(overlay2, `💰 Treasure found at (${treasureCell[0]},${treasureCell[1]})! Return steps = ${steps}`, 13, {source:[r,c], steps});
+            foundSteps = steps;
+            break;
+          } else {
+            let overlay3 = {};
+            for(let i=0;i<ROWS;i++) for(let j=0;j<COLS;j++) if(visited[i][j] && !(i===r&&j===c)) overlay3[`${i},${j}`]='bfs-visited';
+            for(const [nr,nc] of newlyAdded) overlay3[`${nr},${nc}`]='bfs-new';
+            overlay3[`${r},${c}`]='source';
+            push(overlay3, `No treasure at this level. Enqueued ${newlyAdded.length} new neighbor cell(s).`, 15, {source:[r,c], steps, queueSize:q.length});
+
+            steps += 1;
+            let overlay4 = {};
+            for(let i=0;i<ROWS;i++) for(let j=0;j<COLS;j++) if(visited[i][j] && !(i===r&&j===c)) overlay4[`${i},${j}`]='bfs-visited';
+            overlay4[`${r},${c}`]='source';
+            push(overlay4, `steps → ${steps}`, 16, {source:[r,c], steps, queueSize:q.length});
+          }
+        }
+
+        grid[r][c] = foundSteps;
+        resolved[r][c] = true;
+        push(null, `grid[${r}][${c}] = ${foundSteps}`, 3, {});
+      }
+    }
+
+    push(null, "Done! Every land cell now holds its distance to the nearest treasure.", 0, {});
+    return frames;
+  }
+
+  const frames = generateFrames();
+
+  // ---------- DOM setup ----------
+  const boardEl = document.getElementById('board');
+  boardEl.style.gridTemplateColumns = `repeat(${COLS}, 64px)`;
+  for(let r=0;r<ROWS;r++){
+    for(let c=0;c<COLS;c++){
+      const d = document.createElement('div');
+      d.className = 'cell land';
+      d.id = `cell-${r}-${c}`;
+      boardEl.appendChild(d);
+    }
+  }
+
+  const codePanel = document.getElementById('codePanel');
+  codeLines.forEach((line,i)=>{
+    const el = document.createElement('div');
+    el.className = 'code-line';
+    el.id = 'line-'+i;
+    el.textContent = line.length ? line : ' ';
+    codePanel.appendChild(el);
+  });
+
+  const messageEl = document.getElementById('message');
+  const statsEl = document.getElementById('stats');
+  const frameCounterEl = document.getElementById('frameCounter');
+  const playBtn = document.getElementById('playBtn');
+  const stepBtn = document.getElementById('stepBtn');
+  const backBtn = document.getElementById('backBtn');
+  const resetBtn = document.getElementById('resetBtn');
+  const speedSlider = document.getElementById('speedSlider');
+  const speedLabel = document.getElementById('speedLabel');
+
+  function cellText(cls, v){
+    if(cls==='wall') return '🧱';
+    if(cls==='treasure' || cls==='treasure-found') return '💰';
+    if(v===INF) return '';
+    return String(v);
+  }
+
+  let currentFrame = 0;
+  let playing = false;
+  let timer = null;
+
+  function renderFrame(idx){
+    const f = frames[idx];
+    messageEl.textContent = f.msg;
+    frameCounterEl.textContent = `Frame ${idx+1} / ${frames.length}`;
+
+    document.querySelectorAll('.code-line').forEach(el=>el.classList.remove('active'));
+    const lineEl = document.getElementById('line-'+f.line);
+    if(lineEl) lineEl.classList.add('active');
+
+    for(let r=0;r<ROWS;r++){
+      for(let c=0;c<COLS;c++){
+        const el = document.getElementById(`cell-${r}-${c}`);
+        const cls = f.states[r][c];
+        el.className = 'cell ' + cls;
+        el.textContent = cellText(cls, f.grid[r][c]);
+      }
+    }
+
+    const info = f.info || {};
+    let statParts = [];
+    if(info.source) statParts.push(`<b>Source:</b> (${info.source[0]}, ${info.source[1]})`);
+    if(info.steps !== undefined) statParts.push(`<b>steps:</b> ${info.steps}`);
+    if(info.queueSize !== undefined) statParts.push(`<b>queue size:</b> ${info.queueSize}`);
+    statsEl.innerHTML = statParts.join(' &nbsp;|&nbsp; ');
+  }
+
+  function goTo(idx){
+    currentFrame = Math.max(0, Math.min(frames.length-1, idx));
+    renderFrame(currentFrame);
+  }
+
+  function pause(){
+    playing = false;
+    playBtn.textContent = '▶ Play';
+    clearInterval(timer);
+  }
+
+  function step(){
+    if(currentFrame >= frames.length-1){ pause(); return; }
+    goTo(currentFrame+1);
+  }
+
+  function play(){
+    if(playing) return;
+    if(currentFrame >= frames.length-1) goTo(0);
+    playing = true;
+    playBtn.textContent = '⏸ Pause';
+    timer = setInterval(()=>{
+      if(currentFrame >= frames.length-1){ pause(); return; }
+      step();
+    }, Number(speedSlider.value));
+  }
+
+  playBtn.addEventListener('click', ()=> playing ? pause() : play());
+  stepBtn.addEventListener('click', ()=>{ pause(); step(); });
+  backBtn.addEventListener('click', ()=>{ pause(); goTo(currentFrame-1); });
+  resetBtn.addEventListener('click', ()=>{ pause(); goTo(0); });
+  speedSlider.addEventListener('input', ()=>{
+    speedLabel.textContent = speedSlider.value + ' ms';
+    if(playing){ pause(); play(); }
+  });
+
+  goTo(0);
+})();
+</script>
+</body>
+</html>
