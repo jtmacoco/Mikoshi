@@ -3,7 +3,9 @@
 **Description**: Template Tracker
 
 # [[Template-Notes]]
+
 # [[DailySetup]]
+
 # [[Daily-Notes]]
 
 # [[Template-General]]
@@ -33,3 +35,5 @@
 # [[Template-Sub_MOC]]
 
 # [[Template-Daily-Math]]
+
+# [[Template-Kanban]]
