@@ -6,19 +6,16 @@ kanban-plugin: board
 
 ## Backlog
 
-- [x] Set up repo & branch strategy ✅ 2026-08-20
-- [x] Write initial README ✅ 2026-08-20
 - [ ] Add cuda support
 
 
 ## Design
 
-- [x] Plan folder & module structure ✅ 2026-08-20
 
 
 ## To Do
 
-- [ ] Loss function 
+- [ ] Loss function
 - [ ] Implement backward pass / autograd
 - [ ] Gradient checking
 - [ ] Training loop
@@ -27,16 +24,18 @@ kanban-plugin: board
 
 ## In Progress
 
-- [ ] Working on backward pass process (2026-08-20)
+- [ ] Working on Loss Function
 
 
 ## Testing
 
 - [ ] Verify Linear layer works correctly with MLP class (compiles, not yet verified)
 
+
 ## Blocked
 
 - [ ] 
+
 
 ## Done
 
@@ -49,6 +48,9 @@ kanban-plugin: board
 - [x] Initialize weights ✅ 2026-08-17
 - [x] Implement Linear layer forward pass (PyTorch-style) ✅ 2026-08-17
 - [x] Refactor: make Linear its own object, reorganize files/functions ✅ 2026-08-18
+- [x] Set up repo & branch strategy ✅ 2026-08-20
+- [x] Write initial README ✅ 2026-08-20
+- [x] Plan folder & module structure ✅ 2026-08-20
 
 
 
