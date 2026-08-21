@@ -185,7 +185,117 @@ int main(int argc, char **argv){
 - fixed `my_strtok`: had issue where would move str before the `NULL` check so moved it down after check
 
 
+# Thursday
+
+## Solution 
+
+```c
+#include <stdio.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <string.h>
+#include <fcntl.h>
+#include <wait.h>
+
+char *my_strtok(char *restrict str, const char *restrict delim){
+	size_t count = 0;
+	static char *saved = NULL;
+	if (str == NULL){
+		str = saved;
+	}
+	if (str == NULL){
+		return NULL;
+	}
+	str += strspn(str,delim);
+	if (*str == '\0'){
+		saved = NULL;
+		return NULL;
+	}
+	char *token_end = str + strcspn(str,delim);
+	if (*token_end == '\0'){
+		saved = NULL;
+	}
+	else{
+		*token_end = '\0';
+		saved = token_end+1;
+	}
+	return str;
+}
+
+int main(int argc, char **argv){
+	char line[1024];
+	while(1){
+		printf("myShel> ");
+		if (!fgets(line,sizeof(line),stdin)) break;
+		char *args[64];
+		int i = 0;
+		char *tok = my_strtok(line, " \t\n");
+		while (tok != NULL){
+			args[i++] = tok;
+			tok = my_strtok(NULL, " \t\n");
+		}
+		args[i] = NULL;//set end
+		if (i == 0) continue;                       
+		
+		if (strcmp(args[0], "exit") == 0) break;
+
+		if (strcmp(args[0], "cd") == 0){//verify path
+			const char *path = args[1];
+			if (path == NULL){
+				path = getenv("HOME");
+				if (path == NULL){
+					perror("cd: HOME not set\n");
+					continue;
+				}
+			}
+			if(chdir(path) != 0){
+				perror("cd");
+			}
+			continue;
+		}
+		//output redirection
+		char *outFile = NULL;
+		for (int j = 0; args[j] != NULL; j++){
+			if(strcmp(args[j], ">") == 0){
+				args[j] = NULL;
+				outFile = args[j+1];
+				break;
+			}
+		}
+		pid_t pid;
+		pid = fork();
+		if (pid == 0){//child
+			if (outFile != NULL){
+				int fd = open(outFile, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+				if (fd < 0){
+					perror("open failed");
+					_exit(1);
+				}
+				if (dup2(fd,STDOUT_FILENO) < 0){
+					perror("dup2 failed");
+					_exit(1);
+				}
+				close(fd);
+			}
+			execvp(args[0], args);
+			perror("exec failed");
+			_exit(1);
+		}
+		else if (pid > 0){//parent
+			int status;
+			waitpid(pid,&status,0);
+		}else{
+			perror("fork failed");
+			continue;
+		}
+		
+	}
+}
+```
+
+## Notes
+
+- `chdir()`: A function used to change the current working directory of calling process
+- `dup2()`: used to duplicate existing file descriptor to a specific user defined file descriptor
+
 ## Links
-
-
-
