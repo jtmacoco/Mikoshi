@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Rotting Oranges — BFS Visualization</title>
+<style>
+  :root{
+    --bg:#0d1117;
+    --panel:#161b22;
+    --border:#30363d;
+    --text:#c9d1d9;
+    --muted:#8b949e;
+    --accent:#58a6ff;
+    --orange:#f0883e;
+    --purple:#8957e5;
+    --green:#3fb950;
+    --gold:#e3b341;
+    --red:#f85149;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    padding:20px;
+  }
+  .wrap{max-width:920px;margin:0 auto;}
+  h1{font-size:20px;margin:0 0 2px 0;}
+  .subtitle{color:var(--muted);font-size:13px;margin-bottom:16px;}
+
+  .layout{display:flex;gap:20px;flex-wrap:wrap;align-items:flex-start;}
+  .board-col{flex:1 1 340px;display:flex;flex-direction:column;align-items:center;}
+  .code-col{flex:1 1 320px;min-width:280px;}
+
+  #board{
+    display:grid;
+    gap:6px;
+    background:var(--panel);
+    padding:14px;
+    border-radius:12px;
+    border:1px solid var(--border);
+  }
+  .cell{
+    width:70px;height:70px;
+    display:flex;align-items:center;justify-content:center;
+    border-radius:8px;
+    font-weight:700;
+    font-family:"SFMono-Regular",Consolas,Menlo,monospace;
+    font-size:26px;
+    transition:background .25s ease,border-color .25s ease,box-shadow .25s ease,transform .2s ease;
+  }
+  .empty{background:#21262d;color:#484f58;border:2px solid var(--border);font-size:14px;}
+  .fresh{background:linear-gradient(135deg,#ffa657,#f0883e);color:#111;border:2px solid var(--orange);}
+  .rotten{background:linear-gradient(135deg,#5a3d2b,#3d2b1f);color:#d9b38c;border:2px solid #6e4a34;}
+  .scanning{background:rgba(88,166,255,.18);border:2px solid var(--accent);box-shadow:0 0 10px rgba(88,166,255,.4);}
+  .frontier{background:var(--purple);color:#fff;border:2px solid #a371f7;box-shadow:0 0 16px rgba(137,87,229,.7);transform:scale(1.05);}
+  .checking-neighbor{border:2px dashed var(--orange);box-shadow:0 0 10px rgba(240,136,62,.5);}
+  .newly-rotten{background:linear-gradient(135deg,#f85149,#8b2b26);color:#fff;border:2px solid var(--red);box-shadow:0 0 20px rgba(248,81,73,.7);animation:pulse .5s ease;}
+  .queued{background:rgba(137,87,229,.18);border:2px solid #8957e5;}
+
+  @keyframes pulse{0%{transform:scale(1);}50%{transform:scale(1.18);}100%{transform:scale(1);}}
+
+  .stats{
+    margin-top:12px;font-size:13px;color:var(--muted);
+    display:flex;gap:14px;flex-wrap:wrap;justify-content:center;
+  }
+  .stats b{color:var(--text);}
+
+  .message{
+    margin-top:14px;padding:10px 14px;background:var(--panel);
+    border:1px solid var(--border);border-radius:8px;
+    font-size:13.5px;min-height:20px;text-align:center;max-width:540px;
+  }
+
+  .controls{
+    margin-top:16px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:center;
+  }
+  button{
+    background:#21262d;color:var(--text);border:1px solid var(--border);
+    padding:8px 14px;border-radius:6px;cursor:pointer;font-size:13px;
+  }
+  button:hover{background:#30363d;}
+  button:active{transform:translateY(1px);}
+  #playBtn{background:#238636;border-color:#2ea043;color:#fff;font-weight:600;}
+  #playBtn:hover{background:#2ea043;}
+
+  .speedWrap{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);}
+  input[type=range]{accent-color:var(--accent);}
+
+  .frameCounter{font-size:12px;color:var(--muted);margin-top:8px;}
+
+  .code-panel{
+    background:var(--panel);border:1px solid var(--border);border-radius:10px;
+    padding:14px 16px;font-family:"SFMono-Regular",Consolas,Menlo,monospace;font-size:12.5px;
+    line-height:1.65;white-space:pre;overflow-x:auto;
+  }
+  .code-line{padding:1px 6px;border-radius:4px;color:var(--muted);}
+  .code-line.active{background:rgba(240,136,62,.18);color:#ffd8a8;border-left:3px solid var(--orange);padding-left:3px;}
+
+  .legend{
+    margin-top:16px;display:flex;flex-wrap:wrap;gap:10px 16px;font-size:12px;color:var(--muted);
+  }
+  .legend span{display:inline-flex;align-items:center;gap:6px;}
+  .swatch{width:14px;height:14px;border-radius:4px;display:inline-block;border:1px solid var(--border);}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>🍊 Rotting Oranges — Multi-source BFS Visualization</h1>
+  <div class="subtitle">Matches your exact code: scan for fresh/rotten oranges, then pop the queue one entry at a time, spreading rot to fresh neighbors.</div>
+
+  <div class="layout">
+    <div class="board-col">
+      <div id="board"></div>
+      <div class="stats" id="stats"></div>
+      <div class="message" id="message"></div>
+      <div class="controls">
+        <button id="resetBtn">⏮ Reset</button>
+        <button id="backBtn">◀ Step</button>
+        <button id="playBtn">▶ Play</button>
+        <button id="stepBtn">Step ▶</button>
+        <div class="speedWrap">
+          Speed:
+          <input type="range" id="speedSlider" min="80" max="1200" value="400" step="10">
+          <span id="speedLabel">400 ms</span>
+        </div>
+      </div>
+      <div class="frameCounter" id="frameCounter"></div>
+
+      <div class="legend">
+        <span><i class="swatch" style="background:linear-gradient(135deg,#ffa657,#f0883e)"></i>Fresh (1)</span>
+        <span><i class="swatch" style="background:linear-gradient(135deg,#5a3d2b,#3d2b1f)"></i>Rotten (2)</span>
+        <span><i class="swatch" style="background:#21262d"></i>Empty (0)</span>
+        <span><i class="swatch" style="background:#8957e5"></i>Popped from queue</span>
+        <span><i class="swatch" style="background:rgba(240,136,62,.15);border-color:#f0883e;border-style:dashed"></i>Checking neighbor</span>
+        <span><i class="swatch" style="background:linear-gradient(135deg,#f85149,#8b2b26)"></i>Just turned rotten</span>
+        <span><i class="swatch" style="background:rgba(88,166,255,.18);border-color:#58a6ff"></i>Initial scan</span>
+      </div>
+    </div>
+
+    <div class="code-col">
+      <div class="code-panel" id="codePanel"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  // ---- Edit this grid to try your own example (0=empty, 1=fresh, 2=rotten) ----
+  const initialGrid = [
+    [2,1,1],
+    [1,1,0],
+    [0,1,1]
+  ];
+  // -----------------------------------------------------------------------------
+
+  const n = initialGrid.length;
+  const m = initialGrid[0].length;
+  const direction = [[0,-1],[0,1],[-1,0],[1,0]];
+
+  const codeLines = [
+    "n = len(grid); m = len(grid[0])",
+    "for row in range(n):",
+    "  for col in range(m):",
+    "    if grid[row][col] == 1: fresh += 1",
+    "    if grid[row][col] == 2: rotten.append([row,col,0])",
+    "res = 0",
+    "while rotten:",
+    "  r, c, t = rotten.popleft()",
+    "  res = max(res, t)",
+    "  for dr, dc in direction:",
+    "    nr, nc = r+dr, c+dc",
+    "    if nr<0 or nr>=n or nc<0 or nc>=m: continue",
+    "    if grid[nr][nc] == 1:",
+    "      fresh -= 1",
+    "      rotten.append([nr, nc, t+1])",
+    "      grid[nr][nc] = 2",
+    "return res if fresh == 0 else -1"
+  ];
+
+  // ---------- Frame generation (mirrors the Python exactly) ----------
+  function generateFrames(){
+    let grid = initialGrid.map(row=>row.slice());
+    const frames = [];
+
+    function baseState(r,c){
+      const v = grid[r][c];
+      if(v===0) return 'empty';
+      if(v===1) return 'fresh';
+      return 'rotten';
+    }
+    function baseStates(){
+      const s=[];
+      for(let r=0;r<n;r++){ const row=[]; for(let c=0;c<m;c++) row.push(baseState(r,c)); s.push(row); }
+      return s;
+    }
+    function queueOverlay(q){
+      const ov = {};
+      for(const [qr,qc] of q) ov[`${qr},${qc}`]='queued';
+      return ov;
+    }
+    function push(overlay,msg,line,info){
+      const states = baseStates();
+      if(overlay) for(const key in overlay){
+        const [r,c] = key.split(',').map(Number);
+        states[r][c] = overlay[key];
+      }
+      frames.push({grid:grid.map(r=>r.slice()), states, msg, line, info: info||{}});
+    }
+
+    push(null, "Scan the grid: count fresh oranges and collect all initially rotten oranges into the queue.", 0, {});
+
+    let fresh = 0;
+    let rotten = [];
+
+    for(let row=0; row<n; row++){
+      for(let col=0; col<m; col++){
+        let overlay = { ...queueOverlay(rotten), [`${row},${col}`]:'scanning' };
+        push(overlay, `Checking cell (${row},${col})`, 2, {fresh, queueSize:rotten.length});
+
+        const orange = grid[row][col];
+        if(orange === 1){
+          fresh += 1;
+          push(overlay, `It's fresh (1) → fresh = ${fresh}`, 3, {fresh, queueSize:rotten.length});
+        }
+        if(orange === 2){
+          rotten.push([row,col,0]);
+          overlay = { ...queueOverlay(rotten), [`${row},${col}`]:'scanning' };
+          push(overlay, `It's rotten (2) → append [${row},${col},0] to queue`, 4, {fresh, queueSize:rotten.length});
+        }
+      }
+    }
+
+    push(queueOverlay(rotten), `Scan complete: fresh = ${fresh}, queue size = ${rotten.length}. res = 0`, 5, {fresh, queueSize:rotten.length, res:0});
+
+    let res = 0;
+
+    push(queueOverlay(rotten), rotten.length ? "Enter the BFS loop: while the queue is not empty..." : "Queue is empty — no BFS needed.", 6, {fresh, queueSize:rotten.length, res});
+
+    while(rotten.length){
+      const [r,c,t] = rotten.shift();
+      res = Math.max(res, t);
+
+      let overlay = { ...queueOverlay(rotten), [`${r},${c}`]:'frontier' };
+      push(overlay, `Pop [${r},${c},${t}] → r=${r}, c=${c}, t=${t}. res = max(res, ${t}) = ${res}`, 8, {fresh, queueSize:rotten.length, res, t});
+
+      for(const [dr,dc] of direction){
+        const nr = r+dr, nc = c+dc;
+
+        let overlay2 = { ...queueOverlay(rotten), [`${r},${c}`]:'frontier' };
+        const inBounds = !(nr<0 || nr>=n || nc<0 || nc>=m);
+        if(inBounds) overlay2[`${nr},${nc}`] = 'checking-neighbor';
+        push(overlay2, `Check neighbor (${nr},${nc})`, 10, {fresh, queueSize:rotten.length, res, t});
+
+        if(!inBounds){
+          push(overlay2, `(${nr},${nc}) is out of bounds → continue`, 11, {fresh, queueSize:rotten.length, res, t});
+          continue;
+        }
+
+        if(grid[nr][nc] === 1){
+          fresh -= 1;
+          rotten.push([nr,nc,t+1]);
+          grid[nr][nc] = 2;
+
+          let overlay3 = { ...queueOverlay(rotten), [`${r},${c}`]:'frontier', [`${nr},${nc}`]:'newly-rotten' };
+          push(overlay3, `Fresh orange! fresh -= 1 → ${fresh}. Append [${nr},${nc},${t+1}] to queue, grid[${nr}][${nc}] = 2`, 12, {fresh, queueSize:rotten.length, res, t});
+        } else {
+          push(overlay2, `grid[${nr}][${nc}] is not fresh → skip`, 12, {fresh, queueSize:rotten.length, res, t});
+        }
+      }
+    }
+
+    const finalOverlay = null;
+    const answer = fresh === 0 ? res : -1;
+    push(finalOverlay, `Queue empty. return res if fresh == 0 else -1 → fresh=${fresh}, res=${res} → answer = ${answer}`, 16, {fresh, res, answer});
+
+    return frames;
+  }
+
+  const frames = generateFrames();
+
+  // ---------- DOM setup ----------
+  const boardEl = document.getElementById('board');
+  boardEl.style.gridTemplateColumns = `repeat(${m}, 70px)`;
+  for(let r=0;r<n;r++){
+    for(let c=0;c<m;c++){
+      const d = document.createElement('div');
+      d.className = 'cell empty';
+      d.id = `cell-${r}-${c}`;
+      boardEl.appendChild(d);
+    }
+  }
+
+  const codePanel = document.getElementById('codePanel');
+  codeLines.forEach((line,i)=>{
+    const el = document.createElement('div');
+    el.className = 'code-line';
+    el.id = 'line-'+i;
+    el.textContent = line.length ? line : ' ';
+    codePanel.appendChild(el);
+  });
+
+  const messageEl = document.getElementById('message');
+  const statsEl = document.getElementById('stats');
+  const frameCounterEl = document.getElementById('frameCounter');
+  const playBtn = document.getElementById('playBtn');
+  const stepBtn = document.getElementById('stepBtn');
+  const backBtn = document.getElementById('backBtn');
+  const resetBtn = document.getElementById('resetBtn');
+  const speedSlider = document.getElementById('speedSlider');
+  const speedLabel = document.getElementById('speedLabel');
+
+  function cellText(cls, v){
+    if(v===0) return '';
+    if(v===1) return '🍊';
+    if(v===2) return '🟤';
+    return '';
+  }
+
+  let currentFrame = 0;
+  let playing = false;
+  let timer = null;
+
+  function renderFrame(idx){
+    const f = frames[idx];
+    messageEl.textContent = f.msg;
+    frameCounterEl.textContent = `Frame ${idx+1} / ${frames.length}`;
+
+    document.querySelectorAll('.code-line').forEach(el=>el.classList.remove('active'));
+    const lineEl = document.getElementById('line-'+f.line);
+    if(lineEl) lineEl.classList.add('active');
+
+    for(let r=0;r<n;r++){
+      for(let c=0;c<m;c++){
+        const el = document.getElementById(`cell-${r}-${c}`);
+        const cls = f.states[r][c];
+        el.className = 'cell ' + cls;
+        el.textContent = cellText(f.grid[r][c]);
+      }
+    }
+
+    const info = f.info || {};
+    let statParts = [];
+    if(info.fresh !== undefined) statParts.push(`<b>fresh:</b> ${info.fresh}`);
+    if(info.queueSize !== undefined) statParts.push(`<b>queue size:</b> ${info.queueSize}`);
+    if(info.res !== undefined) statParts.push(`<b>res:</b> ${info.res}`);
+    if(info.t !== undefined) statParts.push(`<b>t:</b> ${info.t}`);
+    if(info.answer !== undefined) statParts.push(`<b>answer:</b> ${info.answer}`);
+    statsEl.innerHTML = statParts.join(' &nbsp;|&nbsp; ');
+  }
+
+  function goTo(idx){
+    currentFrame = Math.max(0, Math.min(frames.length-1, idx));
+    renderFrame(currentFrame);
+  }
+
+  function pause(){
+    playing = false;
+    playBtn.textContent = '▶ Play';
+    clearInterval(timer);
+  }
+
+  function step(){
+    if(currentFrame >= frames.length-1){ pause(); return; }
+    goTo(currentFrame+1);
+  }
+
+  function play(){
+    if(playing) return;
+    if(currentFrame >= frames.length-1) goTo(0);
+    playing = true;
+    playBtn.textContent = '⏸ Pause';
+    timer = setInterval(()=>{
+      if(currentFrame >= frames.length-1){ pause(); return; }
+      step();
+    }, Number(speedSlider.value));
+  }
+
+  playBtn.addEventListener('click', ()=> playing ? pause() : play());
+  stepBtn.addEventListener('click', ()=>{ pause(); step(); });
+  backBtn.addEventListener('click', ()=>{ pause(); goTo(currentFrame-1); });
+  resetBtn.addEventListener('click', ()=>{ pause(); goTo(0); });
+  speedSlider.addEventListener('input', ()=>{
+    speedLabel.textContent = speedSlider.value + ' ms';
+    if(playing){ pause(); play(); }
+  });
+
+  goTo(0);
+})();
+</script>
+</body>
+</html>
