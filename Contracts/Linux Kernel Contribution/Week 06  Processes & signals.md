@@ -298,4 +298,181 @@ int main(int argc, char **argv){
 - `chdir()`: A function used to change the current working directory of calling process
 - `dup2()`: used to duplicate existing file descriptor to a specific user defined file descriptor
 
+# Friday
+
+## Solution
+```c
+#include <stdio.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <string.h>
+#include <fcntl.h>
+#include <signal.h>
+#include <wait.h>
+
+void handle_sigint(int sig){
+	write(STDOUT_FILENO, "\n", 6);
+}
+
+char *my_strtok(char *restrict str, const char *restrict delim){
+	size_t count = 0;
+	static char *saved = NULL;
+	if (str == NULL){
+		str = saved;
+	}
+	if (str == NULL){
+		return NULL;
+	}
+	str += strspn(str,delim);
+	if (*str == '\0'){
+		saved = NULL;
+		return NULL;
+	}
+	char *token_end = str + strcspn(str,delim);
+	if (*token_end == '\0'){
+		saved = NULL;
+	}
+	else{
+		*token_end = '\0';
+		saved = token_end+1;
+	}
+	return str;
+}
+
+int main(int argc, char **argv){
+	char line[1024];
+	struct sigaction sa;
+	sa.sa_handler = handle_sigint;
+	sigemptyset(&sa.sa_mask);
+	sa.sa_flags = SA_RESTART;
+	sigaction(SIGINT, &sa, NULL);
+	while(1){
+		printf("myShel> ");
+		if (!fgets(line,sizeof(line),stdin)) break;
+		char *args[64];
+		int i = 0;
+		char *tok = my_strtok(line, " \t\n");
+		while (tok != NULL){
+			args[i++] = tok;
+			tok = my_strtok(NULL, " \t\n");
+		}
+		args[i] = NULL;//set end
+		if (i == 0) continue;                       
+		
+		if (strcmp(args[0], "exit") == 0) break;
+
+		if (strcmp(args[0], "cd") == 0){//verify path
+			const char *path = args[1];
+			if (path == NULL){
+				path = getenv("HOME");
+				if (path == NULL){
+					perror("cd: HOME not set\n");
+					continue;
+				}
+			}
+			if(chdir(path) != 0){
+				perror("cd");
+			}
+			continue;
+		}
+		//output redirection
+		char *outFile = NULL;
+		for (int j = 0; args[j] != NULL; j++){
+			if(strcmp(args[j], ">") == 0){
+				args[j] = NULL;
+				outFile = args[j+1];
+				break;
+			}
+		}
+		pid_t pid;
+		pid = fork();
+		if (pid == 0){//child
+			signal(SIGINT, SIG_DFL);
+			if (outFile != NULL){
+				int fd = open(outFile, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+				if (fd < 0){
+					perror("open failed");
+					_exit(1);
+				}
+				if (dup2(fd,STDOUT_FILENO) < 0){
+					perror("dup2 failed");
+					_exit(1);
+				}
+				close(fd);
+			}
+			execvp(args[0], args);
+			perror("exec failed");
+			_exit(1);
+		}
+		else if (pid > 0){//parent
+			int status;
+			waitpid(pid,&status,0);
+			if (WIFSIGNALED(status)){
+				int sig = WTERMSIG(status);
+				if (sig == SIGINT){
+					printf("terminate\n");
+				}else{
+					printf("Termianted by signal %d\n",sig);
+				}
+			}
+		}else{
+			perror("fork failed");
+			continue;
+		}
+		
+	}
+}
+```
+
+## Notes
+
+- `sigaction ` modern version to tell the kernel when this signal arrives run this function, it replaced the older `signal()` function
+- A signal is an async notification from the kernel to your process. When it arrives it interrupts the flow of the program
+- `SIGINT` is what the kernel sends when someone presses `Ctrl-C` in the terminal
+- 3 **handling modes** per signal:
+	1. **Default action**(`SIG_DFL`) - for `SIGINT` means terminate the process 
+	2. **Ignore**(`SIG_IGN`) - signal is silently discarded, nothing happens
+	3. **Custom handler** - write own function that will run instead
+- `sa_handler` is a function pointer, it's the function the kernel will jump to when the signal arrives, most have the signature of `void handler(int sig)`
+- `sa_mask` - a set of other signals to temporarily block while your handler is running, `sigemptyset(&sa.sa_mask)` just zeroes it out meaning don't block anything extra
+- `sa_flags` - tweaks behavior. `SA_RESTART`: normally if a signal interrupts a blocking system, that call fails immediately and returns `-1`, `SA_RESTART` tells the kernel if this signal interrupts a restartable syscall, just automatically resume it
+- `sigaction()` - signature is:
+
+```c
+int sigaction(int signum, const struct sigaction *act, structaction *oldact)
+```
+
+- `signum`: which signal you're configuring (`SIGINT`)
+- `act`: the new configuration you want (the struct you built)
+- `oldact`: optional out-parameter to save the _previous_ configuration, so you could restore it later. You pass `NULL` since you don't need it.
+- After `execvp` once it succeeds, the entire image is replaced with a new program, that programs code doesn't know about the `handle_sigint` function. So it falls back to the default function
+
+The rule POSIX sets is:
+
+- Signal disposition was `SIG_DFL` → stays `SIG_DFL` after exec (no change).
+- Signal disposition was `SIG_IGN` → stays `SIG_IGN` after exec (preserved, since "ignore" needs no code pointer).
+- Signal disposition was a **custom handler function** → reset to `SIG_DFL` after exec.
+
+So in this case falls back to the custom handler function
+- The code at the top setting the `sigaction` struct overrides the default function basically
+- **hangs until Enter** because of how `SA_RESTART` works
+
+### What's actually happening
+
+```c
+while(1){
+    printf("myShel> ");
+    if (!fgets(line,sizeof(line),stdin)) break;   // <-- SIGINT arrives HERE, mid-call
+    ...
+}
+```
+
+When you press Ctrl-C while `fgets` is blocked waiting for input:
+
+1. The kernel delivers `SIGINT`.
+2. Your handler runs, does `write(STDOUT_FILENO, "\n", 1)` — that's the blank-looking newline you see.
+3. Handler returns.
+4. Because of `SA_RESTART`, the kernel **resumes the exact same `fgets` call** — not the top of the `while` loop, not the `printf` — just the same blocked read, still waiting for a line of input.
+
 ## Links
+
