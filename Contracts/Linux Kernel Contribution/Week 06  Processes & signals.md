@@ -474,5 +474,243 @@ When you press Ctrl-C while `fgets` is blocked waiting for input:
 3. Handler returns.
 4. Because of `SA_RESTART`, the kernel **resumes the exact same `fgets` call** — not the top of the `while` loop, not the `printf` — just the same blocked read, still waiting for a line of input.
 
+# Saturday
+
+## Solution
+
+```c
+#include <stdio.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <string.h>
+#include <fcntl.h>
+#include <signal.h>
+#include <wait.h>
+
+void handle_sigint(int sig){
+	write(STDOUT_FILENO, "\n", 1);
+}
+
+char *my_strtok(char *restrict str, const char *restrict delim){
+	size_t count = 0;
+	static char *saved = NULL;
+	if (str == NULL){
+		str = saved;
+	}
+	if (str == NULL){
+		return NULL;
+	}
+	str += strspn(str,delim);
+	if (*str == '\0'){
+		saved = NULL;
+		return NULL;
+	}
+	char *token_end = str + strcspn(str,delim);
+	if (*token_end == '\0'){
+		saved = NULL;
+	}
+	else{
+		*token_end = '\0';
+		saved = token_end+1;
+	}
+	return str;
+}
+
+int main(int argc, char **argv){
+	char line[1024];
+	struct sigaction sa;
+	sa.sa_handler = handle_sigint;
+	sigemptyset(&sa.sa_mask);
+	sa.sa_flags = SA_RESTART;
+	sigaction(SIGINT, &sa, NULL);
+	while(1){
+		printf("myShel> ");
+		if (!fgets(line,sizeof(line),stdin)) break;
+		char *args[64];
+		int i = 0;
+		char *tok = my_strtok(line, " \t\n");
+		while (tok != NULL){
+			args[i++] = tok;
+			tok = my_strtok(NULL, " \t\n");
+		}
+		args[i] = NULL;//set end
+		if (i == 0) continue;                       
+
+		if (strcmp(args[0], "exit") == 0) break;
+
+		if (strcmp(args[0], "cd") == 0){//verify path
+			const char *path = args[1];
+			if (path == NULL){
+				path = getenv("HOME");
+				if (path == NULL){
+					perror("cd: HOME not set\n");
+					continue;
+				}
+			}
+			if(chdir(path) != 0){
+				perror("cd");
+			}
+			continue;
+		}
+		//output redirection
+		char *outFile = NULL;
+		for (int j = 0; args[j] != NULL; j++){
+			if(strcmp(args[j], ">") == 0){
+				args[j] = NULL;
+				outFile = args[j+1];
+				break;
+			}
+		}
+
+		char **cmds[64];
+		int numCmds = 0;
+		cmds[numCmds++] = &args[0];//postfix
+		for (int j = 0; args[j] != NULL; j++){
+			if (strcmp(args[j], "|") == 0){
+				args[j] = NULL;
+				cmds[numCmds++] = &args[j+1];
+			}
+		}
+		int pipes[numCmds - 1 > 0 ? numCmds -1 : 1][2];
+		for (int j = 0; j < numCmds -1 ; j++){
+			if (pipe(pipes[j]) < 0){
+				perror("pipe failed");
+				_exit(-1);
+			}
+		}
+		pid_t pids[64];
+		int forkFailed = 0;
+		for (int j = 0; j < numCmds; j++){
+			pid_t pid;
+			pid = fork();
+			if (pid == 0){//child
+				signal(SIGINT, SIG_DFL);
+
+				if ( j > 0){
+					dup2(pipes[j-1][0], STDIN_FILENO);
+				}
+				if ( j < numCmds - 1){
+					dup2(pipes[j][1], STDOUT_FILENO);
+				}
+				for (int k = 0; k < numCmds - 1; k++){
+					close(pipes[k][0]);
+					close(pipes[k][1]);
+				}
+
+				if (j == numCmds -1 && outFile != NULL){
+					int fd = open(outFile, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+					if (fd < 0){
+						perror("open failed");
+						_exit(1);
+					}
+					if (dup2(fd,STDOUT_FILENO) < 0){
+						perror("dup2 failed");
+						_exit(1);
+					}
+					close(fd);
+				}
+				execvp(cmds[j][0], cmds[j]);
+				perror("exec failed");
+				_exit(1);
+			}
+			else if (pid > 0){//parent
+				pids[j] = pid;
+			}else{
+				perror("fork failed");
+				forkFailed = 1;
+				pids[j] = -1;
+			}
+		}
+		for (int k = 0; k < numCmds - 1; k++){
+			close(pipes[k][0]);
+			close(pipes[k][1]);
+		}
+		for (int j = 0; j < numCmds; j++){
+			if (pids[j] <= 0) continue;
+			int status;
+			waitpid(pids[j], &status, 0);
+			if (WIFSIGNALED(status)){
+				int sig = WTERMSIG(status);
+				if (sig == SIGINT){
+					printf("terminate\n");
+				}else{
+					printf("Terminated by signal %d\n",sig);
+				}
+			}
+		}
+		if (forkFailed) continue;
+
+	}
+}
+```
+## Notes
+
+- Each pipe gets it's own string of commands from `args` which is why it needs to be a double pointer
+
+Walk through the types:
+
+- `args` is declared as `char *args[64]`. So `args` is an array of `char*`. The type of `args[0]` is `char*`. The type of `&args[0]` is `char**` (a pointer to a `char*`).
+- Each `cmds[j]` needs to hold one of these `&args[...]` values — a pointer to "the first `char*` in this command's slice of the array."
+- So `cmds` needs to be an array of `char**`, i.e. `char **cmds[64]`.
+
+Think of it in layers:
+
+```c
+char*        →  a string (e.g. "ls")
+char*[]      →  an argv array (e.g. args = {"ls", "-la", NULL})
+char**       →  a pointer to the start of an argv array
+char**[]     →  cmds: an array of pointers, each pointing to the start of a different argv array
+```
+
+Concretely, for `ls -la | grep foo | wc -l`, after parsing, `args` in memory looks like:
+
+```c
+args[0] = "ls"
+args[1] = "-la"
+args[2] = NULL     (was "|", nulled out)
+args[3] = "grep"
+args[4] = "foo"
+args[5] = NULL     (was "|", nulled out)
+args[6] = "wc"
+args[7] = "-l"
+args[8] = NULL
+```
+
+And `cmds` just stores three pointers _into_ that same array, marking where each command starts:
+
+```c
+cmds[0] = &args[0]   →  points at "ls",   reading forward hits {"ls","-la",NULL}
+cmds[1] = &args[3]   →  points at "grep", reading forward hits {"grep","foo",NULL}
+cmds[2] = &args[6]   →  points at "wc",   reading forward hits {"wc","-l",NULL}
+```
+
+- `pids[64]` since each fork call gives back different `pid` since forking `numCmds` times 
+
+```c
+#define STDIN_FILENO  0
+#define STDOUT_FILENO 1
+#define STDERR_FILENO 2
+```
+
+### What a file descriptor actually is
+
+Every process has a small table (managed by the kernel) mapping small integers → open "things" (files, pipes, sockets, terminals, whatever). By convention, when a process starts, the OS/shell has already set up:
+
+- fd `0` → wherever input comes from (usually your terminal keyboard)
+- fd `1` → wherever output goes (usually your terminal screen)
+- fd `2` → wherever errors go (usually also your terminal screen)
+
+```c 
+else if (pid > 0){//parent
+	pids[j] = pid;
+}
+```
+
+- Record it instead of waiting immediately because it can cause a deadlock in the pipe.
+
+Without this line, `pids[j]` would stay whatever garbage/uninitialized value it had (since you never assigned it), and your later `waitpid(pids[j], ...)` loop would be calling `waitpid` on garbage PIDs instead of your actual children — likely producing `ECHILD` errors or, worse, silently doing nothing useful for that slot.
+
+So to directly answer "what's the point": it's the parent's bookkeeping step — the moment it captures and stores the child's PID before moving on to fork the next pipeline stage, so that the deferred `waitpid` loop later has something valid to work with.
+
 ## Links
 
