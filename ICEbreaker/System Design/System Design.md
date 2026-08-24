@@ -2,6 +2,7 @@
 title: System Design
 source: "[[ICEbreaker]]"
 tags:
+  - moc
 created: 2026-07-04
 ---
 ## Overview
