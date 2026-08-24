@@ -11,7 +11,7 @@ author: Benjamin and Michael Shermer
 subject: mental math
 status: reading
 rating:
-stopped: page 53
+stopped: page 59
 ---
 
 ## Why I'm Reading This
@@ -166,3 +166,50 @@ flowchart LR
 
 - Notice how we add a number to make it whole 
 - Then that number we add just square since 1 digit is easy
+
+# Chapter 3 
+
+## 2 by 2 Multiplication
+
+### Addition Method
+
+- Break up problem to perform 2 by 1 multiplication
+$$
+\begin{array}{r}
+46 \\
+\times 42 & (40+2) \\
+\hline
+40\times 46 =1840\\
+2\times46=92\\
+\hline
+1932
+\end{array}
+$$
+- How to decide which number to break up numerator or denominator?
+	- Try to choose the number that will produce the easier addition problem
+	- Most cases **break up the number with the smaller last digit** since usually produces a smaller second number for you to add
+- Always break up number that ends in 1
+- If both numbers end in the same digit **break up the larger number**
+$$
+\begin{array}{r}
+84 & (80+4) \\
+\times 34 \\
+\hline
+80\times 34 =2720\\
+4\times34=136\\
+\hline
+2856
+\end{array}
+$$
+
+- If one number is much larger than the other, often pays to break up the larger number even if it has the larger last digit
+- When multiply a number in the 50's break the number in the 50's
+- **Always round it down** (I think)
+
+> [!danger] Wrong page number in pdf
+> - Pg 216 found on page 57
+
+### 11 multiplication trick
+ $42 \times 11$
+ 1. $4+2=6$ 
+ 2. place 6 in between 42 so $462$

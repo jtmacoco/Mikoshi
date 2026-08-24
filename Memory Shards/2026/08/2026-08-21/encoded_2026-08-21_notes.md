@@ -1,8 +1,10 @@
-# TODO
-- [ ] Read
-- [ ] Practice C
-- [ ] Practice CUDA
-- [ ] Mental Math
-- [ ] Leetcode
+# UTHO
+- [ ] Rgae
+- [ ] Qrfhuiff D
+- [ ] Uvacvidf CZIB
+- [ ] Mhoufp Mavh
+- [ ] Mfeyhpdh
 
-# Shard Log
+# Tifvd Lqg
+
+Opt f qpnj mpl xodcy J xax xp fxdlnrg tkrfe. Dfi bt pz qndza vhpvgm biifi tzgks.

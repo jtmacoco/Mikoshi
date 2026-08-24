@@ -15,8 +15,6 @@ kanban-plugin: board
 
 ## To Do
 
-- [ ] Loss function
-- [ ] Implement backward pass / autograd
 - [ ] Gradient checking
 - [ ] Training loop
 - [ ] Write unit tests for Linear layer
@@ -24,7 +22,7 @@ kanban-plugin: board
 
 ## In Progress
 
-- [ ] Working on Loss Function
+- [ ] Implement backward pass / autograd
 
 
 ## Testing
@@ -51,6 +49,7 @@ kanban-plugin: board
 - [x] Set up repo & branch strategy ✅ 2026-08-20
 - [x] Write initial README ✅ 2026-08-20
 - [x] Plan folder & module structure ✅ 2026-08-20
+- [x] Working on Loss Function ✅ 2026-08-23
 
 
 
