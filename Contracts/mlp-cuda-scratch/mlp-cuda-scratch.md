@@ -52,13 +52,3 @@ stack: c, cuda
 The `|` (bitwise OR) then combines all four into one `uint32_t`. This is the standard manual way to parse a big-endian 32-bit value regardless of the host machine's endianness.
 
 ## Links
-
-
-
-
-
-%% kanban:settings
-```
-{"kanban-plugin":"board","list-collapse":[null,null,false]}
-```
-%%
