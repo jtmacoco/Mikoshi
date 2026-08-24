@@ -9,6 +9,12 @@ created: 2026-07-04
 
 Practice for interview questions
 
+# MOC
+
+```dataview
+LIST FROM "Mikoshi/ICEbreaker"
+WHERE contains(file.tags, "moc")
+```
 ## Unsolved
 
 ```dataview
