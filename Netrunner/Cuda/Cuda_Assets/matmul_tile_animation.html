@@ -1,0 +1,231 @@
+<div id="mm-demo" style="font-family: 'SF Mono', Menlo, Consolas, monospace; max-width: 720px; margin: 0 auto; color:#1a1a1a;">
+
+  <style>
+    #mm-demo * { box-sizing: border-box; }
+    #mm-demo .mm-stage-label {
+      text-align:center; font-weight:700; font-size:13px; letter-spacing:0.04em;
+      text-transform:uppercase; color:#fff; margin-bottom:6px; min-height:16px;
+    }
+    #mm-demo .mm-row { display:flex; justify-content:center; gap:36px; align-items:flex-start; }
+    #mm-demo .mm-panel { text-align:center; }
+    #mm-demo .mm-title { font-size:13px; font-weight:700; margin-bottom:8px; color:#fff; }
+    #mm-demo .mm-grid {
+      display:grid; grid-template-columns: repeat(8, 26px); grid-template-rows: repeat(8, 26px);
+      gap:2px; background:#ccc; padding:2px; border:1.5px solid #333; border-radius:4px;
+    }
+    #mm-demo .mm-cell {
+      width:26px; height:26px; background:#fafafa; display:flex; align-items:center; justify-content:center;
+      font-size:10px; color:#888; border-radius:2px; transition: background 120ms, color 120ms, transform 120ms;
+    }
+    #mm-demo .mm-cell.filled { color:#333; background:#eef3fb; }
+    #mm-demo .mm-cell.mine { background:#ffce8a; color:#5c2c00; font-weight:700; }
+    #mm-demo .mm-cell.rowhi { background:#bfe0ff; color:#08315c; }
+    #mm-demo .mm-cell.colhi { background:#c8f2c8; color:#0d4d0d; }
+    #mm-demo .mm-cell.active { background:#ff7a1a; color:#fff; font-weight:700; transform: scale(1.12); }
+    #mm-demo .mm-sum-box {
+      margin-top:14px; text-align:center; font-size:14px; background:#f5f5f7; border:1px solid #ddd;
+      border-radius:6px; padding:10px 14px; display:inline-block;
+    }
+    #mm-demo .mm-formula { color:#fff; font-size:12px; margin-top:4px; min-height:34px; }
+    #mm-demo .mm-controls { display:flex; justify-content:center; gap:8px; margin-top:16px; flex-wrap:wrap; }
+    #mm-demo button {
+      font-family:inherit; font-size:12px; padding:6px 12px; border-radius:5px; border:1px solid #ccc;
+      background:#fff; cursor:pointer; color:#222;
+    }
+    #mm-demo button:hover { background:#f0f0f0; }
+    #mm-demo button.primary { background:#2f6fed; color:#fff; border-color:#2f6fed; }
+    #mm-demo button.primary:hover { background:#255bcc; }
+    #mm-demo button:disabled { opacity:0.4; cursor:default; }
+    #mm-demo .mm-status { text-align:center; font-size:12px; color:#fff; margin-top:10px; }
+    #mm-demo .mm-legend { display:flex; justify-content:center; gap:14px; margin-top:12px; font-size:11px; color:#fff; flex-wrap:wrap;}
+    #mm-demo .mm-swatch { display:inline-block; width:10px; height:10px; border-radius:2px; margin-right:4px; vertical-align:middle; }
+  </style>
+
+  <div class="mm-stage-label" id="mm-stagelabel">LOAD STEP</div>
+
+  <div class="mm-row">
+    <div class="mm-panel">
+      <div class="mm-title">tiles_A[ty][tx]</div>
+      <div class="mm-grid" id="mm-gridA"></div>
+    </div>
+    <div class="mm-panel">
+      <div class="mm-title">tiles_B[ty][tx]</div>
+      <div class="mm-grid" id="mm-gridB"></div>
+    </div>
+  </div>
+
+  <div style="text-align:center;">
+    <div class="mm-sum-box">
+      phase = <b id="mm-phase">0</b> &nbsp;|&nbsp;
+      k = <b id="mm-k">–</b> &nbsp;|&nbsp;
+      running sum = <b id="mm-sum">0</b>
+    </div>
+    <div class="mm-formula" id="mm-formula">Each thread writes its own element to [ty][tx] — same seat, both tiles.</div>
+  </div>
+
+  <div class="mm-legend">
+    <span><span class="mm-swatch" style="background:#ffce8a;"></span>our thread's load ([ty][tx])</span>
+    <span><span class="mm-swatch" style="background:#bfe0ff;"></span>row ty (in A)</span>
+    <span><span class="mm-swatch" style="background:#c8f2c8;"></span>col tx (in B)</span>
+    <span><span class="mm-swatch" style="background:#ff7a1a;"></span>current k</span>
+  </div>
+
+  <div class="mm-controls">
+    <button id="mm-back">◀ Back</button>
+    <button id="mm-next" class="primary">Next ▶</button>
+    <button id="mm-play" class="primary">▶ Play</button>
+    <button id="mm-reset">↺ Reset</button>
+  </div>
+  <div class="mm-status" id="mm-status">Thread traced: ty = 2, tx = 5 &nbsp;•&nbsp; TILE_WIDTH = 8 (shrunk from 16 for readability)</div>
+</div>
+
+<script>
+(function(){
+  const root = document.getElementById('mm-demo');
+  const W = 8;                 // visual tile width (represents TILE_WIDTH)
+  const TY = 2, TX = 5;        // the thread we trace
+  const gridA = root.querySelector('#mm-gridA');
+  const gridB = root.querySelector('#mm-gridB');
+  const stageLabel = root.querySelector('#mm-stagelabel');
+  const phaseEl = root.querySelector('#mm-phase');
+  const kEl = root.querySelector('#mm-k');
+  const sumEl = root.querySelector('#mm-sum');
+  const formulaEl = root.querySelector('#mm-formula');
+  const btnNext = root.querySelector('#mm-next');
+  const btnBack = root.querySelector('#mm-back');
+  const btnPlay = root.querySelector('#mm-play');
+  const btnReset = root.querySelector('#mm-reset');
+  const statusEl = root.querySelector('#mm-status');
+
+  function buildGrid(container, prefix){
+    container.innerHTML = '';
+    for(let r=0;r<W;r++){
+      for(let c=0;c<W;c++){
+        const cell = document.createElement('div');
+        cell.className = 'mm-cell';
+        cell.id = prefix + '-' + r + '-' + c;
+        container.appendChild(cell);
+      }
+    }
+  }
+  buildGrid(gridA, 'A');
+  buildGrid(gridB, 'B');
+
+  function val(row, col, phase){
+    // deterministic placeholder "data" purely for illustration
+    return ((row*3 + col*2 + phase*5) % 9) + 1;
+  }
+
+  // Steps per phase:
+  // 0: load (fill all cells, highlight our thread's write)
+  // 1..W: accumulate k = 0..W-1
+  // (W+1): phase sync / done marker
+  const STEPS_PER_PHASE = W + 2;
+  const TOTAL_PHASES = 2;
+  let step = 0; // global step counter
+  let sum = 0;
+  let playTimer = null;
+
+  function cell(prefix,r,c){ return root.querySelector('#'+prefix+'-'+r+'-'+c); }
+
+  function clearHighlights(){
+    root.querySelectorAll('.mm-cell').forEach(c=>{
+      c.classList.remove('mine','rowhi','colhi','active');
+    });
+  }
+
+  function render(){
+    const phase = Math.floor(step / STEPS_PER_PHASE);
+    const localStep = step % STEPS_PER_PHASE;
+    phaseEl.textContent = phase;
+    clearHighlights();
+
+    // fill values for current phase (persist visually across the whole phase)
+    for(let r=0;r<W;r++){
+      for(let c=0;c<W;c++){
+        const a = cell('A',r,c), b = cell('B',r,c);
+        a.textContent = val(r,c,phase);
+        b.textContent = val(c,r,phase); // just a different pattern so A/B look distinct
+        a.classList.add('filled');
+        b.classList.add('filled');
+      }
+    }
+
+    if(localStep === 0){
+      stageLabel.textContent = 'LOAD STEP — phase ' + phase;
+      cell('A',TY,TX).classList.add('mine');
+      cell('B',TY,TX).classList.add('mine');
+      kEl.textContent = '–';
+      formulaEl.innerHTML = 'Thread (tx=' + TX + ', ty=' + TY + ') writes ONE element into <b>tiles_A[' + TY + '][' + TX + ']</b> and <b>tiles_B[' + TY + '][' + TX + ']</b> — same [ty][tx] seat in both tiles.';
+      statusEl.textContent = 'All threads load simultaneously — this shows just our traced thread\'s write.';
+    } else if(localStep >= 1 && localStep <= W){
+      const k = localStep - 1;
+      stageLabel.textContent = 'ACCUMULATE STEP — phase ' + phase;
+      // highlight full row ty in A, full col tx in B
+      for(let c=0;c<W;c++) cell('A',TY,c).classList.add('rowhi');
+      for(let r=0;r<W;r++) cell('B',r,TX).classList.add('colhi');
+      // active k cell in each
+      cell('A',TY,k).classList.add('active');
+      cell('B',k,TX).classList.add('active');
+      kEl.textContent = k;
+      const aVal = val(TY,k,phase);
+      const bVal = val(k,TX,phase);
+      if(localStep === 1 && phase===0) sum = 0;
+      // recompute sum fresh each render based on progress (idempotent)
+      formulaEl.innerHTML = 'sum += tiles_A[' + TY + '][' + k + '] * tiles_B[' + k + '][' + TX + ']  &nbsp;=&nbsp; ' + aVal + ' × ' + bVal + ' = ' + (aVal*bVal);
+      statusEl.textContent = 'k sweeps 0..' + (W-1) + ': row of A against column of B.';
+    } else {
+      stageLabel.textContent = 'SYNC — end of phase ' + phase;
+      kEl.textContent = '–';
+      formulaEl.textContent = '__syncthreads() — tile can now be safely overwritten by the next phase.';
+      statusEl.textContent = phase < TOTAL_PHASES-1 ? 'Next: phase ' + (phase+1) + ' begins with a fresh load.' : 'Final phase complete — sum is the finished dot product.';
+    }
+
+    // recompute running sum up to current point, from scratch (keeps it correct on Back too)
+    let s = 0;
+    for(let p=0;p<=phase;p++){
+      const kMax = (p<phase) ? W : (localStep>=1 ? Math.min(localStep, W) : 0);
+      for(let k=0;k<kMax;k++){
+        s += val(TY,k,p) * val(k,TX,p);
+      }
+    }
+    sum = s;
+    sumEl.textContent = sum;
+
+    const atEnd = step >= TOTAL_PHASES*STEPS_PER_PHASE - 1;
+    btnNext.disabled = atEnd;
+    if(atEnd){
+      stageLabel.textContent = 'DONE — result[' + TY + '][' + TX + '] = ' + sum;
+      formulaEl.textContent = 'All phases complete. This value is written to global memory once.';
+    }
+    btnBack.disabled = step === 0;
+  }
+
+  btnNext.addEventListener('click', ()=>{
+    step = Math.min(step+1, TOTAL_PHASES*STEPS_PER_PHASE - 1);
+    render();
+  });
+  btnBack.addEventListener('click', ()=>{
+    step = Math.max(step-1, 0);
+    render();
+  });
+  btnReset.addEventListener('click', ()=>{
+    step = 0; sum = 0;
+    stopPlay();
+    render();
+  });
+  function stopPlay(){
+    if(playTimer){ clearInterval(playTimer); playTimer = null; btnPlay.textContent = '▶ Play'; }
+  }
+  btnPlay.addEventListener('click', ()=>{
+    if(playTimer){ stopPlay(); return; }
+    btnPlay.textContent = '⏸ Pause';
+    playTimer = setInterval(()=>{
+      if(step >= TOTAL_PHASES*STEPS_PER_PHASE - 1){ stopPlay(); return; }
+      step++; render();
+    }, 900);
+  });
+
+  render();
+})();
+</script>

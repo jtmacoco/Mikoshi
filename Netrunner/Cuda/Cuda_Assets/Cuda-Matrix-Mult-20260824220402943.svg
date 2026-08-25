@@ -1,0 +1,111 @@
+<svg viewBox="0 0 1080 760" xmlns="http://www.w3.org/2000/svg" font-family="Menlo, Consolas, monospace">
+  <rect x="0" y="0" width="1080" height="760" fill="#ffffff"/>
+
+  <!-- Title -->
+  <text x="540" y="34" text-anchor="middle" font-size="20" font-weight="bold" fill="#1a1a1a">Tiled Matmul: Load Indexing per Phase</text>
+  <text x="540" y="56" text-anchor="middle" font-size="13" fill="#555">m1 is N x K, m2 is K x M, thread computes result[tidy][tidx]</text>
+
+  <!-- ===================== MATRIX A (m1) ===================== -->
+  <text x="60" y="100" font-size="15" font-weight="bold" fill="#1a1a1a">m1  (N rows x K cols)</text>
+
+  <!-- base grid -->
+  <g>
+    <rect x="60" y="115" width="300" height="220" fill="#f7f7f7" stroke="#bbb" stroke-width="1"/>
+    <!-- row highlight: tidy row -->
+    <rect x="60" y="115" width="300" height="18" fill="#bfe0ff"/>
+    <!-- column block highlight: phase*TILE_WIDTH .. +TILE_WIDTH -->
+    <rect x="180" y="115" width="55" height="220" fill="#c8f2c8" fill-opacity="0.7"/>
+    <!-- intersection cell -->
+    <rect x="180" y="115" width="18" height="18" fill="#ff9f43" stroke="#c9601a"/>
+  </g>
+
+  <!-- labels for A -->
+  <text x="365" y="128" font-size="12" fill="#0a5fb4">row = tidy</text>
+  <line x1="360" y1="124" x2="368" y2="124" stroke="#0a5fb4" stroke-width="1"/>
+
+  <text x="182" y="352" font-size="12" fill="#1f8a1f">cols [phase*TILE_WIDTH , +TILE_WIDTH)</text>
+
+  <text x="205" y="112" font-size="11" fill="#c9601a" text-anchor="middle">element loaded by (ty,tx)</text>
+  <line x1="189" y1="115" x2="189" y2="104" stroke="#c9601a" stroke-width="1"/>
+
+  <text x="60" y="360" font-size="12" fill="#333">col index = phase*TILE_WIDTH + tx</text>
+  <text x="60" y="378" font-size="12" font-weight="bold" fill="#1a1a1a">m1[ tidy*K + (phase*TILE_WIDTH + tx) ]</text>
+
+  <!-- arrow down to shared tile A -->
+  <line x1="189" y1="133" x2="189" y2="420" stroke="#888" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arrow)"/>
+
+  <!-- ===================== SHARED TILE A ===================== -->
+  <text x="60" y="450" font-size="15" font-weight="bold" fill="#1a1a1a">tiles_A  (shared memory, 16 x 16)</text>
+  <g>
+    <rect x="60" y="465" width="240" height="240" fill="#fff" stroke="#333" stroke-width="1.5"/>
+    <!-- 4x4 grid lines for readability (representing 16x16 conceptually) -->
+    <g stroke="#ddd">
+      <line x1="120" y1="465" x2="120" y2="705"/>
+      <line x1="180" y1="465" x2="180" y2="705"/>
+      <line x1="240" y1="465" x2="240" y2="705"/>
+      <line x1="60" y1="525" x2="300" y2="525"/>
+      <line x1="60" y1="585" x2="300" y2="585"/>
+      <line x1="60" y1="645" x2="300" y2="645"/>
+    </g>
+    <!-- highlighted cell at [ty][tx] -->
+    <rect x="120" y="525" width="60" height="60" fill="#ff9f43" fill-opacity="0.85" stroke="#c9601a" stroke-width="2"/>
+    <text x="150" y="560" text-anchor="middle" font-size="13" font-weight="bold" fill="#5c2c00">[ty][tx]</text>
+  </g>
+  <text x="60" y="722" font-size="12" fill="#333">row index = ty (local)   col index = tx (local)</text>
+
+  <!-- ===================== MATRIX B (m2) ===================== -->
+  <text x="700" y="100" font-size="15" font-weight="bold" fill="#1a1a1a">m2  (K rows x M cols)</text>
+
+  <g>
+    <rect x="700" y="115" width="220" height="300" fill="#f7f7f7" stroke="#bbb" stroke-width="1"/>
+    <!-- column highlight: tidx col -->
+    <rect x="700" y="115" width="18" height="300" fill="#bfe0ff"/>
+    <!-- row block highlight: phase*TILE_WIDTH..+TILE_WIDTH -->
+    <rect x="700" y="230" width="220" height="55" fill="#c8f2c8" fill-opacity="0.7"/>
+    <!-- intersection cell -->
+    <rect x="700" y="230" width="18" height="18" fill="#ff9f43" stroke="#c9601a"/>
+  </g>
+
+  <text x="708" y="107" font-size="12" fill="#0a5fb4">col = tidx</text>
+
+  <text x="925" y="262" font-size="12" fill="#1f8a1f">rows [phase*TILE_WIDTH , +TILE_WIDTH)</text>
+
+  <text x="700" y="432" font-size="12" fill="#333">row index = phase*TILE_WIDTH + ty</text>
+  <text x="700" y="450" font-size="12" font-weight="bold" fill="#1a1a1a">m2[ (phase*TILE_WIDTH + ty)*M + tidx ]</text>
+
+  <!-- arrow down to shared tile B -->
+  <line x1="709" y1="239" x2="709" y2="465" stroke="#888" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arrow)"/>
+
+  <!-- ===================== SHARED TILE B ===================== -->
+  <text x="700" y="482" font-size="15" font-weight="bold" fill="#1a1a1a">tiles_B  (shared memory, 16 x 16)</text>
+  <g>
+    <rect x="700" y="497" width="240" height="240" fill="#fff" stroke="#333" stroke-width="1.5"/>
+    <g stroke="#ddd">
+      <line x1="760" y1="497" x2="760" y2="737"/>
+      <line x1="820" y1="497" x2="820" y2="737"/>
+      <line x1="880" y1="497" x2="880" y2="737"/>
+      <line x1="700" y1="557" x2="940" y2="557"/>
+      <line x1="700" y1="617" x2="940" y2="617"/>
+      <line x1="700" y1="677" x2="940" y2="677"/>
+    </g>
+    <rect x="760" y="557" width="60" height="60" fill="#ff9f43" fill-opacity="0.85" stroke="#c9601a" stroke-width="2"/>
+    <text x="790" y="592" text-anchor="middle" font-size="13" font-weight="bold" fill="#5c2c00">[ty][tx]</text>
+  </g>
+  <text x="700" y="753" font-size="12" fill="#333">row index = ty (local)   col index = tx (local)</text>
+
+  <!-- ===================== BOTTOM KEY NOTE ===================== -->
+  <rect x="380" y="490" width="270" height="130" fill="#fafafa" stroke="#ccc" stroke-dasharray="3,3"/>
+  <text x="395" y="512" font-size="12" font-weight="bold" fill="#1a1a1a">Key asymmetry:</text>
+  <text x="395" y="532" font-size="11.5" fill="#333">A: row is FIXED (tidy), col SLIDES with tx</text>
+  <text x="395" y="550" font-size="11.5" fill="#333">   -&gt; phase moves across A's columns</text>
+  <text x="395" y="572" font-size="11.5" fill="#333">B: col is FIXED (tidx), row SLIDES with ty</text>
+  <text x="395" y="590" font-size="11.5" fill="#333">   -&gt; phase moves down B's rows</text>
+  <text x="395" y="610" font-size="11.5" fill="#333">Both meet at tiles[ty][tx] in shared mem</text>
+
+  <!-- arrow marker def -->
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 z" fill="#888"/>
+    </marker>
+  </defs>
+</svg>
