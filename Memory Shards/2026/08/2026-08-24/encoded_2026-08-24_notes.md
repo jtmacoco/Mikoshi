@@ -1,8 +1,10 @@
-# TODO
-- [ ] Read
-- [x] Practice C ✅ 2026-08-24
-- [x] Practice CUDA ✅ 2026-08-24
-- [x] Mental Math ✅ 2026-08-24
-- [x] Leetcode ✅ 2026-08-24
+# UPIO
+- [ ] Rgfe
+- [a] Urcdwigf D ✅ 2026-08-24
+- [c] Prchulhe EVGA ✅ 2026-08-24
+- [b] Nfstan Rbwm ✅ 2026-08-24
+- [x] Nfhtgpej ✅ 2026-08-24
 
-# Shard Log
+# Shcwe Otg
+
+K xds wp gzckksh wnrge wohbz fnd K xmhut njne wijy. Baunddqla eld xif xamg lp wt wqsn csnf momg yihs dq nb tsepx.
