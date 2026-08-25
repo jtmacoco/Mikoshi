@@ -80,7 +80,7 @@
 | Sat (lab) | `stat` clone: print file size, permissions (decode the mode bits yourself), timestamps. Add error handling with `errno`/`perror` everywhere. |
 | Sun       | Rest / catch-up.                                                                                                                             |
 
-### Week 6 — Processes & signals
+### [[Week 06  Processes & signals]]
 
 | Day       | Task (≈30 min)                                                                                                                                                                     |
 | --------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -94,15 +94,15 @@
 
 ### Week 7 — /proc, /sys, and kernel interfaces
 
-|Day|Task (≈30 min)|
-|---|---|
-|Mon|Spend the session just exploring: `cat /proc/cpuinfo`, `/proc/meminfo`, `/proc/self/status`, `/proc/self/maps`. Look at `/proc/self/maps` and identify stack, heap, your binary, libc.|
-|Tue|Write a program that parses `/proc/meminfo` and prints memory usage as a percentage.|
-|Wed|Write a mini `ps`: iterate `/proc/[pid]/` directories, read `comm` and `status`, print PID + name + state.|
-|Thu|Parse `/proc/[pid]/maps` for a given PID and total up its mapped memory.|
-|Fri|Explore `/sys`: find your CPU's frequency, cache sizes (`/sys/devices/system/cpu/cpu0/cache/`), and a block device's size. Write a small reader for one of them.|
-|Sat (lab)|Cache experiment: sum a large 2D array row-major vs column-major, time both. Then array traversal vs linked-list traversal of the same data. Connect the numbers to the cache sizes you found in /sys.|
-|Sun|Rest / catch-up.|
+| Day       | Task (≈30 min)                                                                                                                                                                                         |
+| --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Mon       | Spend the session just exploring: `cat /proc/cpuinfo`, `/proc/meminfo`, `/proc/self/status`, `/proc/self/maps`. Look at `/proc/self/maps` and identify stack, heap, your binary, libc.                 |
+| Tue       | Write a program that parses `/proc/meminfo` and prints memory usage as a percentage.                                                                                                                   |
+| Wed       | Write a mini `ps`: iterate `/proc/[pid]/` directories, read `comm` and `status`, print PID + name + state.                                                                                             |
+| Thu       | Parse `/proc/[pid]/maps` for a given PID and total up its mapped memory.                                                                                                                               |
+| Fri       | Explore `/sys`: find your CPU's frequency, cache sizes (`/sys/devices/system/cpu/cpu0/cache/`), and a block device's size. Write a small reader for one of them.                                       |
+| Sat (lab) | Cache experiment: sum a large 2D array row-major vs column-major, time both. Then array traversal vs linked-list traversal of the same data. Connect the numbers to the cache sizes you found in /sys. |
+| Sun       | Rest / catch-up.                                                                                                                                                                                       |
 
 ### Week 8 — Concurrency
 
