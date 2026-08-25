@@ -27,7 +27,6 @@ kanban-plugin: board
 
 ## Testing
 
-- [ ] Verify Linear layer works correctly with MLP class (compiles, not yet verified)
 
 
 ## Blocked
@@ -50,6 +49,7 @@ kanban-plugin: board
 - [x] Write initial README ✅ 2026-08-20
 - [x] Plan folder & module structure ✅ 2026-08-20
 - [x] Working on Loss Function ✅ 2026-08-23
+- [x] Verify Linear layer works correctly with MLP class (compiles, not yet verified) ✅ 2026-08-23
 
 
 

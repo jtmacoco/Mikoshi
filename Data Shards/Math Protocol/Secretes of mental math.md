@@ -11,7 +11,7 @@ author: Benjamin and Michael Shermer
 subject: mental math
 status: reading
 rating:
-stopped: page 59
+stopped: page 63
 ---
 
 ## Why I'm Reading This
@@ -210,6 +210,45 @@ $$
 > - Pg 216 found on page 57
 
 ### 11 multiplication trick
+
  $42 \times 11$
  1. $4+2=6$ 
  2. place 6 in between 42 so $462$
+ - If need to cary i.e greater than 10 add it to the left most value
+
+### Subtraction Trick
+
+$$
+\begin{array}{r}
+59 & (60-1) \\
+\times 17 \\
+\hline
+60\times 17 =1020\\
+-1\times17=-17\\
+\hline
+1003
+\end{array}
+$$
+
+- **Useful when want to multiply ends in 8 or 9**
+- Easier to subtract small number than add big one
+- Good to use for numbers in high 90's since 100 is easy to multiply
+- Use complement rule from chapter 1
+
+$$
+\begin{array}{r}
+88 & (90-2) \\
+\times 76 \\
+\hline
+90\times 76 =6840\\
+-2\times76=-152\\
+\hline
+6688
+\end{array}
+$$
+- There are two ways to perform the subtraction component of
+this problem. The **long** way subtracts 200 and adds back 48
+- The **short** way is to realize that the answer will be 66 hundred
+and something. To determine something, we subtract 52 - 40 = 
+12 and then find the complement of 12, which is 88. Hence the
+answer is 6688.
