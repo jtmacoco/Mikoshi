@@ -22,3 +22,4 @@ Mikoshi/Netrunner/Cuda/Cuda_Assets/matmul_tile_animation.html
 800
 
 ```
+- Issue with launching threads right now as will have memory issue with shared memory since more threads than the size of the tile block
