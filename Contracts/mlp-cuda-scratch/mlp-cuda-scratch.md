@@ -22,15 +22,15 @@ stack: c, cuda
 
 ## Progress Log
 
-- [ ] 2026-08-15: Contract initialized
-- [ ] 2026-08-15: Working on loading the dataset
-- [ ] 2026-08-16: Finished loading dataset
-- [ ] 2026-08-16: Working on forward pass
-- [ ] 2026-08-17: Initialized Weights finished
-- [ ] 2026-08-17: Working on linear forward pass trying to make similar to pytorch
-- [ ] 2026-08-18: Made linear it's own object and re-named some files and moved some functions around
-- [ ] 2026-08-20: Linear function compiles and works with mlp class, haven't verified if it works
-- [ ] 2026-08-20: Working on backend process
+-  2026-08-15: Contract initialized
+-  2026-08-15: Working on loading the dataset
+-  2026-08-16: Finished loading dataset
+-  2026-08-16: Working on forward pass
+-  2026-08-17: Initialized Weights finished
+-  2026-08-17: Working on linear forward pass trying to make similar to pytorch
+-  2026-08-18: Made linear it's own object and re-named some files and moved some functions around
+-  2026-08-20: Linear function compiles and works with mlp class, haven't verified if it works
+-  2026-08-20: Working on backend process
 
 
 ## Notes
