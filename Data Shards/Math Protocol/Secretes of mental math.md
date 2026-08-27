@@ -11,7 +11,7 @@ author: Benjamin and Michael Shermer
 subject: mental math
 status: reading
 rating:
-stopped: page 63
+stopped: page 68
 ---
 
 ## Why I'm Reading This
@@ -252,3 +252,18 @@ this problem. The **long** way subtracts 200 and adds back 48
 and something. To determine something, we subtract 52 - 40 = 
 12 and then find the complement of 12, which is 88. Hence the
 answer is 6688.
+
+### Factoring Method
+
+ $$
+\begin{array}{r}
+46  \\
+\times 42 & = 7\times6 \\
+\hline
+\end{array}
+$$
+- Factor method treat 42 as $7\times6$ and multiply $46\times7$ which is 322 then $322\times6$ for the final answer of 1932
+
+$46\times42 = 46\times(7\times6)=(46\times7)\times6=322\times6=1932$
+
+- Most cases use the larger factor in solving the initial 2 by 1 problem and reserve smaller factor for 3 by 1 component of problem
