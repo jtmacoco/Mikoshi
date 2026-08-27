@@ -42,11 +42,7 @@ RAM is fast but limited. When your programs need more memory than you have RAM a
 
 ## Solution
 
-## Notes
 
-- `strstr` finds first occurrence of substring within larger string
-- `sscanf` reads formatted data from string instead of standard input (keyboard)
-- `buf + total`: that's the write position, and it advances each loop iteration.
 
 ```c
 #include <stdio.h>
@@ -90,4 +86,78 @@ int main(){
 }
 ```
 
+## Notes
+
+- `strstr` finds first occurrence of substring within larger string
+- `sscanf` reads formatted data from string instead of standard input (keyboard)
+- `buf + total`: that's the write position, and it advances each loop iteration.
+
 # Wednesday
+
+## Solution
+
+```c
+#include <stdio.h>
+#include <string.h>
+#include <unistd.h>
+#include <fcntl.h>
+
+#define BUF_SIZE 8192
+int main(int argc, char **argv){
+	if (argc < 2){
+		perror("Usage ./main pid\n");
+		_exit(1);
+	}
+	char path[256];
+	int p = snprintf(path,sizeof(path), "/proc/%s/maps",argv[1]);
+	if (p < 0 || (size_t)p >= sizeof(path)){
+		perror("pid argument to long\n");
+		_exit(1);
+	}
+	char buf[BUF_SIZE];
+	printf("%s\n",path);
+	int fd = open(path,O_RDONLY);
+	size_t n; 
+	size_t total = 0;
+	while ((n = read(fd, buf+total,BUF_SIZE-total-1))>0){
+		total+=(size_t)n;
+		if (total > BUF_SIZE-1) break;
+	}
+	close(fd);
+	if (n < 0){
+		perror("read failed");
+		_exit(1);
+	}
+	buf[total] = '\0';
+	unsigned long start, end;
+	char *line = buf;
+	unsigned long long mapped_total = 0;
+	while (line < buf + total && *line){
+		if (sscanf(line, "%lx-%lx", &start, &end) == 2){
+			mapped_total += (end - start);
+		}
+		char *next = strchr(line, '\n');//move to end of line
+		if (!next) break;
+		line = next+1;
+	}
+	printf("Total mapped: %llu bytes (%.2f KB)\n", mapped_total, mapped_total / 1024.0);
+
+	return 0;
+}
+```
+
+## Notes
+
+Each line in `/proc/[pid]/maps` looks like this:
+
+```bash
+address           perms offset   dev   inode   pathname
+00400000-00452000 r-xp  00000000 08:02 173521  /usr/bin/dbus-daemon
+7f3a2c000000-7f3a2c021000 rw-p 00000000 00:00 0
+```
+
+The size of each mapping is the **difference between the start and end addresses** in the first field (both in hex). So to get total mapped memory, you sum `(end - start)` for every line.
+
+So difference between `00400000-00452000` from the above example
+
+- `strchr` returns pointing at the `\n` characteGkkkkkjkjjhljk
