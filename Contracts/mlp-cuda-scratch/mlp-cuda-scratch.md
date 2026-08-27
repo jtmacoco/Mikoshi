@@ -12,12 +12,13 @@ stack: c, cuda
 
 ## Objective
 
+Develop from scratch MLP for MNIST dataset, then profile and use cuda to speed up
 
 
 ## Stack / Tools
 
-- [ ] C++
-- [ ] CUDA
+- C++
+- CUDA
 
 
 ## Progress Log
