@@ -160,4 +160,10 @@ The size of each mapping is the **difference between the start and end addresses
 
 So difference between `00400000-00452000` from the above example
 
-- `strchr` returns pointing at the `\n` characteGkkkkkjkjjhljk
+- `strchr` returns pointing at the `\n` character
+- `sscanf` : Signature: `int sscanf(const char *str, const char *format, ...);` 
+
+`str` — the string to parse (in this case, `line`, pointing partway into `buf`).
+`format` — a format string, same mini-language as `printf`, describing what to look for and in what order.
+`...` — pointers to variables where matched values get stored.
+Return value — the number of items successfully matched and assigned. This is important and easy to overlook: it's not a boolean, it's a count.
