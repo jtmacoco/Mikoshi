@@ -167,3 +167,7 @@ So difference between `00400000-00452000` from the above example
 `format` — a format string, same mini-language as `printf`, describing what to look for and in what order.
 `...` — pointers to variables where matched values get stored.
 Return value — the number of items successfully matched and assigned. This is important and easy to overlook: it's not a boolean, it's a count.
+
+# Thursday
+
+- Mixed up Thursday and Wednesday 

@@ -1,5 +1,5 @@
 ---
-title: Bitwise operators
+title: Kernighan Trick
 source: "[[C]]"
 tags:
   - bit-manipulation
