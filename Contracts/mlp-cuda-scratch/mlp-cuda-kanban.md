@@ -22,6 +22,7 @@ kanban-plugin: board
 
 ## In Progress
 
+- [ ] Activation function
 - [ ] Implement backward pass / autograd
 
 
