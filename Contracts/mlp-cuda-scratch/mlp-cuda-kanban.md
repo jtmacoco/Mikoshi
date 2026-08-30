@@ -20,19 +20,18 @@ kanban-plugin: board
 - [ ] Write unit tests for Linear layer
 
 
+## Blocked
+
+- [ ] Fix double ReLU call in mlp and linear files
+
+
 ## In Progress
 
-- [ ] Activation function
 - [ ] Implement backward pass / autograd
 
 
 ## Testing
 
-
-
-## Blocked
-
-- [ ] 
 
 
 ## Done
@@ -51,12 +50,13 @@ kanban-plugin: board
 - [x] Plan folder & module structure ✅ 2026-08-20
 - [x] Working on Loss Function ✅ 2026-08-23
 - [x] Verify Linear layer works correctly with MLP class (compiles, not yet verified) ✅ 2026-08-23
+- [x] Activation function ✅ 2026-08-29
 
 
 
 
 %% kanban:settings
 ```
-{"kanban-plugin":"board"}
+{"kanban-plugin":"board","list-collapse":[null]}
 ```
 %%
