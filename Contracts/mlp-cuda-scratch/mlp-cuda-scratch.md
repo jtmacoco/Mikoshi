@@ -52,4 +52,15 @@ Develop from scratch MLP for MNIST dataset, then profile and use cuda to speed u
 
 The `|` (bitwise OR) then combines all four into one `uint32_t`. This is the standard manual way to parse a big-endian 32-bit value regardless of the host machine's endianness.
 
+### Example of pass through
+
+- This is meant to help show why we use the transpose in the backward pass
+	- i.e. column major loop
+
+```html-embed
+Mikoshi/Contracts/mlp-cuda-scratch/mlp-cuda-scratch-assets/linear_backprop_walkthough.html
+600
+```
+
+
 ## Links
