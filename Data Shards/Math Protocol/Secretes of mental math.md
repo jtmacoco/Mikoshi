@@ -11,7 +11,7 @@ author: Benjamin and Michael Shermer
 subject: mental math
 status: reading
 rating:
-stopped: page 68
+stopped: page 70
 ---
 
 ## Why I'm Reading This
