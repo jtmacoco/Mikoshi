@@ -22,7 +22,6 @@ kanban-plugin: board
 
 ## Blocked
 
-- [ ] Fix double ReLU call in mlp and linear files
 
 
 ## In Progress
@@ -51,6 +50,7 @@ kanban-plugin: board
 - [x] Working on Loss Function ✅ 2026-08-23
 - [x] Verify Linear layer works correctly with MLP class (compiles, not yet verified) ✅ 2026-08-23
 - [x] Activation function ✅ 2026-08-29
+- [x] Fix double ReLU call in mlp and linear files ✅ 2026-08-30
 
 
 
