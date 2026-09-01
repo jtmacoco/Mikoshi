@@ -10,4 +10,4 @@ created: 2026-07-04
 
 - [ ] Organize Academy Section #academic ⏬
 - [ ] mlp-cuda-scratch #on-contract #high ⏫ 
-- [x] Linux Kernel Contribution Week 6 #on-contract #high ✅ 2026-08-22
+- [ ] Linux Kernel Contribution Week 8 #on-contract  #high ⏫ 

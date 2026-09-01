@@ -92,7 +92,7 @@
 | Sat (lab) | **Mini shell, part 3**: pipes — support `cmd1                                                                                                                                      |
 | Sun       | Rest / catch-up.                                                                                                                                                                   |
 
-### Week 7 — /proc, /sys, and kernel interfaces
+### [[Week 07 - proc, sys, and kernel interfaces]]
 
 | Day       | Task (≈30 min)                                                                                                                                                                                         |
 | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -106,15 +106,15 @@
 
 ### Week 8 — Concurrency
 
-|Day|Task (≈30 min)|
-|---|---|
-|Mon|Two pthreads increment a shared counter 1M times each _without_ locking. Run it five times, watch the result differ. Your first data race.|
-|Tue|Fix it with a `pthread_mutex_t`. Then fix it again with C11 `atomic_fetch_add`. Time all three versions.|
-|Wed|Producer/consumer: one thread `rb_put`s into your Week-4 ring buffer, another `rb_get`s, guarded by a mutex + condition variable.|
-|Thu|Deadlock on purpose: two threads, two mutexes, opposite lock order. Watch it hang, attach `gdb` to see where. Fix with consistent lock ordering.|
-|Fri|Run Monday's racy program under `valgrind --tool=helgrind` or build with `-fsanitize=thread`. Read the report fully.|
-|Sat (lab)|Read about spinlocks vs mutexes and why the kernel cares about the difference (you can't sleep in interrupt context). Skim Billimoria's locking chapters if you've reached them.|
-|Sun|Rest / catch-up. Phase 2 done — userspace holds no mysteries.|
+| Day       | Task (≈30 min)                                                                                                                                                                   |
+| --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Mon       | Two pthreads increment a shared counter 1M times each _without_ locking. Run it five times, watch the result differ. Your first data race.                                       |
+| Tue       | Fix it with a `pthread_mutex_t`. Then fix it again with C11 `atomic_fetch_add`. Time all three versions.                                                                         |
+| Wed       | Producer/consumer: one thread `rb_put`s into your Week-4 ring buffer, another `rb_get`s, guarded by a mutex + condition variable.                                                |
+| Thu       | Deadlock on purpose: two threads, two mutexes, opposite lock order. Watch it hang, attach `gdb` to see where. Fix with consistent lock ordering.                                 |
+| Fri       | Run Monday's racy program under `valgrind --tool=helgrind` or build with `-fsanitize=thread`. Read the report fully.                                                             |
+| Sat (lab) | Read about spinlocks vs mutexes and why the kernel cares about the difference (you can't sleep in interrupt context). Skim Billimoria's locking chapters if you've reached them. |
+| Sun       | Rest / catch-up. Phase 2 done — userspace holds no mysteries.                                                                                                                    |
 
 ---
 
