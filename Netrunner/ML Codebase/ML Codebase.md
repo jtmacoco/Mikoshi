@@ -1,5 +1,5 @@
 ---
-title: ML Datastream
+title: ML Codebase
 source: "[[Netrunner]]"
 tags:
   - moc
@@ -14,7 +14,7 @@ Machine learning reference guide
 
 ```dataview
 LIST
-FROM "Mikoshi/Netrunner/ML Datastream"
+FROM "Mikoshi/Netrunner/ML Codebase"
 SORT file.name ASC
 ```
 
