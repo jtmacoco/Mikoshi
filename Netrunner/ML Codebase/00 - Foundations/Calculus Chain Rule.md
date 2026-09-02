@@ -2,6 +2,8 @@
 title: Calculus Chain Rule
 source: "[[ML Codebase]]"
 tags:
+  - math
+  - machine-learning
 type: concept
 created: 2026-09-01
 ---

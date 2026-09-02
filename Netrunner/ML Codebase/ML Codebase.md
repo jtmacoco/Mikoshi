@@ -10,6 +10,12 @@ created: 2026-08-31
 
 Machine learning reference guide
 
+## MOC
+
+```dataview
+LIST FROM "Mikoshi/Netrunner/ML Codebase"
+WHERE contains(file.tags, "moc")
+```
 ## All Notes
 
 ```dataview
