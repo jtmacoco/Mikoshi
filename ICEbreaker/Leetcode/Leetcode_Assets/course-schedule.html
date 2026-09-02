@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Course Schedule — Cycle Detection Walkthrough</title>
+<style>
+  :root{
+    --bg: #14171c;
+    --panel: #1b1f26;
+    --panel-border: #262b33;
+    --text: #e7e9ec;
+    --muted: #8a92a1;
+    --muted-dim: #5c6472;
+    --blue: #5fa8ff;
+    --amber: #e8a33d;
+    --teal: #34c3a6;
+    --red: #e5484d;
+    --edge-default: #3a4049;
+    --edge-cleared: #2a2f37;
+    --code-bg: #101317;
+    --radius: 10px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap{
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 22px 18px 30px;
+  }
+  header.top{ margin-bottom: 14px; }
+  h1{
+    font-size: 21px;
+    font-weight: 650;
+    letter-spacing: -0.01em;
+    margin: 0 0 6px;
+  }
+  .sub{
+    color: var(--muted);
+    font-size: 13.5px;
+    line-height: 1.5;
+    margin: 0;
+    max-width: 66ch;
+  }
+  .controls{
+    display:flex;
+    flex-wrap: wrap;
+    align-items:center;
+    gap: 10px;
+    margin: 16px 0 12px;
+  }
+  .control-group{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    background: var(--panel);
+    border: 1px solid var(--panel-border);
+    border-radius: 999px;
+    padding: 4px;
+  }
+  .ex-btn, .speed-btn{
+    background: transparent;
+    border: none;
+    color: var(--muted);
+    font-size: 12.5px;
+    font-weight: 600;
+    padding: 6px 12px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: background .15s, color .15s;
+  }
+  .ex-btn:hover, .speed-btn:hover{ color: var(--text); }
+  .ex-btn.active{ background: #2a3140; color: var(--blue); }
+  .speed-btn.active{ background: #2a3140; color: var(--blue); }
+  .playback{ padding: 4px 6px; }
+  .icon-btn{
+    background: transparent;
+    border: none;
+    color: var(--text);
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 15px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition: background .15s;
+  }
+  .icon-btn:hover{ background: #2a3140; }
+  .icon-btn:disabled{ color: var(--muted-dim); cursor: default; background: transparent; }
+  .icon-btn.play{ color: var(--blue); }
+  .step-counter{
+    color: var(--muted);
+    font-size: 12px;
+    font-variant-numeric: tabular-nums;
+    padding: 0 8px 0 4px;
+    white-space: nowrap;
+  }
+  .narration{
+    border: 1px solid var(--panel-border);
+    background: var(--panel);
+    border-radius: var(--radius);
+    padding: 12px 16px;
+    margin-bottom: 16px;
+    min-height: 20px;
+    border-left: 3px solid var(--blue);
+    transition: border-color .2s;
+  }
+  .narration.cat-red{ border-left-color: var(--red); }
+  .narration.cat-teal{ border-left-color: var(--teal); }
+  .narration.cat-amber{ border-left-color: var(--amber); }
+  .narration.cat-neutral{ border-left-color: var(--muted-dim); }
+  .narration-text{ font-size: 14px; line-height: 1.5; }
+
+  .main-grid{
+    display:grid;
+    grid-template-columns: 1.1fr 1fr 1fr;
+    gap: 14px;
+    align-items: start;
+  }
+  .panel{
+    background: var(--panel);
+    border: 1px solid var(--panel-border);
+    border-radius: var(--radius);
+    padding: 14px;
+  }
+  .panel-label{
+    font-size: 11.5px;
+    color: var(--muted);
+    font-weight: 600;
+    margin: 0 0 8px;
+  }
+  .panel-label:not(:first-child){ margin-top: 16px; }
+
+  .graph-panel{ display:flex; flex-direction:column; }
+  #graph-svg{ width:100%; height:auto; display:block; }
+  .legend{
+    display:flex;
+    flex-wrap:wrap;
+    gap: 10px 14px;
+    margin-top: 10px;
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .legend span{ display:flex; align-items:center; gap:5px; }
+  .dot{ width:9px; height:9px; border-radius:50%; display:inline-block; }
+  .dot-current{ background: var(--blue); }
+  .dot-stack{ background: var(--amber); }
+  .dot-done{ background: var(--teal); }
+  .dot-cycle{ background: var(--red); }
+  .dot-default{ background: var(--muted-dim); }
+
+  .code{
+    background: var(--code-bg);
+    border-radius: 8px;
+    padding: 10px 0;
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", monospace;
+    font-size: 11.6px;
+    line-height: 1.65;
+    margin: 0;
+    overflow-x: auto;
+  }
+  .code .line{
+    padding: 1px 12px 1px 14px;
+    white-space: pre;
+    border-left: 2px solid transparent;
+    color: var(--muted);
+    transition: background .18s, color .18s, border-color .18s;
+  }
+  .code .line.hl-blue{ background: rgba(95,168,255,0.14); color: var(--text); border-left-color: var(--blue); }
+  .code .line.hl-amber{ background: rgba(232,163,61,0.14); color: var(--text); border-left-color: var(--amber); }
+  .code .line.hl-teal{ background: rgba(52,195,166,0.14); color: var(--text); border-left-color: var(--teal); }
+  .code .line.hl-red{ background: rgba(229,72,77,0.16); color: var(--text); border-left-color: var(--red); }
+  .code .line.hl-neutral{ background: rgba(138,146,161,0.12); color: var(--text); border-left-color: var(--muted-dim); }
+
+  .stack-view{
+    display:flex;
+    flex-direction:column-reverse;
+    gap:4px;
+    min-height: 26px;
+  }
+  .stack-item{
+    background:#242a33;
+    border:1px solid var(--panel-border);
+    border-radius:6px;
+    padding: 5px 9px;
+    font-size: 12px;
+    font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    color: var(--muted);
+  }
+  .stack-item .idx{ color: var(--muted-dim); font-size: 10.5px; }
+  .stack-item.top{
+    border-color: var(--blue);
+    color: var(--text);
+    box-shadow: 0 0 0 1px rgba(95,168,255,0.25);
+  }
+  .empty-hint{ color: var(--muted-dim); font-size: 12px; font-style: italic; }
+
+  .chip-row{ display:flex; flex-wrap:wrap; gap:6px; min-height: 22px; }
+  .chip{
+    background: rgba(232,163,61,0.14);
+    border: 1px solid rgba(232,163,61,0.4);
+    color: var(--amber);
+    font-size: 11.5px;
+    font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    padding: 3px 8px;
+    border-radius: 999px;
+  }
+
+  .adj-list{ display:flex; flex-direction:column; gap:3px; }
+  .adj-row{
+    font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    font-size: 11.6px;
+    color: var(--muted);
+    display:flex;
+    gap: 6px;
+    align-items:baseline;
+  }
+  .adj-row .k{ color: var(--text); min-width: 16px; }
+  .adj-row .arrow{ color: var(--muted-dim); }
+  .adj-row.cleared .v{ color: var(--muted-dim); text-decoration: line-through; }
+  .adj-row .memo-tag{
+    color: var(--teal);
+    font-size: 10px;
+    margin-left: 4px;
+  }
+
+  .footnote{
+    margin-top: 14px;
+    font-size: 12.5px;
+    color: var(--muted);
+    line-height: 1.5;
+    min-height: 1px;
+  }
+  .footnote.show-red{ color: var(--red); }
+  .footnote.show-teal{ color: var(--teal); }
+
+  circle.node{
+    fill: #242a33;
+    stroke: var(--muted-dim);
+    stroke-width: 2;
+    transition: fill .25s, stroke .25s;
+  }
+  text.node-label{
+    fill: var(--muted);
+    font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    font-size: 13px;
+    font-weight: 600;
+    text-anchor: middle;
+    dominant-baseline: central;
+    pointer-events: none;
+    transition: fill .25s;
+  }
+  .n-current circle.node{ fill: rgba(95,168,255,0.18); stroke: var(--blue); }
+  .n-current text.node-label{ fill: var(--text); }
+  .n-stack circle.node{ fill: rgba(232,163,61,0.14); stroke: var(--amber); }
+  .n-stack text.node-label{ fill: var(--text); }
+  .n-done circle.node{ fill: rgba(52,195,166,0.12); stroke: var(--teal); }
+  .n-done text.node-label{ fill: var(--teal); }
+  .n-cycle circle.node{ fill: rgba(229,72,77,0.2); stroke: var(--red); }
+  .n-cycle text.node-label{ fill: var(--text); }
+
+  line.edge{ stroke: var(--edge-default); stroke-width: 1.6; transition: stroke .2s, opacity .2s; }
+  line.e-cleared{ stroke: var(--edge-cleared); stroke-dasharray: 3 3; opacity: .6; }
+  line.e-active{ stroke: var(--blue); stroke-width: 2.2; stroke-dasharray: 5 4; animation: dash .5s linear infinite; }
+  line.e-cycle{ stroke: var(--red); stroke-width: 2.4; }
+
+  @keyframes dash{ to{ stroke-dashoffset: -18; } }
+  @keyframes pulseNode{ 0%{ transform: scale(1); } 40%{ transform: scale(1.14); } 100%{ transform: scale(1); } }
+  .pulse{ animation: pulseNode .45s ease; transform-origin: center; transform-box: fill-box; }
+
+  @media (prefers-reduced-motion: reduce){
+    line.e-active{ animation: none; }
+    .pulse{ animation: none; }
+  }
+
+  @media (max-width: 760px){
+    .main-grid{ grid-template-columns: 1fr; }
+    .controls{ gap: 8px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <h1>Course Schedule: catching cycles with DFS</h1>
+    <p class="sub">A step-through of the recursive solution to LeetCode 207. Watch the call stack build up, the adjacency list get memoized to empty lists on success, and — in the second example — the exact moment a repeated node on the current path gives away a cycle.</p>
+  </header>
+
+  <div class="controls">
+    <div class="control-group" id="example-group">
+      <button class="ex-btn active" data-ex="nocycle">No cycle</button>
+      <button class="ex-btn" data-ex="cycle">Has a cycle</button>
+    </div>
+    <div class="control-group playback">
+      <button id="btn-reset" class="icon-btn" title="Reset">⟲</button>
+      <button id="btn-prev" class="icon-btn" title="Previous step">‹</button>
+      <button id="btn-play" class="icon-btn play" title="Play">▶</button>
+      <button id="btn-next" class="icon-btn" title="Next step">›</button>
+      <span class="step-counter" id="step-counter">0 / 0</span>
+    </div>
+    <div class="control-group" id="speed-group">
+      <button class="speed-btn" data-speed="0.5">0.5×</button>
+      <button class="speed-btn active" data-speed="1">1×</button>
+      <button class="speed-btn" data-speed="2">2×</button>
+    </div>
+  </div>
+
+  <div class="narration cat-neutral" id="narration">
+    <span class="narration-text" id="narration-text">Press play, or step forward, to begin.</span>
+  </div>
+
+  <div class="main-grid">
+    <div class="panel graph-panel">
+      <svg id="graph-svg" viewBox="0 0 320 320" preserveAspectRatio="xMidYMid meet"></svg>
+      <div class="legend">
+        <span><i class="dot dot-current"></i>Current call</span>
+        <span><i class="dot dot-stack"></i>On path</span>
+        <span><i class="dot dot-done"></i>Resolved</span>
+        <span><i class="dot dot-cycle"></i>Cycle</span>
+        <span><i class="dot dot-default"></i>Untouched</span>
+      </div>
+    </div>
+
+    <div class="panel code-panel">
+      <div class="panel-label">Source</div>
+      <pre class="code" id="code-block"></pre>
+    </div>
+
+    <div class="panel state-panel">
+      <div class="panel-label">Call stack</div>
+      <div class="stack-view" id="stack-view"></div>
+
+      <div class="panel-label">On path (visited)</div>
+      <div class="chip-row" id="visited-chips"></div>
+
+      <div class="panel-label">Adjacency list</div>
+      <div class="adj-list" id="adj-list"></div>
+    </div>
+  </div>
+
+  <p class="footnote" id="footnote"></p>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  var CODE_LINES = [
+    "class Solution:",
+    "    def canFinish(self, numCourses, prerequisites):",
+    "        adj = defaultdict(list)",
+    "        for course, prereq in prerequisites:",
+    "            adj[course].append(prereq)",
+    "        visited = set()",
+    "        def dfs(course):",
+    "            if course in visited:",
+    "                return False",
+    "            if adj[course] == []:",
+    "                return True",
+    "            visited.add(course)",
+    "            for c in adj[course]:",
+    "                if not dfs(c):",
+    "                    return False",
+    "            visited.remove(course)",
+    "            adj[course] = []",
+    "            return True",
+    "        for course in range(numCourses):",
+    "            if not dfs(course):",
+    "                return False",
+    "        return True"
+  ];
+
+  var EXAMPLES = {
+    nocycle: { numCourses: 6, prereqs: [[1,0],[2,0],[3,1],[3,2],[4,3],[5,4]] },
+    cycle:   { numCourses: 6, prereqs: [[1,0],[2,1],[4,3],[5,4],[3,5]] }
+  };
+
+  function computeTrace(numCourses, prereqs){
+    var adjInit = {};
+    for(var i=0;i<numCourses;i++) adjInit[i] = [];
+    prereqs.forEach(function(pair){ adjInit[pair[0]].push(pair[1]); });
+    var adj = {};
+    for(var k in adjInit) adj[k] = adjInit[k].slice();
+    var visited = new Set();
+    var events = [];
+
+    function dfs(course, depth, parent){
+      events.push({type:'enter', course:course, depth:depth, parent:parent});
+      if(visited.has(course)){
+        events.push({type:'cycle', course:course, depth:depth, parent:parent});
+        return false;
+      }
+      if(adj[course].length === 0){
+        events.push({type:'base', course:course, depth:depth});
+        return true;
+      }
+      visited.add(course);
+      events.push({type:'addVisited', course:course, depth:depth});
+      var children = adj[course].slice();
+      for(var i2=0;i2<children.length;i2++){
+        var c = children[i2];
+        events.push({type:'edge', from:course, to:c, depth:depth});
+        if(!dfs(c, depth+1, course)){
+          events.push({type:'fail', course:course, depth:depth});
+          return false;
+        }
+      }
+      visited.delete(course);
+      events.push({type:'removeVisited', course:course, depth:depth});
+      adj[course] = [];
+      events.push({type:'clearAdj', course:course, depth:depth});
+      events.push({type:'success', course:course, depth:depth});
+      return true;
+    }
+
+    var overallResult = true;
+    for(var course=0; course<numCourses; course++){
+      events.push({type:'topLevel', course:course});
+      if(!dfs(course, 0, null)){
+        events.push({type:'result', canFinish:false});
+        overallResult = false;
+        break;
+      }
+    }
+    if(overallResult) events.push({type:'result', canFinish:true});
+    return { events: events, adjInit: adjInit };
+  }
+
+  function computeState(events, adjInit, idx){
+    var adj = {};
+    for(var k in adjInit) adj[k] = adjInit[k].slice();
+    var onPath = new Set();
+    var done = new Set();
+    var cycleNodes = new Set();
+    var cycleEdges = new Set();
+    var stack = [];
+    var activeEdge = null;
+    var lastEvent = null;
+    var result = null;
+
+    for(var i=0; i<=idx && i<events.length; i++){
+      var ev = events[i];
+      lastEvent = ev;
+      switch(ev.type){
+        case 'enter':
+          stack.push(ev.course);
+          break;
+        case 'cycle':
+          cycleNodes.add(ev.course);
+          if(ev.parent !== null && ev.parent !== undefined) cycleEdges.add(ev.parent + '-' + ev.course);
+          stack.pop();
+          break;
+        case 'base':
+          stack.pop();
+          break;
+        case 'addVisited':
+          onPath.add(ev.course);
+          break;
+        case 'edge':
+          if(i === idx) activeEdge = {from: ev.from, to: ev.to};
+          break;
+        case 'fail':
+          stack.pop();
+          break;
+        case 'removeVisited':
+          onPath.delete(ev.course);
+          break;
+        case 'clearAdj':
+          adj[ev.course] = [];
+          done.add(ev.course);
+          break;
+        case 'success':
+          stack.pop();
+          break;
+        case 'result':
+          result = ev.canFinish;
+          break;
+      }
+    }
+    if(!lastEvent || lastEvent.type !== 'edge') activeEdge = null;
+    return {adj:adj, onPath:onPath, done:done, cycleNodes:cycleNodes, cycleEdges:cycleEdges, stack:stack, activeEdge:activeEdge, lastEvent:lastEvent, result:result};
+  }
+
+  var LINE_MAP = {
+    enter:         {lines:[8],     cat:'blue'},
+    cycle:         {lines:[8,9],   cat:'red'},
+    base:          {lines:[10,11], cat:'teal'},
+    addVisited:    {lines:[12],    cat:'amber'},
+    edge:          {lines:[13],    cat:'amber'},
+    fail:          {lines:[14,15], cat:'red'},
+    removeVisited: {lines:[16],    cat:'amber'},
+    clearAdj:      {lines:[17],    cat:'teal'},
+    success:       {lines:[18],    cat:'teal'},
+    topLevel:      {lines:[19],    cat:'neutral'},
+    resultFalse:   {lines:[20,21], cat:'red'},
+    resultTrue:    {lines:[22],    cat:'teal'}
+  };
+
+  function narrate(ev){
+    if(!ev) return 'Press play, or step forward, to begin.';
+    switch(ev.type){
+      case 'topLevel': return 'Top-level loop: check course ' + ev.course + '.';
+      case 'enter': return 'dfs(' + ev.course + ') is called' + (ev.parent!==null && ev.parent!==undefined ? ', from dfs(' + ev.parent + ')' : ' (top level)') + '.';
+      case 'cycle': return 'Course ' + ev.course + ' is already on the current path \u2014 that\u2019s a cycle. dfs(' + ev.course + ') returns False.';
+      case 'base': return 'adj[' + ev.course + '] is empty, so course ' + ev.course + ' has no unresolved prerequisites. dfs(' + ev.course + ') returns True.';
+      case 'addVisited': return 'Course ' + ev.course + ' still has prerequisites to check \u2014 add it to visited (mark it \u201con path\u201d).';
+      case 'edge': return 'Look at prerequisite ' + ev.to + ' of course ' + ev.from + '.';
+      case 'fail': return 'A prerequisite of course ' + ev.course + ' failed, so dfs(' + ev.course + ') returns False too.';
+      case 'removeVisited': return 'Every prerequisite of course ' + ev.course + ' checked out \u2014 remove it from visited.';
+      case 'clearAdj': return 'Memoize: set adj[' + ev.course + '] = [] so it\u2019s never walked again.';
+      case 'success': return 'dfs(' + ev.course + ') returns True.';
+      case 'result': return ev.canFinish
+        ? 'All courses can be finished \u2014 canFinish() returns True.'
+        : 'A cycle was found \u2014 canFinish() returns False.';
+      default: return '';
+    }
+  }
+
+  function lineInfoFor(ev){
+    if(!ev) return {lines:[], cat:'neutral'};
+    if(ev.type === 'result') return ev.canFinish ? LINE_MAP.resultTrue : LINE_MAP.resultFalse;
+    return LINE_MAP[ev.type] || {lines:[], cat:'neutral'};
+  }
+
+  // ---------- DOM refs ----------
+  var svg = document.getElementById('graph-svg');
+  var codeBlock = document.getElementById('code-block');
+  var stackView = document.getElementById('stack-view');
+  var visitedChips = document.getElementById('visited-chips');
+  var adjListEl = document.getElementById('adj-list');
+  var narrationEl = document.getElementById('narration');
+  var narrationText = document.getElementById('narration-text');
+  var stepCounter = document.getElementById('step-counter');
+  var footnote = document.getElementById('footnote');
+  var btnPlay = document.getElementById('btn-play');
+  var btnPrev = document.getElementById('btn-prev');
+  var btnNext = document.getElementById('btn-next');
+  var btnReset = document.getElementById('btn-reset');
+
+  var NS = 'http://www.w3.org/2000/svg';
+  var nodeGroups = {};
+  var edgeLines = {};
+
+  // ---------- code panel ----------
+  CODE_LINES.forEach(function(text, i){
+    var div = document.createElement('div');
+    div.className = 'line';
+    div.id = 'code-line-' + (i+1);
+    div.textContent = text.length ? text : ' ';
+    codeBlock.appendChild(div);
+  });
+
+  function layoutPositions(n){
+    var cx = 160, cy = 160, r = 118;
+    var arr = [];
+    for(var i=0;i<n;i++){
+      var angle = -Math.PI/2 + i * (2*Math.PI/n);
+      arr.push({x: cx + r*Math.cos(angle), y: cy + r*Math.sin(angle)});
+    }
+    return arr;
+  }
+
+  function buildGraph(numCourses, prereqs){
+    while(svg.firstChild) svg.removeChild(svg.firstChild);
+    nodeGroups = {};
+    edgeLines = {};
+
+    var defs = document.createElementNS(NS, 'defs');
+    var markerSpecs = [
+      {id:'arrow-default', color:'#3a4049'},
+      {id:'arrow-active', color:'#5fa8ff'},
+      {id:'arrow-cycle', color:'#e5484d'},
+      {id:'arrow-cleared', color:'#2a2f37'}
+    ];
+    markerSpecs.forEach(function(m){
+      var marker = document.createElementNS(NS, 'marker');
+      marker.setAttribute('id', m.id);
+      marker.setAttribute('viewBox', '0 0 10 10');
+      marker.setAttribute('refX', '8');
+      marker.setAttribute('refY', '5');
+      marker.setAttribute('markerWidth', '6.5');
+      marker.setAttribute('markerHeight', '6.5');
+      marker.setAttribute('orient', 'auto-start-reverse');
+      var path = document.createElementNS(NS, 'path');
+      path.setAttribute('d', 'M0,0 L10,5 L0,10 z');
+      path.setAttribute('fill', m.color);
+      marker.appendChild(path);
+      defs.appendChild(marker);
+    });
+    svg.appendChild(defs);
+
+    var positions = layoutPositions(numCourses);
+    var R = 22;
+
+    var edgeLayer = document.createElementNS(NS, 'g');
+    svg.appendChild(edgeLayer);
+
+    prereqs.forEach(function(pair){
+      var from = pair[0], to = pair[1];
+      var pf = positions[from], pt = positions[to];
+      var dx = pt.x - pf.x, dy = pt.y - pf.y;
+      var dist = Math.sqrt(dx*dx + dy*dy) || 1;
+      var ux = dx/dist, uy = dy/dist;
+      var x1 = pf.x + ux*R, y1 = pf.y + uy*R;
+      var x2 = pt.x - ux*(R+7), y2 = pt.y - uy*(R+7);
+      var line = document.createElementNS(NS, 'line');
+      line.setAttribute('x1', x1); line.setAttribute('y1', y1);
+      line.setAttribute('x2', x2); line.setAttribute('y2', y2);
+      line.setAttribute('class', 'edge');
+      line.setAttribute('marker-end', 'url(#arrow-default)');
+      edgeLayer.appendChild(line);
+      edgeLines[from + '-' + to] = line;
+    });
+
+    var nodeLayer = document.createElementNS(NS, 'g');
+    svg.appendChild(nodeLayer);
+
+    for(var i=0;i<numCourses;i++){
+      var p = positions[i];
+      var g = document.createElementNS(NS, 'g');
+      g.setAttribute('class', 'n-default');
+      var circle = document.createElementNS(NS, 'circle');
+      circle.setAttribute('class', 'node');
+      circle.setAttribute('cx', p.x); circle.setAttribute('cy', p.y); circle.setAttribute('r', R);
+      var label = document.createElementNS(NS, 'text');
+      label.setAttribute('class', 'node-label');
+      label.setAttribute('x', p.x); label.setAttribute('y', p.y);
+      label.textContent = i;
+      g.appendChild(circle);
+      g.appendChild(label);
+      nodeLayer.appendChild(g);
+      nodeGroups[i] = g;
+    }
+  }
+
+  // ---------- render ----------
+  var current = null; // {numCourses, prereqs, events, adjInit, idx, exKey}
+
+  function edgeClassAndMarker(key, from, state){
+    if(state.cycleEdges.has(key)) return {cls:'edge e-cycle', marker:'url(#arrow-cycle)'};
+    if(state.activeEdge && (state.activeEdge.from + '-' + state.activeEdge.to) === key) return {cls:'edge e-active', marker:'url(#arrow-active)'};
+    if(state.done.has(from)) return {cls:'edge e-cleared', marker:'url(#arrow-cleared)'};
+    return {cls:'edge', marker:'url(#arrow-default)'};
+  }
+
+  function nodeClass(course, state){
+    if(state.cycleNodes.has(course)) return 'n-cycle';
+    var top = state.stack.length ? state.stack[state.stack.length-1] : null;
+    if(top === course) return 'n-current';
+    if(state.onPath.has(course)) return 'n-stack';
+    if(state.done.has(course)) return 'n-done';
+    return 'n-default';
+  }
+
+  function render(){
+    var idx = current.idx;
+    var state = computeState(current.events, current.adjInit, idx);
+
+    // graph nodes
+    for(var c in nodeGroups){
+      var cls = nodeClass(Number(c), state);
+      var g = nodeGroups[c];
+      var prevCls = g.getAttribute('class');
+      g.setAttribute('class', cls);
+    }
+    // pulse the node this exact event concerns
+    var ev = state.lastEvent;
+    if(ev && (ev.type === 'enter' || ev.type === 'cycle' || ev.type === 'success' || ev.type === 'base')){
+      var target = nodeGroups[ev.course];
+      if(target){
+        target.classList.remove('pulse');
+        void target.offsetWidth;
+        target.classList.add('pulse');
+      }
+    }
+
+    // graph edges
+    for(var key in edgeLines){
+      var parts = key.split('-');
+      var from = Number(parts[0]);
+      var info = edgeClassAndMarker(key, from, state);
+      edgeLines[key].setAttribute('class', info.cls);
+      edgeLines[key].setAttribute('marker-end', info.marker);
+    }
+
+    // code panel
+    for(var i2=1;i2<=CODE_LINES.length;i2++){
+      var el = document.getElementById('code-line-' + i2);
+      el.className = 'line';
+    }
+    var info2 = lineInfoFor(ev);
+    info2.lines.forEach(function(ln){
+      var el = document.getElementById('code-line-' + ln);
+      if(el) el.className = 'line hl-' + info2.cat;
+    });
+    if(info2.lines.length){
+      var firstEl = document.getElementById('code-line-' + info2.lines[0]);
+      if(firstEl && firstEl.scrollIntoView) firstEl.scrollIntoView({block:'nearest'});
+    }
+
+    // narration
+    narrationText.textContent = narrate(ev);
+    narrationEl.className = 'narration cat-' + info2.cat;
+
+    // call stack
+    stackView.innerHTML = '';
+    if(state.stack.length === 0){
+      var hint = document.createElement('div');
+      hint.className = 'empty-hint';
+      hint.textContent = idx < 0 ? 'Nothing called yet.' : 'Stack is empty.';
+      stackView.appendChild(hint);
+    } else {
+      state.stack.forEach(function(courseId, depth){
+        var item = document.createElement('div');
+        item.className = 'stack-item' + (depth === state.stack.length-1 ? ' top' : '');
+        item.innerHTML = '<span class="idx">#' + depth + '</span> dfs(' + courseId + ')';
+        stackView.appendChild(item);
+      });
+    }
+
+    // visited chips
+    visitedChips.innerHTML = '';
+    if(state.onPath.size === 0){
+      var hint2 = document.createElement('span');
+      hint2.className = 'empty-hint';
+      hint2.textContent = 'empty';
+      visitedChips.appendChild(hint2);
+    } else {
+      Array.from(state.onPath).sort(function(a,b){return a-b;}).forEach(function(c){
+        var chip = document.createElement('span');
+        chip.className = 'chip';
+        chip.textContent = c;
+        visitedChips.appendChild(chip);
+      });
+    }
+
+    // adjacency list
+    adjListEl.innerHTML = '';
+    Object.keys(state.adj).map(Number).sort(function(a,b){return a-b;}).forEach(function(c){
+      var row = document.createElement('div');
+      var cleared = state.done.has(c);
+      row.className = 'adj-row' + (cleared ? ' cleared' : '');
+      var arr = state.adj[c];
+      row.innerHTML = '<span class="k">' + c + '</span><span class="arrow">\u2192</span><span class="v">[' + arr.join(', ') + ']</span>' +
+        (cleared ? '<span class="memo-tag">memoized</span>' : '');
+      adjListEl.appendChild(row);
+    });
+
+    // step counter
+    stepCounter.textContent = (idx+1) + ' / ' + current.events.length;
+
+    // footnote
+    if(state.result === false){
+      footnote.className = 'footnote show-red';
+      footnote.textContent = 'canFinish() returns False here, immediately, without unwinding the stack \u2014 so the states above (still amber, still on the stack) are simply abandoned mid-recursion. That\u2019s harmless: the function has already decided the answer.';
+    } else if(state.result === true){
+      footnote.className = 'footnote show-teal';
+      footnote.textContent = 'Every course resolved without revisiting a node already on its own path, so no cycle exists.';
+    } else {
+      footnote.className = 'footnote';
+      footnote.textContent = '';
+    }
+
+    // buttons
+    btnPrev.disabled = idx <= -1;
+    var atEnd = idx >= current.events.length - 1;
+    btnNext.disabled = atEnd;
+    if(atEnd) pause();
+  }
+
+  // ---------- playback ----------
+  var playing = false;
+  var speed = 1;
+  var timer = null;
+
+  function stepForward(){
+    if(current.idx < current.events.length - 1){
+      current.idx++;
+      render();
+    }
+  }
+  function stepBack(){
+    if(current.idx > -1){
+      current.idx--;
+      render();
+    }
+  }
+  function play(){
+    if(current.idx >= current.events.length - 1) return;
+    playing = true;
+    btnPlay.textContent = '⏸';
+    btnPlay.title = 'Pause';
+    scheduleNext();
+  }
+  function scheduleNext(){
+    clearTimeout(timer);
+    timer = setTimeout(function(){
+      stepForward();
+      if(playing && current.idx < current.events.length - 1) scheduleNext();
+      else pause();
+    }, 1000 / speed);
+  }
+  function pause(){
+    playing = false;
+    clearTimeout(timer);
+    btnPlay.textContent = '▶';
+    btnPlay.title = 'Play';
+  }
+  function togglePlay(){ playing ? pause() : play(); }
+  function reset(){
+    pause();
+    current.idx = -1;
+    render();
+  }
+
+  function loadExample(key){
+    pause();
+    var def = EXAMPLES[key];
+    var trace = computeTrace(def.numCourses, def.prereqs);
+    current = { numCourses: def.numCourses, prereqs: def.prereqs, events: trace.events, adjInit: trace.adjInit, idx: -1, exKey: key };
+    buildGraph(def.numCourses, def.prereqs);
+    render();
+  }
+
+  // ---------- wire up controls ----------
+  document.getElementById('example-group').addEventListener('click', function(e){
+    var btn = e.target.closest('.ex-btn');
+    if(!btn) return;
+    document.querySelectorAll('.ex-btn').forEach(function(b){ b.classList.remove('active'); });
+    btn.classList.add('active');
+    loadExample(btn.getAttribute('data-ex'));
+  });
+
+  document.getElementById('speed-group').addEventListener('click', function(e){
+    var btn = e.target.closest('.speed-btn');
+    if(!btn) return;
+    document.querySelectorAll('.speed-btn').forEach(function(b){ b.classList.remove('active'); });
+    btn.classList.add('active');
+    speed = parseFloat(btn.getAttribute('data-speed'));
+    if(playing){ pause(); play(); }
+  });
+
+  btnPlay.addEventListener('click', togglePlay);
+  btnNext.addEventListener('click', function(){ pause(); stepForward(); });
+  btnPrev.addEventListener('click', function(){ pause(); stepBack(); });
+  btnReset.addEventListener('click', reset);
+
+  loadExample('nocycle');
+})();
+</script>
+</body>
+</html>
