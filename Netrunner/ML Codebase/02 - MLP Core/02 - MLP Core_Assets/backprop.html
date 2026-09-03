@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Backward pass weight access walkthrough</title>
+<style>
+  :root {
+    --bg: #ffffff;
+    --text-primary: #1a1a1a;
+    --text-secondary: #6b6b6b;
+    --border: #d8d8d3;
+    --amber: #EF9F27;
+    --amber-text: #633806;
+    --purple: #7F77DD;
+    --purple-fill: #EEEDFE;
+    --purple-text: #26215C;
+    --teal: #1D9E75;
+    --teal-fill: #E1F5EE;
+    --teal-text: #04342C;
+    --pink: #D4537E;
+    --pink-fill: #FBEAF0;
+    --pink-text: #4B1528;
+    --gray-fill: #F1EFE8;
+    --gray-text: #2C2C2A;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1e1e1e;
+      --text-primary: #e8e8e3;
+      --text-secondary: #a3a39a;
+      --border: #3d3d3a;
+      --purple-fill: #3C3489;
+      --purple-text: #CECBF6;
+      --teal-fill: #085041;
+      --teal-text: #9FE1CB;
+      --pink-fill: #72243E;
+      --pink-text: #F4C0D1;
+      --gray-fill: #444441;
+      --gray-text: #D3D1C7;
+    }
+  }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text-primary);
+    margin: 0;
+    padding: 1rem;
+  }
+  h2 { font-size: 15px; margin: 0 0 0.5rem 0; color: var(--text-primary); }
+  .controls { display: flex; gap: 8px; margin-bottom: 0.75rem; }
+  button {
+    flex: 1;
+    padding: 8px 12px;
+    font-size: 14px;
+    font-family: inherit;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--bg);
+    color: var(--text-primary);
+    cursor: pointer;
+  }
+  button:hover { background: var(--gray-fill); }
+  #step-label {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-bottom: 0.75rem;
+    min-height: 18px;
+  }
+  svg { width: 100%; height: auto; display: block; }
+  .lbl { font-size: 12px; fill: var(--text-secondary); }
+  .t { font-size: 14px; fill: var(--text-primary); }
+  .ts { font-size: 12px; fill: var(--text-primary); }
+  .edge { transition: stroke-width .25s, opacity .25s, stroke .25s; }
+  .cell-rect { transition: fill .25s, stroke .25s; }
+  .node-circle { transition: fill .25s, stroke .25s; }
+</style>
+</head>
+<body>
+
+<h2>Backward pass — column-wise weight access</h2>
+<div class="controls">
+  <button id="btn-play">Play walkthrough</button>
+  <button id="btn-step">Next step</button>
+  <button id="btn-reset">Reset</button>
+</div>
+<div id="step-label"></div>
+
+<svg viewBox="0 0 680 560" role="img">
+<title>Two-weight-matrix network with matrix grids, backward-only access pattern</title>
+<desc>A 3-node input layer, 3-node hidden layer, and 2-node output layer connected by two weight matrices W1 and W2, shown as grids below. The backward pass lights up matrix columns in order to compute each upstream gradient.</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+<text class="lbl" x="90" y="30" text-anchor="middle">input x</text>
+<text class="lbl" x="340" y="30" text-anchor="middle">hidden h</text>
+<text class="lbl" x="590" y="30" text-anchor="middle">output y</text>
+<g id="edges"></g>
+<g id="nodes"></g>
+<text class="lbl" x="60" y="345">W1 (3x3)</text>
+<g id="w1grid"></g>
+<text class="lbl" x="420" y="345">W2 (2x3)</text>
+<g id="w2grid"></g>
+</svg>
+
+<script>
+const svg = document.querySelector('svg');
+const edgesG = svg.querySelector('#edges');
+const nodesG = svg.querySelector('#nodes');
+const w1G = svg.querySelector('#w1grid');
+const w2G = svg.querySelector('#w2grid');
+const stepLabelEl = document.getElementById('step-label');
+
+const inX=90, hidX=340, outX=590;
+const inY=[90,170,250], hidY=[90,170,250], outY=[130,210];
+
+const RAMP = {
+  gray:  {fill:'var(--gray-fill)',  text:'var(--gray-text)',  stroke:'#888780'},
+  purple:{fill:'var(--purple-fill)',text:'var(--purple-text)',stroke:'#7F77DD'},
+  teal:  {fill:'var(--teal-fill)',  text:'var(--teal-text)',  stroke:'#1D9E75'},
+  pink:  {fill:'var(--pink-fill)',  text:'var(--pink-text)',  stroke:'#D4537E'},
+  amber: {fill:'#FAEEDA',           text:'#633806',           stroke:'#EF9F27'}
+};
+
+function mkLine(x1,y1,x2,y2,id){
+  const l=document.createElementNS('http://www.w3.org/2000/svg','line');
+  l.setAttribute('x1',x1); l.setAttribute('y1',y1); l.setAttribute('x2',x2); l.setAttribute('y2',y2);
+  l.setAttribute('class','edge'); l.setAttribute('data-id',id);
+  l.setAttribute('stroke','var(--text-secondary)'); l.setAttribute('stroke-width','0.75'); l.setAttribute('opacity','0.18');
+  return l;
+}
+function mkNode(x,y,txt,id,ramp){
+  const g=document.createElementNS('http://www.w3.org/2000/svg','g');
+  g.setAttribute('data-node',id); g.setAttribute('data-ramp',ramp);
+  const c=document.createElementNS('http://www.w3.org/2000/svg','circle');
+  c.setAttribute('cx',x); c.setAttribute('cy',y); c.setAttribute('r',22);
+  c.setAttribute('class','node-circle');
+  c.setAttribute('fill',RAMP[ramp].fill); c.setAttribute('stroke',RAMP[ramp].stroke); c.setAttribute('stroke-width','1');
+  g.appendChild(c);
+  const t=document.createElementNS('http://www.w3.org/2000/svg','text');
+  t.setAttribute('x',x); t.setAttribute('y',y); t.setAttribute('class','t');
+  t.setAttribute('text-anchor','middle'); t.setAttribute('dominant-baseline','central');
+  t.setAttribute('fill',RAMP[ramp].text);
+  t.textContent=txt;
+  g.appendChild(t);
+  return g;
+}
+function mkCell(x,y,w,h,txt,id){
+  const g=document.createElementNS('http://www.w3.org/2000/svg','g');
+  g.setAttribute('data-cell',id); g.setAttribute('data-ramp','gray');
+  const r=document.createElementNS('http://www.w3.org/2000/svg','rect');
+  r.setAttribute('x',x); r.setAttribute('y',y); r.setAttribute('width',w); r.setAttribute('height',h); r.setAttribute('rx','4');
+  r.setAttribute('class','cell-rect');
+  r.setAttribute('fill',RAMP.gray.fill); r.setAttribute('stroke',RAMP.gray.stroke); r.setAttribute('stroke-width','1');
+  g.appendChild(r);
+  const t=document.createElementNS('http://www.w3.org/2000/svg','text');
+  t.setAttribute('x',x+w/2); t.setAttribute('y',y+h/2); t.setAttribute('class','ts');
+  t.setAttribute('text-anchor','middle'); t.setAttribute('dominant-baseline','central');
+  t.setAttribute('fill',RAMP.gray.text);
+  t.textContent=txt;
+  g.appendChild(t);
+  return g;
+}
+
+for(let o=0;o<3;o++) for(let i=0;i<3;i++) edgesG.appendChild(mkLine(inX+22,inY[i],hidX-22,hidY[o],'W1-'+o+'-'+i));
+for(let o=0;o<2;o++) for(let i=0;i<3;i++) edgesG.appendChild(mkLine(hidX+22,hidY[i],outX-22,outY[o],'W2-'+o+'-'+i));
+
+for(let i=0;i<3;i++) nodesG.appendChild(mkNode(inX,inY[i],'x'+i,'in-'+i,'gray'));
+for(let i=0;i<3;i++) nodesG.appendChild(mkNode(hidX,hidY[i],'h'+i,'hid-'+i,'purple'));
+for(let o=0;o<2;o++) nodesG.appendChild(mkNode(outX,outY[o],'y'+o,'out-'+o,'teal'));
+
+const cw=60, ch=36;
+for(let o=0;o<3;o++) for(let i=0;i<3;i++) w1G.appendChild(mkCell(60+i*cw,360+o*ch,cw-4,ch-4,'w1['+o+']['+i+']','W1-'+o+'-'+i));
+for(let o=0;o<2;o++) for(let i=0;i<3;i++) w2G.appendChild(mkCell(420+i*cw,360+o*ch,cw-4,ch-4,'w2['+o+']['+i+']','W2-'+o+'-'+i));
+
+// Backward pass only
+const steps = [];
+for(let i=0;i<3;i++) steps.push({mat:'W2', i, desc:'Layer 2 — column-wise: reading W2[0..1]['+i+'] to compute dL/dh'+i});
+for(let i=0;i<3;i++) steps.push({mat:'W1', i, desc:'Layer 1 — column-wise: reading W1[0..2]['+i+'] to compute dL/dx'+i});
+
+let cur = -1;
+let playTimer = null;
+
+function setNodeRamp(g, ramp){
+  g.setAttribute('data-ramp', ramp);
+  const c = g.querySelector('circle');
+  const t = g.querySelector('text');
+  c.setAttribute('fill', RAMP[ramp].fill); c.setAttribute('stroke', RAMP[ramp].stroke);
+  t.setAttribute('fill', RAMP[ramp].text);
+}
+function setCellRamp(g, ramp){
+  g.setAttribute('data-ramp', ramp);
+  const r = g.querySelector('rect');
+  const t = g.querySelector('text');
+  r.setAttribute('fill', RAMP[ramp].fill); r.setAttribute('stroke', RAMP[ramp].stroke);
+  t.setAttribute('fill', RAMP[ramp].text);
+}
+
+function resetAll(){
+  edgesG.querySelectorAll('.edge').forEach(e=>{ e.setAttribute('opacity','0.18'); e.setAttribute('stroke','var(--text-secondary)'); e.setAttribute('stroke-width','0.75'); });
+  nodesG.querySelectorAll('g').forEach(g=>{
+    const id = g.getAttribute('data-node');
+    const ramp = id.startsWith('in') ? 'gray' : id.startsWith('hid') ? 'purple' : 'teal';
+    setNodeRamp(g, ramp);
+  });
+  [w1G,w2G].forEach(grid=>grid.querySelectorAll('g[data-cell]').forEach(g=>setCellRamp(g,'gray')));
+}
+
+function highlightSet(ids, strokeColor, matRamp){
+  ids.forEach(id=>{
+    const e = edgesG.querySelector('[data-id="'+id+'"]');
+    e.setAttribute('opacity','1'); e.setAttribute('stroke',strokeColor); e.setAttribute('stroke-width','2');
+    const cell = svg.querySelector('[data-cell="'+id+'"]');
+    if(cell) setCellRamp(cell, matRamp);
+  });
+}
+
+function render(){
+  resetAll();
+  if(cur < 0){ stepLabelEl.textContent = 'Press play or step to begin.'; return; }
+  const s = steps[cur];
+  stepLabelEl.textContent = '(' + (cur+1) + '/' + steps.length + ') ' + s.desc;
+
+  if(s.mat==='W2'){
+    const ids=[]; for(let o=0;o<2;o++) ids.push('W2-'+o+'-'+s.i);
+    highlightSet(ids, RAMP.pink.stroke, 'pink');
+    setNodeRamp(nodesG.querySelector('[data-node="hid-'+s.i+'"]'), 'amber');
+  } else if(s.mat==='W1'){
+    const ids=[]; for(let o=0;o<3;o++) ids.push('W1-'+o+'-'+s.i);
+    highlightSet(ids, RAMP.pink.stroke, 'pink');
+    setNodeRamp(nodesG.querySelector('[data-node="in-'+s.i+'"]'), 'amber');
+  }
+}
+
+function nextStep(){
+  cur = (cur+1) % steps.length;
+  render();
+  if(cur === steps.length-1 && playTimer){ clearInterval(playTimer); playTimer=null; document.getElementById('btn-play').textContent='Play walkthrough'; }
+}
+
+document.getElementById('btn-step').onclick = nextStep;
+document.getElementById('btn-reset').onclick = () => {
+  cur=-1;
+  if(playTimer){ clearInterval(playTimer); playTimer=null; document.getElementById('btn-play').textContent='Play walkthrough'; }
+  render();
+};
+document.getElementById('btn-play').onclick = (e) => {
+  if(playTimer){ clearInterval(playTimer); playTimer=null; e.target.textContent='Play walkthrough'; return; }
+  e.target.textContent='Pause';
+  if(cur>=steps.length-1) cur=-1;
+  playTimer = setInterval(nextStep, 1200);
+};
+
+render();
+</script>
+</body>
+</html>

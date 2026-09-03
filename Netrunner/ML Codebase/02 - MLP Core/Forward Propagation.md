@@ -13,7 +13,7 @@ Forward Propagation/Pass is the process of passing input data through a neural n
 ---
 ## How it works
 
-For a single layer:
+**For a single layer**:
 
 ```python
 z = W·x + b        (linear transformation)
@@ -40,3 +40,8 @@ $$
 ## Key point
 
 Forward propagation is purely computational, no learning happens here. Weights are only updated afterward, during backpropagation, based on the error calculated from the forward pass's output.
+
+```html-embed
+Mikoshi/Netrunner/ML Codebase/02 - MLP Core/02 - MLP Core_Assets/forward_prop.html
+650
+```
