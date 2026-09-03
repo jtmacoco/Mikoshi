@@ -10,6 +10,15 @@ created: 2026-07-04
 
 Leetcode problems solutions
 
+# Problems Solved
+```dataview
+TABLE length(rows) AS "Count"
+FROM "Mikoshi/ICEbreaker/Leetcode"
+WHERE status != null AND status != ""
+GROUP BY status
+```
+
+
 ## LeetCode Index
 
 ```dataview
@@ -38,4 +47,5 @@ FROM "Mikoshi/ICEbreaker/Leetcode"
 WHERE status = "solved"
 SORT file.mtime DESC
 ```
+
 
