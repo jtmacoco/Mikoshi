@@ -8,3 +8,4 @@
 - ContextIQ, maybe continue
 - Open Source contribution with CUDA or parallel programming
 - Personal custom assistant local LLM 
+- Make a note for GDB gef 
