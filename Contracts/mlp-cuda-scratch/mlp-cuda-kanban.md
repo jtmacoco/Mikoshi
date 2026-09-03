@@ -27,6 +27,8 @@ kanban-plugin: board
 ## In Progress
 
 - [ ] Implement backward pass / autograd
+- [ ] Gradient Decent
+- [ ] Optimizer
 
 
 ## Testing
