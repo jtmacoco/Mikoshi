@@ -138,4 +138,68 @@ int main() {
 - Structs / multiple values → pass a pointer, keep the underlying memory alive until the thread is done with it (stack is OK only if the creator blocks on `join`; otherwise heap it)
 - Same logic in reverse for return values — heap-allocate, never return a pointer to a local stack variable
 ---
-# Tuesday
+# Thursday
+
+## Solution
+
+```c
+#include <stdio.h>
+#include <pthread.h>
+#include <unistd.h>
+
+pthread_mutex_t lock_a = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t lock_b = PTHREAD_MUTEX_INITIALIZER;
+
+void *thread1_func(void *arg) {
+    printf("Thread 1: locking A\n");
+    pthread_mutex_lock(&lock_a);
+
+    sleep(1); // give thread 2 a chance to grab B first
+
+    printf("Thread 1: waiting for B\n");
+    pthread_mutex_lock(&lock_b);   // blocks forever — thread 2 holds B
+
+    printf("Thread 1: got both locks\n");
+
+    pthread_mutex_unlock(&lock_b);
+    pthread_mutex_unlock(&lock_a);
+    return NULL;
+}
+
+void *thread2_func(void *arg) {
+    printf("Thread 2: locking B\n");
+    pthread_mutex_lock(&lock_b);
+
+    sleep(1); // give thread 1 a chance to grab A first
+
+    printf("Thread 2: waiting for A\n");
+    pthread_mutex_lock(&lock_a);   // blocks forever — thread 1 holds A
+
+    printf("Thread 2: got both locks\n");
+
+    pthread_mutex_unlock(&lock_a);
+    pthread_mutex_unlock(&lock_b);
+    return NULL;
+}
+
+int main(void) {
+    pthread_t t1, t2;
+
+    pthread_create(&t1, NULL, thread1_func, NULL);
+    pthread_create(&t2, NULL, thread2_func, NULL);
+
+    pthread_join(t1, NULL);
+    pthread_join(t2, NULL);
+
+    printf("Done (you'll never see this)\n");
+    return 0;
+}
+```
+
+- Use the mutex locks to invoke the deadlock 
+
+### How to use GDB
+
+1. `gdb ./main`
+2. type `run` (will step through and run program)
+3. Ran `thread apply all bt` this shows the backtrace of every thread (Note both threads made stuck in `pthread_mutex_lock`)
