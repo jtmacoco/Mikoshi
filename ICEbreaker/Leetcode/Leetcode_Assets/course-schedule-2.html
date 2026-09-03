@@ -1,0 +1,590 @@
+<div class="tsv-root">
+<style>
+.tsv-root {
+  --bg: #14181f;
+  --panel: #1a2029;
+  --panel-2: #1f2631;
+  --border: #2a3140;
+  --text: #e6e9ef;
+  --muted: #8b93a3;
+  --node-idle: #313846;
+  --node-idle-border: #4a5568;
+  --amber: #e0a339;
+  --amber-soft: rgba(224,163,57,0.16);
+  --teal: #3fa796;
+  --teal-soft: rgba(63,167,150,0.16);
+  --red: #d9534f;
+  --red-soft: rgba(217,83,79,0.18);
+  --white: #f2f5f9;
+  --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 20px;
+  max-width: 900px;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+.tsv-root * { box-sizing: border-box; }
+
+.tsv-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+.tsv-title {
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+}
+.tsv-subtitle {
+  font-size: 12.5px;
+  color: var(--muted);
+  margin-bottom: 14px;
+}
+.tsv-example-toggle {
+  display: flex;
+  gap: 6px;
+}
+.tsv-example-toggle button {
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 12px;
+  padding: 5px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: var(--sans);
+}
+.tsv-example-toggle button.active {
+  color: var(--white);
+  border-color: var(--teal);
+  background: var(--teal-soft);
+}
+
+.tsv-graph-wrap {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  margin-top: 10px;
+  overflow: hidden;
+}
+.tsv-graph-wrap svg { display: block; width: 100%; height: auto; }
+
+.tsv-edge {
+  stroke: var(--node-idle-border);
+  stroke-width: 2;
+  transition: stroke 0.25s ease, stroke-width 0.25s ease;
+  fill: none;
+}
+.tsv-edge.active { stroke: var(--amber); stroke-width: 3; }
+.tsv-edge.cyclehit { stroke: var(--red); stroke-width: 3.5; }
+.tsv-edge.treeused { stroke: #5a6478; }
+
+.tsv-node-circle {
+  fill: var(--node-idle);
+  stroke: var(--node-idle-border);
+  stroke-width: 2;
+  transition: fill 0.25s ease, stroke 0.25s ease;
+}
+.tsv-node-circle.onstack { fill: var(--amber-soft); stroke: var(--amber); }
+.tsv-node-circle.done { fill: var(--teal-soft); stroke: var(--teal); }
+.tsv-node-circle.cyclenode { fill: var(--red-soft); stroke: var(--red); }
+.tsv-node-circle.current { stroke: var(--white); stroke-width: 3; }
+
+.tsv-node-label {
+  fill: var(--text);
+  font-family: var(--mono);
+  font-size: 15px;
+  text-anchor: middle;
+  dominant-baseline: central;
+  pointer-events: none;
+}
+
+.tsv-pulse {
+  fill: none;
+  stroke: var(--white);
+  stroke-width: 2;
+  opacity: 0;
+}
+.tsv-pulse.go {
+  animation: tsv-pulse-anim 0.9s ease-out;
+}
+@keyframes tsv-pulse-anim {
+  0% { r: 18; opacity: 0.9; stroke-width: 3; }
+  100% { r: 32; opacity: 0; stroke-width: 0.5; }
+}
+
+.tsv-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 14px;
+  flex-wrap: wrap;
+}
+.tsv-controls button {
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-size: 13px;
+  padding: 7px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: var(--sans);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.tsv-controls button:hover:not(:disabled) { border-color: var(--teal); }
+.tsv-controls button:disabled { opacity: 0.35; cursor: default; }
+.tsv-controls .tsv-play { color: var(--white); border-color: var(--teal); background: var(--teal-soft); }
+.tsv-progress {
+  flex: 1;
+  min-width: 100px;
+  height: 4px;
+  background: var(--border);
+  border-radius: 2px;
+  position: relative;
+  overflow: hidden;
+}
+.tsv-progress-bar {
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  background: var(--teal);
+  border-radius: 2px;
+  transition: width 0.2s ease;
+}
+.tsv-step-count {
+  font-family: var(--mono);
+  font-size: 11.5px;
+  color: var(--muted);
+  min-width: 52px;
+  text-align: right;
+}
+
+.tsv-caption {
+  margin-top: 14px;
+  padding: 10px 12px;
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--teal);
+  border-radius: 6px;
+  font-size: 13.5px;
+  line-height: 1.5;
+  min-height: 42px;
+}
+.tsv-caption.cycle { border-left-color: var(--red); }
+.tsv-caption code { font-family: var(--mono); background: rgba(255,255,255,0.06); padding: 1px 5px; border-radius: 4px; }
+
+.tsv-panels {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+  margin-top: 12px;
+}
+.tsv-panel {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 12px;
+}
+.tsv-panel h4 {
+  margin: 0 0 8px 0;
+  font-size: 11px;
+  color: var(--muted);
+  font-weight: 600;
+  font-family: var(--mono);
+}
+.tsv-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  min-height: 24px;
+}
+.tsv-chip {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  padding: 2px 8px;
+  border-radius: 5px;
+  background: var(--node-idle);
+  border: 1px solid var(--node-idle-border);
+  color: var(--text);
+}
+.tsv-chip.amber { background: var(--amber-soft); border-color: var(--amber); }
+.tsv-chip.teal { background: var(--teal-soft); border-color: var(--teal); }
+.tsv-chip.empty { color: var(--muted); border-style: dashed; background: transparent; }
+
+@media (max-width: 620px) {
+  .tsv-panels { grid-template-columns: 1fr; }
+}
+</style>
+
+<div class="tsv-head">
+  <div class="tsv-title">Course Schedule II — DFS topological sort</div>
+  <div class="tsv-example-toggle">
+    <button id="tsv-btn-acyclic" class="active">No cycle</button>
+    <button id="tsv-btn-cyclic">With cycle</button>
+  </div>
+</div>
+<div class="tsv-subtitle"><code>visited</code> = fully explored (safe). <code>hashed</code> = on the current DFS path (a hit here means a cycle).</div>
+
+<div class="tsv-graph-wrap">
+  <svg id="tsv-svg" viewBox="0 0 640 340" xmlns="http://www.w3.org/2000/svg"></svg>
+</div>
+
+<div class="tsv-controls">
+  <button id="tsv-reset" title="Reset">⟲</button>
+  <button id="tsv-prev">◂ Prev</button>
+  <button id="tsv-play" class="tsv-play">▶ Play</button>
+  <button id="tsv-next">Next ▸</button>
+  <div class="tsv-progress"><div class="tsv-progress-bar" id="tsv-progress-bar"></div></div>
+  <div class="tsv-step-count" id="tsv-step-count">0 / 0</div>
+</div>
+
+<div class="tsv-caption" id="tsv-caption">Press Play or Next to start tracing the algorithm.</div>
+
+<div class="tsv-panels">
+  <div class="tsv-panel">
+    <h4>hashed (call stack)</h4>
+    <div class="tsv-chips" id="tsv-hashed"></div>
+  </div>
+  <div class="tsv-panel">
+    <h4>visited</h4>
+    <div class="tsv-chips" id="tsv-visited"></div>
+  </div>
+  <div class="tsv-panel">
+    <h4>result order</h4>
+    <div class="tsv-chips" id="tsv-result"></div>
+  </div>
+</div>
+
+<script>
+(function() {
+  const root = document.currentScript.closest('.tsv-root');
+
+  const examples = {
+    acyclic: {
+      numCourses: 6,
+      prerequisites: [[1,0],[2,0],[3,1],[3,2],[4,3],[5,4]],
+      positions: {
+        0: [110, 280], 1: [270, 200], 2: [110, 100],
+        3: [430, 150], 4: [560, 150], 5: [560, 30]
+      }
+    },
+    cyclic: {
+      numCourses: 6,
+      prerequisites: [[1,0],[2,0],[3,1],[3,2],[4,3],[5,4],[0,5]],
+      positions: {
+        0: [110, 280], 1: [270, 200], 2: [110, 100],
+        3: [430, 150], 4: [560, 150], 5: [560, 30]
+      }
+    }
+  };
+
+  function simulate(numCourses, prerequisites) {
+    const adj = {};
+    for (let i = 0; i < numCourses; i++) adj[i] = [];
+    prerequisites.forEach(([c, p]) => adj[c].push(p));
+
+    const visited = new Set();
+    const res = [];
+    const steps = [];
+
+    function snap(action, extra) {
+      steps.push(Object.assign({
+        action,
+        visited: [...visited],
+        result: [...res]
+      }, extra));
+    }
+
+    let ok = true;
+
+    function dfs(c, hashed, stack) {
+      visited.add(c);
+      hashed.add(c);
+      stack.push(c);
+      snap('enter', { node: c, hashed: [...hashed], stack: [...stack] });
+      for (const n of adj[c]) {
+        snap('check', { node: c, neighbor: n, hashed: [...hashed], stack: [...stack] });
+        if (hashed.has(n)) {
+          snap('cycle', { node: c, neighbor: n, hashed: [...hashed], stack: [...stack] });
+          return false;
+        }
+        if (!visited.has(n)) {
+          if (!dfs(n, hashed, stack)) return false;
+        } else {
+          snap('skip', { node: c, neighbor: n, hashed: [...hashed], stack: [...stack] });
+        }
+      }
+      hashed.delete(c);
+      stack.pop();
+      res.push(c);
+      snap('finish', { node: c, hashed: [...hashed], stack: [...stack] });
+      return true;
+    }
+
+    for (let c = 0; c < numCourses; c++) {
+      if (!visited.has(c)) {
+        snap('root', { node: c, hashed: [], stack: [] });
+        const hashed = new Set();
+        const stack = [];
+        if (!dfs(c, hashed, stack)) { ok = false; break; }
+      }
+    }
+    snap(ok ? 'done' : 'failed', { hashed: [], stack: [] });
+    return steps;
+  }
+
+  const svgNS = 'http://www.w3.org/2000/svg';
+  const svg = root.querySelector('#tsv-svg');
+  let current = { name: null, adj: null, positions: null, steps: null, idx: 0, timer: null };
+
+  function buildAdj(prereqs, n) {
+    const adj = {};
+    for (let i = 0; i < n; i++) adj[i] = [];
+    prereqs.forEach(([c, p]) => adj[c].push(p));
+    return adj;
+  }
+
+  function loadExample(name) {
+    stopPlay();
+    const ex = examples[name];
+    current.name = name;
+    current.positions = ex.positions;
+    current.adj = buildAdj(ex.prerequisites, ex.numCourses);
+    current.steps = simulate(ex.numCourses, ex.prerequisites);
+    current.idx = 0;
+    drawGraph(ex);
+    render();
+    root.querySelector('#tsv-btn-acyclic').classList.toggle('active', name === 'acyclic');
+    root.querySelector('#tsv-btn-cyclic').classList.toggle('active', name === 'cyclic');
+  }
+
+  function el(tag, attrs) {
+    const e = document.createElementNS(svgNS, tag);
+    for (const k in attrs) e.setAttribute(k, attrs[k]);
+    return e;
+  }
+
+  function drawGraph(ex) {
+    svg.innerHTML = '';
+    const defs = el('defs', {});
+    ['idle', 'active', 'cycle'].forEach(kind => {
+      const color = kind === 'idle' ? '#4a5568' : (kind === 'active' ? '#e0a339' : '#d9534f');
+      const marker = el('marker', {
+        id: 'tsv-arrow-' + kind, viewBox: '0 0 10 10', refX: '9', refY: '5',
+        markerWidth: '7', markerHeight: '7', orient: 'auto-start-reverse'
+      });
+      marker.appendChild(el('path', { d: 'M0,0 L10,5 L0,10 z', fill: color }));
+      defs.appendChild(marker);
+    });
+    svg.appendChild(defs);
+
+    const R = 22;
+    ex.prerequisites.forEach(([c, p]) => {
+      const [x1, y1] = ex.positions[c];
+      const [x2, y2] = ex.positions[p];
+      const dx = x2 - x1, dy = y2 - y1;
+      const len = Math.sqrt(dx*dx + dy*dy);
+      const ux = dx / len, uy = dy / len;
+      const sx = x1 + ux * R, sy = y1 + uy * R;
+      const ex2 = x2 - ux * (R + 8), ey2 = y2 - uy * (R + 8);
+      const line = el('line', {
+        x1: sx, y1: sy, x2: ex2, y2: ey2,
+        class: 'tsv-edge', id: 'tsv-edge-' + c + '-' + p,
+        'marker-end': 'url(#tsv-arrow-idle)'
+      });
+      svg.appendChild(line);
+    });
+
+    Object.keys(ex.positions).forEach(id => {
+      const [x, y] = ex.positions[id];
+      const g = el('g', { id: 'tsv-node-' + id });
+      const pulse = el('circle', { cx: x, cy: y, r: 18, class: 'tsv-pulse', id: 'tsv-pulse-' + id });
+      const circle = el('circle', { cx: x, cy: y, r: R, class: 'tsv-node-circle', id: 'tsv-circle-' + id });
+      const label = el('text', { x, y, class: 'tsv-node-label' });
+      label.textContent = id;
+      g.appendChild(pulse);
+      g.appendChild(circle);
+      g.appendChild(label);
+      svg.appendChild(g);
+    });
+  }
+
+  function describeStep(step) {
+    switch (step.action) {
+      case 'root':
+        return `Outer loop: course <code>${step.node}</code> not visited yet → call <code>dfs(${step.node})</code>.`;
+      case 'enter':
+        return `Enter <code>dfs(${step.node})</code> — add <code>${step.node}</code> to <code>visited</code> and to <code>hashed</code> (current path).`;
+      case 'check':
+        return `Inside <code>dfs(${step.node})</code>: look at prerequisite <code>${step.neighbor}</code>.`;
+      case 'skip':
+        return `<code>${step.neighbor}</code> is already in <code>visited</code> (fully explored elsewhere) — skip it, no cycle risk.`;
+      case 'cycle':
+        return `<code>${step.neighbor}</code> is already in <code>hashed</code> — it's an ancestor on the current path. Cycle found → return <code>False</code>.`;
+      case 'finish':
+        return `All prerequisites of <code>${step.node}</code> are safe. Remove it from <code>hashed</code>, append to <code>res</code>, backtrack.`;
+      case 'done':
+        return `All courses processed with no cycles. <code>res</code> is a valid course order.`;
+      case 'failed':
+        return `A cycle was detected — <code>findOrder</code> returns <code>[]</code> (schedule is impossible).`;
+      default:
+        return '';
+    }
+  }
+
+  function render() {
+    const steps = current.steps;
+    const idx = current.idx;
+    const step = steps[idx];
+    const positions = current.positions;
+
+    Object.keys(positions).forEach(id => {
+      const circle = root.querySelector('#tsv-circle-' + id);
+      circle.classList.remove('onstack', 'done', 'current', 'cyclenode');
+      const nid = Number(id);
+      if (step.visited && step.visited.includes(nid) && !(step.hashed || []).includes(nid)) {
+        circle.classList.add('done');
+      } else if ((step.hashed || []).includes(nid)) {
+        circle.classList.add('onstack');
+      }
+      if (step.node === nid && (step.action === 'enter' || step.action === 'root')) {
+        circle.classList.add('current');
+      }
+      if (step.action === 'cycle' && (nid === step.node || nid === step.neighbor)) {
+        circle.classList.add('cyclenode');
+      }
+    });
+
+    svg.querySelectorAll('.tsv-edge').forEach(e => {
+      e.classList.remove('active', 'cyclehit');
+      e.setAttribute('marker-end', 'url(#tsv-arrow-idle)');
+    });
+    if (step.node !== undefined && step.neighbor !== undefined) {
+      const line = root.querySelector('#tsv-edge-' + step.node + '-' + step.neighbor);
+      if (line) {
+        if (step.action === 'cycle') {
+          line.classList.add('cyclehit');
+          line.setAttribute('marker-end', 'url(#tsv-arrow-cycle)');
+        } else if (step.action === 'check' || step.action === 'skip') {
+          line.classList.add('active');
+          line.setAttribute('marker-end', 'url(#tsv-arrow-active)');
+        }
+      }
+    }
+
+    if (step.action === 'enter') {
+      const p = root.querySelector('#tsv-pulse-' + step.node);
+      p.classList.remove('go');
+      void p.offsetWidth;
+      p.classList.add('go');
+    }
+
+    const caption = root.querySelector('#tsv-caption');
+    caption.innerHTML = describeStep(step);
+    caption.classList.toggle('cycle', step.action === 'cycle' || step.action === 'failed');
+
+    const hashedWrap = root.querySelector('#tsv-hashed');
+    const visitedWrap = root.querySelector('#tsv-visited');
+    const resultWrap = root.querySelector('#tsv-result');
+    hashedWrap.innerHTML = '';
+    visitedWrap.innerHTML = '';
+    resultWrap.innerHTML = '';
+
+    (step.stack && step.stack.length ? step.stack : []).forEach(v => {
+      const chip = document.createElement('span');
+      chip.className = 'tsv-chip amber';
+      chip.textContent = v;
+      hashedWrap.appendChild(chip);
+    });
+    if (!step.stack || !step.stack.length) {
+      hashedWrap.appendChild(emptyChip());
+    }
+
+    (step.visited || []).forEach(v => {
+      const chip = document.createElement('span');
+      chip.className = 'tsv-chip teal';
+      chip.textContent = v;
+      visitedWrap.appendChild(chip);
+    });
+    if (!step.visited || !step.visited.length) {
+      visitedWrap.appendChild(emptyChip());
+    }
+
+    (step.result || []).forEach(v => {
+      const chip = document.createElement('span');
+      chip.className = 'tsv-chip';
+      chip.textContent = v;
+      resultWrap.appendChild(chip);
+    });
+    if (!step.result || !step.result.length) {
+      resultWrap.appendChild(emptyChip());
+    }
+
+    root.querySelector('#tsv-step-count').textContent = (idx + 1) + ' / ' + steps.length;
+    root.querySelector('#tsv-progress-bar').style.width = (100 * (idx + 1) / steps.length) + '%';
+    root.querySelector('#tsv-prev').disabled = idx === 0;
+    root.querySelector('#tsv-next').disabled = idx === steps.length - 1;
+  }
+
+  function emptyChip() {
+    const chip = document.createElement('span');
+    chip.className = 'tsv-chip empty';
+    chip.textContent = '—';
+    return chip;
+  }
+
+  function next() {
+    if (current.idx < current.steps.length - 1) {
+      current.idx++;
+      render();
+    } else {
+      stopPlay();
+    }
+  }
+  function prev() {
+    if (current.idx > 0) {
+      current.idx--;
+      render();
+    }
+  }
+  function stopPlay() {
+    if (current.timer) {
+      clearInterval(current.timer);
+      current.timer = null;
+    }
+    root.querySelector('#tsv-play').textContent = '▶ Play';
+  }
+  function togglePlay() {
+    if (current.timer) {
+      stopPlay();
+      return;
+    }
+    if (current.idx === current.steps.length - 1) current.idx = 0;
+    root.querySelector('#tsv-play').textContent = '⏸ Pause';
+    current.timer = setInterval(() => {
+      if (current.idx >= current.steps.length - 1) { stopPlay(); return; }
+      next();
+    }, 1400);
+  }
+
+  root.querySelector('#tsv-next').addEventListener('click', () => { stopPlay(); next(); });
+  root.querySelector('#tsv-prev').addEventListener('click', () => { stopPlay(); prev(); });
+  root.querySelector('#tsv-play').addEventListener('click', togglePlay);
+  root.querySelector('#tsv-reset').addEventListener('click', () => { stopPlay(); current.idx = 0; render(); });
+  root.querySelector('#tsv-btn-acyclic').addEventListener('click', () => loadExample('acyclic'));
+  root.querySelector('#tsv-btn-cyclic').addEventListener('click', () => loadExample('cyclic'));
+
+  loadExample('acyclic');
+})();
+</script>
+</div>
