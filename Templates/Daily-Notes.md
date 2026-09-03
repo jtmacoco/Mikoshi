@@ -1,5 +1,5 @@
 # TODO
-- [ ] Read
+- [ ] Apply To Jobs
 - [ ] Practice C
 - [ ] Practice CUDA
 - [ ] Mental Math
