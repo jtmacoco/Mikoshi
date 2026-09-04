@@ -268,4 +268,5 @@ $46\times42 = 46\times(7\times6)=(46\times7)\times6=322\times6=1932$
 
 - Most cases use the larger factor in solving the initial 2 by 1 problem and reserve smaller factor for 3 by 1 component of problem
 
-Stopped a problem 26
+Stopped a problem 31
+
