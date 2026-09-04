@@ -15,6 +15,8 @@ Backward propagation is the algorithm used to train neural networks by computing
 
 ## How it works
 
+**Gradient = Derivative** basically the same, gradient is multi-variable derivative
+
 **For a singe layer, going backward**:
 ```python
 dz = da * activation_prime(z)     # gradient of loss w.r.t. pre-activation
@@ -22,6 +24,56 @@ dW = dz · x.T                     # gradient of loss w.r.t. weights
 db = dz                           # gradient of loss w.r.t. bias
 da_prev = W.T · dz                # gradient passed to the previous layer
 ```
+
+Where:
+- `da` = gradient of the loss with respect to the layer's activation (comes from the layer *after* it, or from the loss function for the last layer)
+- `activation_prime(z)` = derivative of the activation function, evaluated at the cached `z` from the forward pass
+- `dz` = gradient of the loss with respect to the pre-activation
+- `dW`, `db` = gradients used to update this layer's weights and bias
+- `da_prev` = gradient handed off to the previous layer, continuing the chain
+
+This repeats layer by layer, in reverse  
+$$
+\text{Loss} \rightarrow \text{Layer}N \rightarrow ... \rightarrow \text{Layer}2 \rightarrow \text{Layer}1 \rightarrow \text{Input}
+$$
+
+Each step applies the **chain rule**:
+$$
+\frac{\partial L}{\partial W^{(l)}} =
+\frac{\partial L}{\partial a^{(l)}} \cdot
+\frac{\partial a^{(l)}}{\partial z^{(l)}} \cdot
+\frac{\partial z^{(l)}}{\partial W^{(l)}}
+$$
+which is exactly `da → dz → dW` above, expanded one layer at a time.
+
+Purpose:
+
+1. **Compute gradients**: determine how much each weight and bias contributed to the loss, layer by layer, using the cached `z` and `a` values from the forward pass
+2. **Propagate error backward**:  pass `da_prev` to the previous layer so it can compute its own gradients, without redoing work already done downstream
+3. **Update weights**:  once all gradients are computed, an optimizer (e.g. gradient descent) updates each layer's `W` and `b`:
+
+```python
+W = W - learning_rate * dW
+b = b - learning_rate * db
+```
+
+## General Pattern
+
+1. Undo the activation function -> get `dz` for this layer
+2. Use `dz`  to compute this layers gradients -> `dW`, `db` (cache them don't apply yet)
+3. Use `dz` to compute the delta for the **previous** layer -> `da_prev`
+
+Undo the activation isn't taking the inverse rather saying how sensitive is the activation to the incoming delta. If I nudge `z` how much does `a` change.
+
+### Why multiplying by that "cancels through" the activation:
+
+Think of it as a local exchange rate. If `da/dz = 0.5` at some point, that means a tiny change in `z` produces half as much change in `a`. So whatever sensitivity the loss has to `a` (`da`), the loss must be sensitive to `z` by only half as much — because `z`'s influence on the loss is _entirely funneled through_ `a`. Multiplying by `da/dz` converts "sensitivity in `a`-units" into "sensitivity in `z`-units."
+## Backprop: Chain rule
+
+Compute the $\frac{\partial L}{\partial W}$ this says if **If I nudge this weight how much does the loss change**
+- $\frac{\partial L}{\partial a}$ - how loss changes with the layer's output (comes from the layer after it)
+- $\frac{\partial a}{\partial z}$ - derivative of the activation function
+- $\frac{\partial z}{\partial w}$ - just the input of that weight, since $z =  wx + b \Rightarrow \frac{\partial z}{\partial w} = x$
 
 
 ```html-embed
