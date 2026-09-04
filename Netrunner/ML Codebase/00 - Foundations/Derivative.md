@@ -2,6 +2,7 @@
 title: Derivative
 source: "[[Foundations]]"
 tags:
+  - math
 type: concept
 created: 2026-09-04
 ---
