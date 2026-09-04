@@ -23,6 +23,31 @@ db = dz                           # gradient of loss w.r.t. bias
 da_prev = W.T · dz                # gradient passed to the previous layer
 ```
 
+Where:
+- `da` = gradient of the loss with respect to the is layer's activation (comes from the layer after it, or from the loss function for the last layer)
+- `activation_prime(z)` = derivative of the activation function, evaluated at cached `z` from the forward pass
+- `dz` = gradient of the loss with respect to the pre-activation
+- `dW`, `db` = gradients used to update this layer's weights and bias
+- `da_prev` = gradient handed off to the previous layer, continuing the chain
+
+This repeats layer by layer, in reverse  
+$$
+\text{Loss} \rightarrow \text{Layer}N \rightarrow ... \rightarrow \text{Layer}2 \rightarrow \text{Layer}1 \rightarrow \text{Input}
+$$
+
+Each step applies the **chain rule**:
+
+$$ \frac{\partial L}{\partial W^{(l)}} = \frac{\partial L}{\partial a^{(l)}} \cdot \frac{\partial a^{(l)}}{\partial z^{(l)}} \cdot \frac{\partial z^{(l)}}{\partial W^{(l)}} $$
+
+## Backprop: chain rule
+
+Backprop computes 
+
+>[!important] Key Idea
+> If I nudge this weight how much does the loss change?
+
+
+## Animation 
 
 ```html-embed
 Mikoshi/Netrunner/ML Codebase/02 - MLP Core/02 - MLP Core_Assets/backprop.html
