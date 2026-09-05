@@ -2,6 +2,8 @@
 title: Backward Propagation
 source: "[[MLP Core]]"
 tags:
+  - machine-learning
+  - math
 type: concept
 created: 2026-09-03
 ---

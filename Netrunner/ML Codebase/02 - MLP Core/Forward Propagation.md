@@ -2,6 +2,8 @@
 title: Forward Propagation
 source: "[[MLP Core]]"
 tags:
+  - math
+  - machine-learning
 type: concept
 created: 2026-09-01
 ---
