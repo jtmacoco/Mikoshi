@@ -15,6 +15,12 @@ Backward propagation is the algorithm used to train neural networks by computing
 1. Forward pass input data flows through the network layer by layer, producing an output/prediction. The result is compared to the true value using a loss function, giving a single number representing how wrong the prediction was.
 2. Backward pass starting from the loss, the algorithm works backward through the network, using the chain rule of calculus to compute the gradient (derivative) of the loss with respect to each weight. This tells you how much a small change in each weight would change the loss
 
+**General Formula**:
+
+$$
+\frac{\partial L}{\partial a} * \frac{\partial a}{\partial z} * \frac{\partial z}{\partial w}
+$$
+
 ## How it works
 
 **Gradient = Derivative** basically the same, gradient is multi-variable derivative
@@ -73,10 +79,18 @@ Think of it as a local exchange rate. If `da/dz = 0.5` at some point, that means
 ## Backprop: Chain rule
 
 Compute the $\frac{\partial L}{\partial W}$ this says if **If I nudge this weight how much does the loss change**
-- $\frac{\partial L}{\partial a}$ - how loss changes with the layer's output (comes from the layer after it)
+- $\frac{\partial L}{\partial a}$ - how loss changes with the layer's output (comes from the layer after it) 
+	- How loss changes activation
 - $\frac{\partial a}{\partial z}$ - derivative of the activation function
+	- how the activation output changes with its pre-activation input (the "undo activation" step)
 - $\frac{\partial z}{\partial w}$ - just the input of that weight, since $z =  wx + b \Rightarrow \frac{\partial z}{\partial w} = x$
+	- how the pre-activation changes with this specific weight (this is just `a_prev`, the input to this layer
 
+Can't compute $\frac{\partial z}{\partial w}$ contribution to the loss without first knowing $\frac{\partial a}{\partial z}$ contribution to the loss which itself needed $\frac{\partial L}{\partial a}$. t's a cascade - each factor only tells you the _local_ sensitivity (how one variable affects the very next one), and the chain rule strings all these local sensitivities together into one _global_ sensitivity (how a weight buried deep in the network affects the final loss, possibly through many layers)
+
+**Why this matters for how backprop is actually implemented  this is the efficient trick:**
+
+Rather than recomputing the _entire_ chain from scratch for every single weight in every layer (which would be insanely redundant — layer 1's weights and layer 2's weights share most of that chain), you compute the chain incrementally, backward, and **reuse** the partial product as you go
 
 ```html-embed
 Mikoshi/Netrunner/ML Codebase/02 - MLP Core/02 - MLP Core_Assets/backprop.html
