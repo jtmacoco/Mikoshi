@@ -4,6 +4,7 @@ source: "[[MLP Core]]"
 tags:
   - machine-learning
   - math
+  - backpropagation
 type: concept
 created: 2026-09-03
 ---
@@ -28,7 +29,7 @@ $$
 **For a singe layer, going backward**:
 ```python
 dz = da * activation_prime(z)     # gradient of loss w.r.t. pre-activation
-dW = dz · x.T                     # gradient of loss w.r.t. weights
+dW = dz · a_prev.T                     # gradient of loss w.r.t. weights
 db = dz                           # gradient of loss w.r.t. bias
 da_prev = W.T · dz                # gradient passed to the previous layer
 ```
@@ -71,7 +72,9 @@ b = b - learning_rate * db
 2. Use `dz`  to compute this layers gradients -> `dW`, `db` (cache them don't apply yet)
 3. Use `dz` to compute the delta for the **previous** layer -> `da_prev`
 
-Undo the activation isn't taking the inverse rather saying how sensitive is the activation to the incoming delta. If I nudge `z` how much does `a` change.
+Undo the activation isn't taking the inverse rather saying how sensitive is the activation to the incoming delta. If I nudge `z` how much does `a` change . 
+
+Softmax couples every output to every input (via the shared denominator), so unlike ReLU/sigmoid there's no simple per-neuron derivative — but paired with cross-entropy it simplifies to `dz = a - y` anyway, so you never need the full matrix in practice.
 
 ### Why multiplying by that "cancels through" the activation:
 
@@ -90,7 +93,29 @@ Can't compute $\frac{\partial z}{\partial w}$ contribution to the loss without f
 
 **Why this matters for how backprop is actually implemented  this is the efficient trick:**
 
-Rather than recomputing the _entire_ chain from scratch for every single weight in every layer (which would be insanely redundant — layer 1's weights and layer 2's weights share most of that chain), you compute the chain incrementally, backward, and **reuse** the partial product as you go
+Rather than recomputing the _entire_ chain from scratch for every single weight in every layer (which would be insanely redundant - layer 1's weights and layer 2's weights share most of that chain), you compute the chain incrementally, backward, and **reuse** the partial product as you go
+
+## How backprop uses derivatives
+
+**Why $\frac{\partial z} {\partial w} = x$ (the "subtract 1" rule)**
+
+- The power rule says: for $w^n$, the derivative is $n \cdot w^{n-1}$ (bring down the exponent, subtract 1 from it).
+- In $z = wx + b$, the weight is really $w^1$ (exponent of 1).
+- Apply the rule: $\frac{d}{dw}(w^1) = 1 \cdot w^0 = 1 \cdot 1 = 1$
+- The $x$ was just a constant multiplier sitting next to $w$, so it comes along for free: $\frac{d}{dw}(wx) = x$
+
+**One-line takeaway:** since $w$ only ever appears to the power of 1 in a linear layer, its derivative is always just "1", which leaves the input $x$ behind as the answer. That's why $\partial z/\partial w = x$ every time - it's not a special rule, it's the ordinary power rule on the simplest possible case.
+
+**Quick table for your notes:**
+
+| Term              | Derivative | Why                                              |
+| ----------------- | ---------- | ------------------------------------------------ |
+| $w^3$             | $3w^2$     | exponent drops 3→2, visible                      |
+| $w^2$             | $2w$       | exponent drops 2→1, visible                      |
+| $w^1$ (i.e. $wx$) | $x$        | exponent drops 1→0, $w^0=1$ vanishes, leaves $x$ |
+| $b$ (no $w$)      | $1$        | derivative of $w$ w.r.t. itself is trivially 1   |
+
+
 
 ```html-embed
 Mikoshi/Netrunner/ML Codebase/02 - MLP Core/02 - MLP Core_Assets/backprop.html

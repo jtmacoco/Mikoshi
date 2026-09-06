@@ -4,6 +4,7 @@ source: "[[MLP Core]]"
 tags:
   - math
   - machine-learning
+  - forward-propagation
 type: concept
 created: 2026-09-01
 ---
