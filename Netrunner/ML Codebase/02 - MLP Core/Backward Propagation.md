@@ -22,6 +22,7 @@ $$
 \frac{\partial L}{\partial a} * \frac{\partial a}{\partial z} * \frac{\partial z}{\partial w}
 $$
 
+---
 ## How it works
 
 **Gradient = Derivative** basically the same, gradient is multi-variable derivative
@@ -66,6 +67,7 @@ W = W - learning_rate * dW
 b = b - learning_rate * db
 ```
 
+---
 ## General Pattern
 
 1. Undo the activation function -> get `dz` for this layer
@@ -76,9 +78,12 @@ Undo the activation isn't taking the inverse rather saying how sensitive is the 
 
 Softmax couples every output to every input (via the shared denominator), so unlike ReLU/sigmoid there's no simple per-neuron derivative — but paired with cross-entropy it simplifies to `dz = a - y` anyway, so you never need the full matrix in practice.
 
+---
 ### Why multiplying by that "cancels through" the activation:
 
 Think of it as a local exchange rate. If `da/dz = 0.5` at some point, that means a tiny change in `z` produces half as much change in `a`. So whatever sensitivity the loss has to `a` (`da`), the loss must be sensitive to `z` by only half as much — because `z`'s influence on the loss is _entirely funneled through_ `a`. Multiplying by `da/dz` converts "sensitivity in `a`-units" into "sensitivity in `z`-units."
+
+---
 ## Backprop: Chain rule
 
 Compute the $\frac{\partial L}{\partial W}$ this says if **If I nudge this weight how much does the loss change**
@@ -95,6 +100,7 @@ Can't compute $\frac{\partial z}{\partial w}$ contribution to the loss without f
 
 Rather than recomputing the _entire_ chain from scratch for every single weight in every layer (which would be insanely redundant - layer 1's weights and layer 2's weights share most of that chain), you compute the chain incrementally, backward, and **reuse** the partial product as you go
 
+---
 ## How backprop uses derivatives
 
 **Why $\frac{\partial z} {\partial w} = x$ (the "subtract 1" rule)**
@@ -115,7 +121,9 @@ Rather than recomputing the _entire_ chain from scratch for every single weight 
 | $w^1$ (i.e. $wx$) | $x$        | exponent drops 1→0, $w^0=1$ vanishes, leaves $x$ |
 | $b$ (no $w$)      | $1$        | derivative of $w$ w.r.t. itself is trivially 1   |
 
+---
 
+## Backprop walkthrough weights
 
 ```html-embed
 Mikoshi/Netrunner/ML Codebase/02 - MLP Core/02 - MLP Core_Assets/backprop.html

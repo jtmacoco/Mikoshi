@@ -39,7 +39,7 @@ $$
 1. Generate predictions the output $\hat{y}$ is the model's guess for a given input
 2. Compute loss $\hat{y}$ is compared against the true label $y$ using a loss function (like cross entropy, MSE, etc.) to measure how wrong the prediction is
 3. Set up backpropagation  the activation's computed during the forward pass are cached and reused during the backward pass to compute gradients efficiently.
-
+---
 ## Key point
 
 Forward propagation is purely computational, no learning happens here. Weights are only updated afterward, during backpropagation, based on the error calculated from the forward pass's output.
