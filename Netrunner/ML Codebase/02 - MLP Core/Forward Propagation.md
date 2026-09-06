@@ -13,6 +13,8 @@ created: 2026-09-01
 
 Forward Propagation/Pass is the process of passing input data through a neural network, layer by layer, to compute an output (prediction). Each layer applies a linear transformation followed by a non linear activation function, and the result is passed forward to the next layer until the final output layer produces a prediction. Uses multiplication and addition no chain rule here.
 
+**Note: This is using linear model for simplicity**
+
 ---
 ## How it works
 
