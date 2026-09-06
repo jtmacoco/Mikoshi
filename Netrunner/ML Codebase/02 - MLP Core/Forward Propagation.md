@@ -44,6 +44,8 @@ $$
 
 Forward propagation is purely computational, no learning happens here. Weights are only updated afterward, during backpropagation, based on the error calculated from the forward pass's output.
 
+## Forward propagation walkthrough
+
 ```html-embed
 Mikoshi/Netrunner/ML Codebase/02 - MLP Core/02 - MLP Core_Assets/forward_prop.html
 650
