@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Backprop Animation</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap');
+
+  :root{
+    --bg:#0f131a;
+    --panel:#161c26;
+    --panel-2:#1b2230;
+    --border:#28303e;
+    --text:#e7ebf1;
+    --muted:#8592a6;
+    --fwd:#5b9bd9;
+    --back:#f2994a;
+    --loss:#bb86fc;
+    --update:#6fcf97;
+    --idle:#3a4252;
+  }
+  *{box-sizing:border-box;}
+  html,body{
+    margin:0; padding:0; background:var(--bg); color:var(--text);
+    font-family:'Inter',system-ui,sans-serif;
+    height:100%;
+  }
+  .app{
+    display:flex; flex-direction:column;
+    width:100%; height:660px; max-width:1040px; margin:0 auto;
+    border:1px solid var(--border); border-radius:10px; overflow:hidden;
+    background:var(--bg);
+  }
+  .header{
+    display:flex; align-items:baseline; justify-content:space-between;
+    padding:14px 20px 10px 20px; border-bottom:1px solid var(--border);
+    flex-shrink:0;
+  }
+  .header h1{
+    font-family:'Space Grotesk',sans-serif; font-size:18px; font-weight:600;
+    margin:0; letter-spacing:0.2px;
+  }
+  .header .phase-badge{
+    font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:600;
+    padding:4px 10px; border-radius:20px; border:1px solid var(--border);
+    color:var(--muted); text-transform:uppercase; letter-spacing:0.08em;
+    transition:color 0.25s, border-color 0.25s, background 0.25s;
+  }
+  .main{
+    display:flex; flex:1; min-height:0;
+  }
+  .left{
+    flex:1.15; display:flex; flex-direction:column; min-width:0;
+    border-right:1px solid var(--border);
+  }
+  .diagram-wrap{
+    flex:1; display:flex; align-items:center; justify-content:center;
+    padding:6px;
+  }
+  svg{ width:100%; height:100%; max-height:420px; }
+
+  .node{
+    fill:var(--panel-2); stroke:var(--idle); stroke-width:2px;
+    transition: fill 0.35s, stroke 0.35s, filter 0.35s;
+  }
+  .node.lit-blue{ fill:#1c3550; stroke:var(--fwd); filter:drop-shadow(0 0 6px rgba(91,155,217,0.65)); }
+  .node.lit-orange{ fill:#4a301a; stroke:var(--back); filter:drop-shadow(0 0 6px rgba(242,153,74,0.65)); }
+  .node.lit-violet{ fill:#38215a; stroke:var(--loss); filter:drop-shadow(0 0 6px rgba(187,134,252,0.65)); }
+  .node.lit-green{ fill:#1f4432; stroke:var(--update); filter:drop-shadow(0 0 6px rgba(111,207,151,0.65)); }
+
+  .edge{
+    stroke:var(--idle); stroke-width:1.2px; opacity:0.55;
+    transition: stroke 0.35s, opacity 0.35s;
+  }
+  .edge.lit-orange{ stroke:var(--back); opacity:0.9; }
+  .edge.lit-green{ stroke:var(--update); opacity:0.9; }
+
+  .pulse-dot{ opacity:0; }
+
+  .layer-label{
+    font-family:'IBM Plex Mono',monospace; font-size:11px; fill:var(--muted);
+    text-anchor:middle;
+  }
+
+  .controls{
+    display:flex; align-items:center; gap:10px; justify-content:center;
+    padding:10px 16px 16px 16px; border-top:1px solid var(--border);
+    flex-shrink:0;
+  }
+  .controls button{
+    font-family:'Inter',sans-serif; font-size:13px; font-weight:500;
+    background:var(--panel-2); color:var(--text); border:1px solid var(--border);
+    border-radius:7px; padding:8px 14px; cursor:pointer;
+    transition:background 0.15s, border-color 0.15s;
+  }
+  .controls button:hover{ background:#232b3a; border-color:#39445a; }
+  .controls button.primary{
+    background:#28496e; border-color:#3a638f;
+  }
+  .controls button.primary:hover{ background:#2f557d; }
+  .step-dots{ display:flex; gap:5px; margin-left:6px; }
+  .step-dots span{
+    width:6px; height:6px; border-radius:50%; background:var(--idle);
+    display:inline-block; transition:background 0.2s, transform 0.2s;
+  }
+  .step-dots span.on{ background:var(--fwd); transform:scale(1.3); }
+
+  .right{
+    flex:1; display:flex; flex-direction:column; min-width:0;
+    background:var(--panel);
+  }
+  .right-header{
+    padding:14px 18px 8px 18px; flex-shrink:0;
+  }
+  .right-header .desc{
+    font-size:13.5px; line-height:1.5; color:var(--text); margin:0 0 10px 0;
+    min-height:38px;
+  }
+  .formula-box{
+    font-family:'IBM Plex Mono',monospace; font-size:13px; line-height:1.7;
+    background:var(--panel-2); border:1px solid var(--border); border-radius:7px;
+    padding:10px 12px; white-space:pre-line; color:#cfe3ff;
+    min-height:20px;
+  }
+  .formula-box:empty{ display:none; }
+
+  .legend{
+    display:flex; gap:14px; padding:10px 18px; font-size:11px; color:var(--muted);
+    border-top:1px solid var(--border); border-bottom:1px solid var(--border);
+    flex-shrink:0; flex-wrap:wrap;
+  }
+  .legend span{ display:flex; align-items:center; gap:5px; }
+  .legend i{ width:8px; height:8px; border-radius:50%; display:inline-block; }
+
+  .steplist{
+    flex:1; overflow-y:auto; padding:6px 10px 14px 10px;
+  }
+  .steplist::-webkit-scrollbar{ width:8px; }
+  .steplist::-webkit-scrollbar-thumb{ background:#2a3242; border-radius:4px; }
+
+  .step-item{
+    display:flex; gap:10px; padding:8px 10px; border-radius:7px; cursor:pointer;
+    margin-bottom:2px; transition:background 0.15s;
+  }
+  .step-item:hover{ background:var(--panel-2); }
+  .step-item.active{ background:#20304a; }
+  .step-item .num{
+    font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--muted);
+    width:16px; flex-shrink:0; padding-top:1px;
+  }
+  .step-item.active .num{ color:var(--fwd); }
+  .step-item .title{ font-size:12.5px; font-weight:500; }
+  .step-item .sub{ font-size:11px; color:var(--muted); margin-top:1px; }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <div class="header">
+    <h1>Backpropagation, one step at a time</h1>
+    <div class="phase-badge" id="phaseBadge">FORWARD</div>
+  </div>
+
+  <div class="main">
+    <div class="left">
+      <div class="diagram-wrap">
+        <svg id="svg" viewBox="0 0 640 420" xmlns="http://www.w3.org/2000/svg"></svg>
+      </div>
+      <div class="controls">
+        <button id="prevBtn">&larr; Prev</button>
+        <button id="playBtn" class="primary">Play</button>
+        <button id="nextBtn">Next &rarr;</button>
+        <div class="step-dots" id="stepDots"></div>
+      </div>
+    </div>
+
+    <div class="right">
+      <div class="right-header">
+        <p class="desc" id="descText"></p>
+        <div class="formula-box" id="formulaText"></div>
+      </div>
+      <div class="legend">
+        <span><i style="background:#5b9bd9"></i>forward</span>
+        <span><i style="background:#f2994a"></i>backward</span>
+        <span><i style="background:#bb86fc"></i>loss</span>
+        <span><i style="background:#6fcf97"></i>optimizer update</span>
+        <span style="color:#5a6376">a₀ = network input (x)</span>
+      </div>
+      <div class="steplist" id="stepList"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const NS = "http://www.w3.org/2000/svg";
+
+// ---------- Network layout ----------
+const layers = {
+  input:  { x: 90,  ys: [110, 210, 310] },
+  hidden: { x: 320, ys: [60, 160, 260, 360] },
+  output: { x: 550, ys: [110, 210, 310] }
+};
+const labels = { input: "input  a₀", hidden: "hidden  a₁ = ReLU(z₁)", output: "output  a₂ = softmax(z₂)" };
+
+const svg = document.getElementById('svg');
+const nodeEls = { input: [], hidden: [], output: [] };
+const edgeEls = { ih: [], ho: [] };
+
+function makeNode(x, y){
+  const c = document.createElementNS(NS, "circle");
+  c.setAttribute("cx", x); c.setAttribute("cy", y); c.setAttribute("r", 15);
+  c.setAttribute("class", "node");
+  svg.appendChild(c);
+  return c;
+}
+function makeEdge(x1,y1,x2,y2){
+  const l = document.createElementNS(NS,"line");
+  l.setAttribute("x1",x1); l.setAttribute("y1",y1);
+  l.setAttribute("x2",x2); l.setAttribute("y2",y2);
+  l.setAttribute("class","edge");
+  svg.insertBefore(l, svg.firstChild);
+  return l;
+}
+function makeLabel(x,y,text){
+  const t = document.createElementNS(NS,"text");
+  t.setAttribute("x",x); t.setAttribute("y",y);
+  t.setAttribute("class","layer-label");
+  t.textContent = text;
+  svg.appendChild(t);
+}
+
+// edges first (so nodes render on top)
+layers.input.ys.forEach(y1=>{
+  layers.hidden.ys.forEach(y2=>{
+    edgeEls.ih.push(makeEdge(layers.input.x,y1,layers.hidden.x,y2));
+  });
+});
+layers.hidden.ys.forEach(y1=>{
+  layers.output.ys.forEach(y2=>{
+    edgeEls.ho.push(makeEdge(layers.hidden.x,y1,layers.output.x,y2));
+  });
+});
+// nodes
+layers.input.ys.forEach(y => nodeEls.input.push(makeNode(layers.input.x,y)));
+layers.hidden.ys.forEach(y => nodeEls.hidden.push(makeNode(layers.hidden.x,y)));
+layers.output.ys.forEach(y => nodeEls.output.push(makeNode(layers.output.x,y)));
+// labels
+makeLabel(layers.input.x, 400, labels.input);
+makeLabel(layers.hidden.x, 400, labels.hidden);
+makeLabel(layers.output.x, 400, labels.output);
+
+// pulse dot pool (reused)
+function makePulse(){
+  const c = document.createElementNS(NS,"circle");
+  c.setAttribute("r", 4);
+  c.setAttribute("class","pulse-dot");
+  svg.appendChild(c);
+  return c;
+}
+const pulsePool = { ih: edgeEls.ih.map(makePulse), ho: edgeEls.ho.map(makePulse) };
+
+// ---------- Pulse animation engine ----------
+let activeAnims = [];
+function firePulses(group, dir, duration=750){
+  const edges = edgeEls[group];
+  const dots = pulsePool[group];
+  const now = performance.now();
+  edges.forEach((edge,i)=>{
+    let x1 = +edge.getAttribute('x1'), y1=+edge.getAttribute('y1');
+    let x2 = +edge.getAttribute('x2'), y2=+edge.getAttribute('y2');
+    if(dir === 'back'){ [x1,x2]=[x2,x1]; [y1,y2]=[y2,y1]; }
+    activeAnims.push({ dot:dots[i], x1,y1,x2,y2, start:now, duration, dir });
+  });
+  requestAnimationFrame(tick);
+}
+function tick(now){
+  activeAnims = activeAnims.filter(a=>{
+    const p = Math.min(1, (now - a.start)/a.duration);
+    const x = a.x1 + (a.x2-a.x1)*p;
+    const y = a.y1 + (a.y2-a.y1)*p;
+    a.dot.setAttribute('cx', x);
+    a.dot.setAttribute('cy', y);
+    const fade = p < 0.15 ? p/0.15 : (p > 0.85 ? (1-p)/0.15 : 1);
+    a.dot.setAttribute('fill', a.dir==='back' ? '#f2994a' : '#5b9bd9');
+    a.dot.style.opacity = fade;
+    return p < 1;
+  });
+  if(activeAnims.length) requestAnimationFrame(tick);
+}
+
+// ---------- Apply visual state for a lit config ----------
+function clearAll(){
+  Object.values(nodeEls).flat().forEach(n=>{ n.setAttribute('class','node'); });
+  Object.values(edgeEls).flat().forEach(e=>{ e.setAttribute('class','edge'); });
+}
+function applyLit(lit={}, edgeLit={}){
+  clearAll();
+  Object.entries(lit).forEach(([group,color])=>{
+    nodeEls[group].forEach(n=> n.setAttribute('class', `node lit-${color}`));
+  });
+  Object.entries(edgeLit).forEach(([group,color])=>{
+    edgeEls[group].forEach(e=> e.setAttribute('class', `edge lit-${color}`));
+  });
+}
+
+// ---------- Step script ----------
+const steps = [
+  { phase:'FORWARD', title:'Input arrives', desc:'The input vector is fed into the network — this is a₀.',
+    formula:'', lit:{input:'blue'} },
+  { phase:'FORWARD', title:'Hidden layer activates', desc:'Each hidden neuron takes a weighted sum of the input, then applies ReLU.',
+    formula:'z₁ = W₁·a₀ + b₁\na₁ = ReLU(z₁)', lit:{input:'blue', hidden:'blue'}, pulse:{group:'ih', dir:'fwd'} },
+  { phase:'FORWARD', title:'Output layer activates', desc:'The hidden output feeds into the final layer, which applies softmax to get class probabilities.',
+    formula:'z₂ = W₂·a₁ + b₂\na₂ = softmax(z₂)', lit:{hidden:'blue', output:'blue'}, pulse:{group:'ho', dir:'fwd'} },
+  { phase:'LOSS', title:'Compare to the true label', desc:'The prediction a₂ is compared against the true label y using cross-entropy loss.',
+    formula:'L = −Σ y · log(a₂)', lit:{output:'violet'} },
+  { phase:'BACKWARD', title:'Start the backward pass', desc:'Softmax + cross-entropy collapses neatly: the output delta is just prediction minus target.',
+    formula:'dz₂ = a₂ − y', lit:{output:'orange'} },
+  { phase:'BACKWARD', title:"Compute the output layer's gradients", desc:"These are cached now — the optimizer will use them later, not yet.",
+    formula:'dW₂ = dz₂ · a₁ᵀ\ndb₂ = dz₂', lit:{output:'orange', hidden:'orange'}, edgeLit:{ho:'orange'} },
+  { phase:'BACKWARD', title:'Propagate the error backward', desc:'The output error is spread back through the output weights to become the hidden layer\'s delta.',
+    formula:'da₁ = W₂ᵀ · dz₂', lit:{hidden:'orange'}, pulse:{group:'ho', dir:'back'} },
+  { phase:'BACKWARD', title:'Undo the ReLU', desc:"Scale by ReLU's derivative at the cached z₁ — neurons that were off during the forward pass block the gradient.",
+    formula:"dz₁ = da₁ * ReLU'(z₁)", lit:{hidden:'orange'} },
+  { phase:'BACKWARD', title:"Compute the hidden layer's gradients", desc:'Same recipe as before: this layer\'s error times this layer\'s input.',
+    formula:'dW₁ = dz₁ · a₀ᵀ\ndb₁ = dz₁', lit:{hidden:'orange', input:'orange'}, edgeLit:{ih:'orange'} },
+  { phase:'UPDATE', title:'Optimizer updates every weight', desc:'Now — and only now — the cached gradients are actually applied to the weights.',
+    formula:'W ← W − lr · dW\nb ← b − lr · db', lit:{input:'green', hidden:'green', output:'green'}, edgeLit:{ih:'green', ho:'green'} },
+];
+
+// ---------- UI wiring ----------
+const descText = document.getElementById('descText');
+const formulaText = document.getElementById('formulaText');
+const phaseBadge = document.getElementById('phaseBadge');
+const stepDots = document.getElementById('stepDots');
+const stepList = document.getElementById('stepList');
+
+steps.forEach((s,i)=>{
+  const dot = document.createElement('span');
+  stepDots.appendChild(dot);
+
+  const item = document.createElement('div');
+  item.className = 'step-item';
+  item.innerHTML = `<div class="num">${i+1}</div><div><div class="title">${s.title}</div><div class="sub">${s.phase}</div></div>`;
+  item.addEventListener('click', ()=> goTo(i));
+  stepList.appendChild(item);
+});
+
+let current = -1;
+let playing = false;
+let playTimer = null;
+
+function render(i){
+  const s = steps[i];
+  descText.textContent = s.desc;
+  formulaText.textContent = s.formula || '';
+  phaseBadge.textContent = s.phase;
+  const badgeColors = { FORWARD:'#5b9bd9', BACKWARD:'#f2994a', LOSS:'#bb86fc', UPDATE:'#6fcf97' };
+  phaseBadge.style.color = badgeColors[s.phase];
+  phaseBadge.style.borderColor = badgeColors[s.phase];
+
+  applyLit(s.lit || {}, s.edgeLit || {});
+  if(s.pulse){ firePulses(s.pulse.group, s.pulse.dir); }
+
+  [...stepDots.children].forEach((d,idx)=> d.classList.toggle('on', idx===i));
+  [...stepList.children].forEach((el,idx)=> el.classList.toggle('active', idx===i));
+  if(stepList.children[i]) stepList.children[i].scrollIntoView({block:'nearest'});
+}
+
+function goTo(i){
+  current = ((i % steps.length) + steps.length) % steps.length;
+  render(current);
+}
+
+document.getElementById('nextBtn').addEventListener('click', ()=> goTo(current+1));
+document.getElementById('prevBtn').addEventListener('click', ()=> goTo(current-1));
+
+const playBtn = document.getElementById('playBtn');
+playBtn.addEventListener('click', ()=>{
+  playing = !playing;
+  playBtn.textContent = playing ? 'Pause' : 'Play';
+  playBtn.classList.toggle('primary', !playing);
+  if(playing){
+    playTimer = setInterval(()=> goTo(current+1), 1600);
+  } else {
+    clearInterval(playTimer);
+  }
+});
+
+goTo(0);
+</script>
+
+</body>
+</html>

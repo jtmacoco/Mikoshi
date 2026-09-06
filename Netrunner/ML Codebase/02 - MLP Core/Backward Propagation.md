@@ -129,3 +129,9 @@ Rather than recomputing the _entire_ chain from scratch for every single weight 
 Mikoshi/Netrunner/ML Codebase/02 - MLP Core/02 - MLP Core_Assets/backprop.html
 650
 ```
+
+```html-embed
+Mikoshi/Netrunner/ML Codebase/02 - MLP Core/02 - MLP Core_Assets/backprop-viz.html
+700
+```
+
