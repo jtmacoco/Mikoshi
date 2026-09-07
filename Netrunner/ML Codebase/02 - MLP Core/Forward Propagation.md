@@ -2,6 +2,9 @@
 title: Forward Propagation
 source: "[[MLP Core]]"
 tags:
+  - math
+  - machine-learning
+  - forward-propagation
 type: concept
 created: 2026-09-01
 ---
@@ -9,6 +12,8 @@ created: 2026-09-01
 ## What is Forward Propagation
 
 Forward Propagation/Pass is the process of passing input data through a neural network, layer by layer, to compute an output (prediction). Each layer applies a linear transformation followed by a non linear activation function, and the result is passed forward to the next layer until the final output layer produces a prediction. Uses multiplication and addition no chain rule here.
+
+**Note: This is using linear model for simplicity**
 
 ---
 ## How it works
@@ -36,10 +41,12 @@ $$
 1. Generate predictions the output $\hat{y}$ is the model's guess for a given input
 2. Compute loss $\hat{y}$ is compared against the true label $y$ using a loss function (like cross entropy, MSE, etc.) to measure how wrong the prediction is
 3. Set up backpropagation  the activation's computed during the forward pass are cached and reused during the backward pass to compute gradients efficiently.
-
+---
 ## Key point
 
 Forward propagation is purely computational, no learning happens here. Weights are only updated afterward, during backpropagation, based on the error calculated from the forward pass's output.
+
+## Forward propagation walkthrough
 
 ```html-embed
 Mikoshi/Netrunner/ML Codebase/02 - MLP Core/02 - MLP Core_Assets/forward_prop.html

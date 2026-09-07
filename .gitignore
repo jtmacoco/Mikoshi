@@ -1,0 +1,29 @@
+# OS junk
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# Obsidian workspace/state (device-specific, don't sync)
+.obsidian/workspace.json
+.obsidian/workspace-mobile.json
+.obsidian/cache
+.obsidian/plugins/*/data.json
+
+# Optional: ignore the whole config folder if you don't want to sync
+# settings/plugins across devices at all (uncomment if desired)
+# .obsidian/
+
+# Trash / backups
+.trash/
+*.bak
+*.tmp
+
+# Editor swap files
+*.swp
+*.swo
+*~
