@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Backprop, Step by Step — 3-Layer MLP</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+  :root{
+    --bg:#0d0f13;
+    --panel:#161a21;
+    --panel-2:#1b2029;
+    --border:#262c37;
+    --text:#e9e7e2;
+    --muted:#8b8f9a;
+    --fwd:#52d7c9;
+    --fwd-dim:#28524d;
+    --bwd:#f2a154;
+    --bwd-dim:#5a4127;
+    --loss:#ef6f6c;
+    --loss-dim:#4d302f;
+    --font-display:'Space Grotesk', sans-serif;
+    --font-body:'Inter', sans-serif;
+    --font-mono:'JetBrains Mono', ui-monospace, monospace;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:var(--font-body);
+    padding:22px 18px 40px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:920px;margin:0 auto;}
+
+  header{margin-bottom:18px;}
+  header h1{
+    font-family:var(--font-display);
+    font-weight:600;
+    font-size:22px;
+    margin:0 0 4px;
+    letter-spacing:-0.01em;
+  }
+  header p{
+    margin:0;
+    color:var(--muted);
+    font-size:13.5px;
+    line-height:1.5;
+    max-width:62ch;
+  }
+
+  /* ---- legend row ---- */
+  .legend{
+    display:flex;
+    gap:16px;
+    margin-top:12px;
+    font-size:12.5px;
+    color:var(--muted);
+    flex-wrap:wrap;
+  }
+  .legend span{display:inline-flex;align-items:center;gap:6px;}
+  .dot{width:9px;height:9px;border-radius:50%;display:inline-block;}
+  .dot.fwd{background:var(--fwd);}
+  .dot.bwd{background:var(--bwd);}
+  .dot.loss{background:var(--loss);}
+
+  /* ---- network diagram ---- */
+  .diagram-card{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:14px 10px 6px;
+    margin-top:18px;
+  }
+  svg{display:block;width:100%;height:auto;}
+  .node circle{
+    fill:var(--panel-2);
+    stroke:var(--border);
+    stroke-width:1.6;
+    transition:stroke .25s ease, fill .25s ease;
+  }
+  .node.lit circle{stroke:var(--fwd);}
+  .node text.val{
+    font-family:var(--font-mono);
+    font-size:9.5px;
+    fill:var(--text);
+    text-anchor:middle;
+  }
+  .node text.val.empty{fill:var(--muted); opacity:.5;}
+  .layer-label{
+    font-family:var(--font-body);
+    font-size:11px;
+    fill:var(--muted);
+    text-anchor:middle;
+  }
+  .edge{
+    stroke:#2a303c;
+    stroke-width:1;
+    transition:stroke .25s ease, stroke-width .25s ease, opacity .25s ease;
+    opacity:.55;
+  }
+  .edge.active-fwd{stroke:var(--fwd); stroke-width:1.6; opacity:1;}
+  .edge.active-bwd{stroke:var(--bwd); stroke-width:1.6; opacity:1;}
+  .chip{
+    opacity:0;
+    transform:translateY(4px);
+    transition:opacity .3s ease, transform .3s ease;
+  }
+  .chip.show{opacity:1; transform:translateY(0);}
+  .chip rect{rx:9;}
+  .chip text{
+    font-family:var(--font-mono);
+    font-size:11px;
+    font-weight:600;
+    text-anchor:middle;
+    dominant-baseline:middle;
+  }
+
+  /* ---- controls ---- */
+  .controls{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-top:16px;
+    flex-wrap:wrap;
+  }
+  button.nav{
+    background:var(--panel-2);
+    border:1px solid var(--border);
+    color:var(--text);
+    font-family:var(--font-body);
+    font-size:13px;
+    font-weight:500;
+    padding:8px 14px;
+    border-radius:7px;
+    cursor:pointer;
+    transition:border-color .15s ease, background .15s ease;
+  }
+  button.nav:hover{border-color:#3a4150;}
+  button.nav:disabled{opacity:.35; cursor:default;}
+  button.nav:focus-visible, .dotbtn:focus-visible{outline:2px solid var(--fwd); outline-offset:2px;}
+  #playBtn{min-width:74px;}
+
+  .step-counter{
+    font-family:var(--font-mono);
+    font-size:12.5px;
+    color:var(--muted);
+    margin-left:auto;
+  }
+
+  .dots{
+    display:flex;
+    gap:5px;
+    flex-wrap:wrap;
+    margin-top:10px;
+  }
+  .dotbtn{
+    width:9px;height:9px;border-radius:50%;
+    border:none;
+    background:#2a303c;
+    cursor:pointer;
+    padding:0;
+    transition:transform .15s ease, background .15s ease;
+  }
+  .dotbtn.done-fwd{background:var(--fwd-dim);}
+  .dotbtn.done-bwd{background:var(--bwd-dim);}
+  .dotbtn.done-loss{background:var(--loss-dim);}
+  .dotbtn.current{transform:scale(1.5);}
+  .dotbtn.current.p-forward{background:var(--fwd);}
+  .dotbtn.current.p-backward{background:var(--bwd);}
+  .dotbtn.current.p-loss{background:var(--loss);}
+
+  /* ---- step panel ---- */
+  .panel{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:10px;
+    margin-top:16px;
+    padding:20px 22px 22px;
+  }
+  .phase-badge{
+    display:inline-block;
+    font-family:var(--font-mono);
+    font-size:11px;
+    font-weight:600;
+    letter-spacing:.02em;
+    padding:3px 9px;
+    border-radius:5px;
+    margin-bottom:10px;
+  }
+  .phase-badge.p-forward{background:var(--fwd-dim); color:var(--fwd);}
+  .phase-badge.p-backward{background:var(--bwd-dim); color:var(--bwd);}
+  .phase-badge.p-loss{background:var(--loss-dim); color:var(--loss);}
+
+  .panel h2{
+    font-family:var(--font-display);
+    font-size:19px;
+    font-weight:600;
+    margin:0 0 8px;
+  }
+  .panel .desc{
+    font-size:14px;
+    line-height:1.6;
+    color:#c9c7c1;
+    margin:0 0 6px;
+    max-width:68ch;
+  }
+  .panel .desc b{color:var(--text); font-weight:600;}
+
+  .formula{
+    font-family:var(--font-mono);
+    font-size:15px;
+    color:var(--text);
+    background:var(--panel-2);
+    border:1px solid var(--border);
+    border-radius:7px;
+    padding:10px 14px;
+    margin:14px 0 18px;
+    display:inline-block;
+  }
+  .formula sub{font-size:10px;}
+
+  /* ---- matrix equation rendering ---- */
+  .eq-row{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    flex-wrap:wrap;
+    margin-top:6px;
+  }
+  .eq-item{display:flex; flex-direction:column; align-items:center; gap:6px;}
+  .eq-op{
+    font-family:var(--font-mono);
+    font-size:17px;
+    color:var(--muted);
+    padding-top:2px;
+  }
+  .bracket{
+    display:flex;
+    align-items:stretch;
+  }
+  .bracket-edge{width:5px;}
+  .bracket-edge.left{border-top:2px solid var(--edge-c,#4a5162); border-bottom:2px solid var(--edge-c,#4a5162); border-left:2px solid var(--edge-c,#4a5162);}
+  .bracket-edge.right{border-top:2px solid var(--edge-c,#4a5162); border-bottom:2px solid var(--edge-c,#4a5162); border-right:2px solid var(--edge-c,#4a5162);}
+  .mgrid{
+    display:grid;
+    gap:3px 12px;
+    padding:6px 8px;
+    font-family:var(--font-mono);
+    font-size:12.5px;
+  }
+  .mcell{text-align:right; min-width:32px; white-space:nowrap;}
+  .mcell.pos{color:var(--fwd);}
+  .mcell.neg{color:#f28b8b;}
+  .mcell.zero{color:var(--muted);}
+  .eq-caption{
+    font-family:var(--font-mono);
+    font-size:10.5px;
+    color:var(--muted);
+  }
+
+  .fwd-c{--edge-c:#3a6e68;}
+  .bwd-c{--edge-c:#8a6236;}
+  .result-c{--edge-c:var(--fwd);}
+  .result-bwd-c{--edge-c:var(--bwd);}
+  .neutral-c{--edge-c:#454c5c;}
+  .loss-c{--edge-c:var(--loss);}
+
+  /* ---- cheat sheet ---- */
+  details.cheat{
+    margin-top:18px;
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:4px 18px;
+  }
+  details.cheat summary{
+    cursor:pointer;
+    font-family:var(--font-display);
+    font-weight:600;
+    font-size:14px;
+    padding:12px 0;
+    list-style:none;
+  }
+  details.cheat summary::-webkit-details-marker{display:none;}
+  details.cheat summary::before{content:'+ '; color:var(--fwd);}
+  details.cheat[open] summary::before{content:'– ';}
+  .cheat-grid{
+    display:grid;
+    grid-template-columns:auto 1fr;
+    gap:8px 16px;
+    padding-bottom:16px;
+    font-size:13px;
+  }
+  .cheat-grid code{
+    font-family:var(--font-mono);
+    color:var(--fwd);
+    background:var(--panel-2);
+    padding:2px 6px;
+    border-radius:4px;
+    white-space:nowrap;
+  }
+  .cheat-grid span{color:#c9c7c1; line-height:1.5;}
+
+  footer{
+    text-align:center;
+    color:var(--muted);
+    font-size:11.5px;
+    margin-top:22px;
+  }
+  kbd{
+    font-family:var(--font-mono);
+    background:var(--panel-2);
+    border:1px solid var(--border);
+    border-radius:4px;
+    padding:1px 5px;
+    font-size:10.5px;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{transition:none !important;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <h1>Backprop, step by step</h1>
+    <p>A 3-layer MLP (3 → 4 → 3 → 2), sigmoid activations, MSE loss. One input example runs forward, then every gradient runs backward — matching <code style="font-family:var(--font-mono);color:var(--fwd);">da → dz → dW, db → da_prev</code> from your notes.</p>
+    <div class="legend">
+      <span><i class="dot fwd"></i> Forward pass</span>
+      <span><i class="dot loss"></i> Loss</span>
+      <span><i class="dot bwd"></i> Backward pass</span>
+    </div>
+  </header>
+
+  <div class="diagram-card">
+    <svg id="diagram" viewBox="0 0 900 260" xmlns="http://www.w3.org/2000/svg"></svg>
+  </div>
+
+  <div class="controls">
+    <button class="nav" id="prevBtn">&larr; Prev</button>
+    <button class="nav" id="playBtn">▶ Play</button>
+    <button class="nav" id="nextBtn">Next &rarr;</button>
+    <span class="step-counter" id="stepCounter">Step 1 / 18</span>
+  </div>
+  <div class="dots" id="dots"></div>
+
+  <div class="panel">
+    <span class="phase-badge" id="phaseBadge"></span>
+    <h2 id="stepTitle"></h2>
+    <p class="desc" id="stepDesc"></p>
+    <div class="formula" id="stepFormula"></div>
+    <div class="eq-row" id="eqRow"></div>
+  </div>
+
+  <details class="cheat">
+    <summary>Quick reference — what each symbol means</summary>
+    <div class="cheat-grid">
+      <code>da</code><span>∂L/∂a — how much the loss cares about this layer's <b>output</b>. Comes from the loss (last layer) or from <code>da_prev</code> handed down by the next layer.</span>
+      <code>activation_prime(z)</code><span>The activation function's own slope at the cached <code>z</code> — depends only on the activation, not the loss.</span>
+      <code>dz</code><span>∂L/∂z = <code>da × activation_prime(z)</code> — how much the loss cares about the <b>pre-activation</b>.</span>
+      <code>dW, db</code><span>∂L/∂W, ∂L/∂b — the only two gradients actually used to update parameters: <code>W = W − lr × dW</code>.</span>
+      <code>da_prev</code><span><code>W.T · dz</code> — handed to the previous layer, where it becomes <i>that</i> layer's <code>da</code>.</span>
+    </div>
+  </details>
+
+  <footer>Use <kbd>←</kbd> <kbd>→</kbd> to step through, or the dots to jump to any point.</footer>
+</div>
+
+<script>
+/* ======================= DATA (precomputed) ======================= */
+const x  = [0.50, 0.80, 0.20];
+const W1 = [[-0.42,0.28,-0.06],[0.22,0.48,0.04],[0.00,-0.43,-0.23],[0.00,0.18,0.30]];
+const b1 = [-0.05,-0.17,-0.08,0.16];
+const z1 = [-0.048,0.332,-0.47,0.364];
+const sp1= [0.2499,0.2432,0.2367,0.2419];
+const a1 = [0.488,0.5822,0.3846,0.59];
+
+const W2 = [[-0.29,-0.05,0.43,-0.48],[0.10,0.45,-0.27,0.05],[0.41,-0.37,0.02,0.25]];
+const b2 = [0.07,-0.01,-0.12];
+const z2 = [-0.2185,0.2265,0.0198];
+const sp2= [0.247,0.2468,0.25];
+const a2 = [0.4456,0.5564,0.505];
+
+const W3 = [[-0.01,-0.13,-0.02],[-0.13,0.34,0.27]];
+const b3 = [-0.07,0.03];
+const z3 = [-0.1569,0.2976];
+const sp3= [0.2485,0.2445];
+const a3 = [0.4609,0.5739];
+const y  = [1,0];
+const L  = 0.62;
+
+const da3 = [-1.0783,1.1477];
+const dz3 = [-0.2679,0.2807];
+const dW3 = [[-0.1194,-0.1491,-0.1353],[0.1251,0.1562,0.1417]];
+const db3 = [-0.2679,0.2807];
+const da2 = [-0.0338,0.1303,0.0811];
+
+const dz2 = [-0.0084,0.0321,0.0203];
+const dW2 = [[-0.0041,-0.0049,-0.0032,-0.0049],[0.0157,0.0187,0.0124,0.019],[0.0099,0.0118,0.0078,0.012]];
+const db2 = [-0.0084,0.0321,0.0203];
+const da1 = [0.014,0.0074,-0.0119,0.0107];
+
+const dz1 = [0.0035,0.0018,-0.0028,0.0026];
+const dW1 = [[0.0017,0.0028,0.0007],[0.0009,0.0014,0.0004],[-0.0014,-0.0022,-0.0006],[0.0013,0.0021,0.0005]];
+const db1 = [0.0035,0.0018,-0.0028,0.0026];
+const da0 = [-0.0011,0.0035,0.0013];
+
+function fmt(v){
+  if (v === 0) return '0.00';
+  const av = Math.abs(v);
+  const s = av < 0.01 ? v.toFixed(4) : v.toFixed(2);
+  return (v > 0 ? '' : '') + s;
+}
+function T(m){ return m[0].map((_,c)=> m.map(r=>r[c])); } // transpose
+
+/* helpers to build eq-row HTML */
+function vec(data, opts={}){
+  const cls = opts.cls || 'neutral-c';
+  const row = !!opts.row;
+  const rows = row ? [data] : data.map(v=>[v]);
+  return matrixHTML(rows, cls);
+}
+function mat(data, cls='neutral-c'){ return matrixHTML(data, cls); }
+
+function matrixHTML(rows, cls){
+  const cols = rows[0].length;
+  let cells = '';
+  rows.forEach(r=>{
+    r.forEach(v=>{
+      const c = v > 0.0001 ? 'pos' : (v < -0.0001 ? 'neg' : 'zero');
+      cells += `<div class="mcell ${c}">${fmt(v)}</div>`;
+    });
+  });
+  return `<div class="bracket ${cls}"><div class="bracket-edge left"></div>
+    <div class="mgrid" style="grid-template-columns:repeat(${cols},1fr);">${cells}</div>
+    <div class="bracket-edge right"></div></div>`;
+}
+function item(inner, caption){
+  return `<div class="eq-item">${inner}<span class="eq-caption">${caption}</span></div>`;
+}
+function op(sym){ return `<span class="eq-op">${sym}</span>`; }
+
+/* ======================= STEP DEFINITIONS ======================= */
+const steps = [
+  { phase:'forward', chipLayer:0, chip:'x',
+    title:'Input vector', 
+    desc:'The raw features enter the network at layer 0. No weights or activation applied yet — this is just data.',
+    formula:'x',
+    eq:()=> item(vec(x,{cls:'fwd-c'}), 'x (3×1)'),
+    reveal:{layer:0, values:x} },
+
+  { phase:'forward', chipLayer:1, chip:'z₁',
+    title:'Layer 1 — pre-activation',
+    desc:'Multiply the input by layer 1\'s weights, then add the bias. <b>z</b> is the raw, un-squashed number before any activation function touches it.',
+    formula:'z₁ = W₁ · x + b₁',
+    eq:()=> item(mat(W1,'fwd-c'),'W₁ (4×3)') + op('·') + item(vec(x,{cls:'fwd-c'}),'x (3×1)')
+           + op('+') + item(vec(b1,{cls:'fwd-c'}),'b₁ (4×1)') + op('=') + item(vec(z1,{cls:'result-c'}),'z₁ (4×1)'),
+    edge:{from:0,to:1,dir:'fwd'} },
+
+  { phase:'forward', chipLayer:1, chip:'a₁',
+    title:'Layer 1 — activation',
+    desc:'Squash each entry of z₁ through sigmoid, elementwise. <b>a</b> is what actually gets passed forward to the next layer.',
+    formula:'a₁ = σ(z₁)',
+    eq:()=> item(vec(z1,{cls:'fwd-c'}),'z₁') + op('σ(·)') + item(vec(a1,{cls:'result-c'}),'a₁ (4×1)'),
+    reveal:{layer:1, values:a1} },
+
+  { phase:'forward', chipLayer:2, chip:'z₂',
+    title:'Layer 2 — pre-activation',
+    desc:'Same recipe, one layer deeper: layer 2\'s weights times the previous layer\'s activation, plus its own bias.',
+    formula:'z₂ = W₂ · a₁ + b₂',
+    eq:()=> item(mat(W2,'fwd-c'),'W₂ (3×4)') + op('·') + item(vec(a1,{cls:'fwd-c'}),'a₁ (4×1)')
+           + op('+') + item(vec(b2,{cls:'fwd-c'}),'b₂ (3×1)') + op('=') + item(vec(z2,{cls:'result-c'}),'z₂ (3×1)'),
+    edge:{from:1,to:2,dir:'fwd'} },
+
+  { phase:'forward', chipLayer:2, chip:'a₂',
+    title:'Layer 2 — activation',
+    desc:'Sigmoid again, elementwise, turning z₂ into a₂.',
+    formula:'a₂ = σ(z₂)',
+    eq:()=> item(vec(z2,{cls:'fwd-c'}),'z₂') + op('σ(·)') + item(vec(a2,{cls:'result-c'}),'a₂ (3×1)'),
+    reveal:{layer:2, values:a2} },
+
+  { phase:'forward', chipLayer:3, chip:'z₃',
+    title:'Layer 3 (output) — pre-activation',
+    desc:'The final layer\'s pre-activation, built the same way as every other layer.',
+    formula:'z₃ = W₃ · a₂ + b₃',
+    eq:()=> item(mat(W3,'fwd-c'),'W₃ (2×3)') + op('·') + item(vec(a2,{cls:'fwd-c'}),'a₂ (3×1)')
+           + op('+') + item(vec(b3,{cls:'fwd-c'}),'b₃ (2×1)') + op('=') + item(vec(z3,{cls:'result-c'}),'z₃ (2×1)'),
+    edge:{from:2,to:3,dir:'fwd'} },
+
+  { phase:'forward', chipLayer:3, chip:'a₃ = ŷ',
+    title:'Layer 3 — activation (the prediction)',
+    desc:'a₃ is the network\'s final output — its prediction. Everything from here on is about scoring this prediction, then assigning it blame.',
+    formula:'a₃ = σ(z₃)',
+    eq:()=> item(vec(z3,{cls:'fwd-c'}),'z₃') + op('σ(·)') + item(vec(a3,{cls:'result-c'}),'a₃ (2×1)'),
+    reveal:{layer:3, values:a3} },
+
+  { phase:'loss', chipLayer:3, chip:'L',
+    title:'Loss — how wrong was the prediction?',
+    desc:'Compare the prediction a₃ against the true target y using MSE. <b>L is a single number</b> — not a direction, not a vector, just "how bad." Forward pass ends here.',
+    formula:'L = Σ (a₃ − y)²',
+    eq:()=> item(vec(a3,{cls:'fwd-c'}),'a₃ (pred)') + op('−') + item(vec(y,{cls:'fwd-c'}),'y (target)')
+           + op('=') + item(vec([a3[0]-y[0],a3[1]-y[1]],{cls:'loss-c'}),'error')
+           + op('→') + item(`<div class="mgrid" style="grid-template-columns:1fr;"><div class="mcell pos" style="font-size:16px;">${L.toFixed(2)}</div></div>`,'L (scalar)') },
+
+  { phase:'backward', chipLayer:3, chip:'da₃',
+    title:'da₃ — blame for the output',
+    desc:'∂L/∂a₃. Differentiate the loss function itself with respect to the prediction. This is where backprop <b>starts</b> — the only place da is computed fresh instead of handed down.',
+    formula:'da₃ = 2(a₃ − y)',
+    eq:()=> item(vec(a3,{cls:'bwd-c'}),'a₃') + op('−') + item(vec(y,{cls:'bwd-c'}),'y')
+           + op('× 2 =') + item(vec(da3,{cls:'result-bwd-c'}),'da₃ (2×1)') },
+
+  { phase:'backward', chipLayer:3, chip:'dz₃',
+    title:'dz₃ — blame for the pre-activation',
+    desc:'Multiply da₃ by the activation\'s own slope, elementwise. This converts "blame for the output" into "blame for what fed the output."',
+    formula:'dz₃ = da₃ ⊙ σ′(z₃)',
+    eq:()=> item(vec(da3,{cls:'bwd-c'}),'da₃') + op('⊙') + item(vec(sp3,{cls:'bwd-c'}),"σ′(z₃)")
+           + op('=') + item(vec(dz3,{cls:'result-bwd-c'}),'dz₃ (2×1)') },
+
+  { phase:'backward', chipLayer:3, chip:'dW₃,db₃',
+    title:'dW₃, db₃ — the gradients that actually update layer 3',
+    desc:'dW is an outer product: dz₃ (this layer) against a₂ᵀ (previous layer\'s activation). db is just dz₃ itself. These two are what gradient descent uses.',
+    formula:'dW₃ = dz₃ · a₂ᵀ  ·  db₃ = dz₃',
+    eq:()=> item(vec(dz3,{cls:'bwd-c'}),'dz₃ (2×1)') + op('·') + item(vec(a2,{cls:'fwd-c',row:true}),'a₂ᵀ (1×3)')
+           + op('=') + item(mat(dW3,'result-bwd-c'),'dW₃ (2×3)') },
+
+  { phase:'backward', chipLayer:2, chip:'da₂ ← handoff',
+    title:'da₂ — handed off to layer 2',
+    desc:'W₃ᵀ · dz₃ routes blame backward through the weights. This <b>is</b> layer 2\'s da — not recomputed, just received from the layer in front of it.',
+    formula:'da₂ = W₃ᵀ · dz₃',
+    eq:()=> item(mat(T(W3),'bwd-c'),'W₃ᵀ (3×2)') + op('·') + item(vec(dz3,{cls:'bwd-c'}),'dz₃ (2×1)')
+           + op('=') + item(vec(da2,{cls:'result-bwd-c'}),'da₂ (3×1)'),
+    edge:{from:3,to:2,dir:'bwd'} },
+
+  { phase:'backward', chipLayer:2, chip:'dz₂',
+    title:'dz₂ — blame for layer 2\'s pre-activation',
+    desc:'Same move as before, one layer back: the incoming da₂ times this layer\'s own activation slope.',
+    formula:'dz₂ = da₂ ⊙ σ′(z₂)',
+    eq:()=> item(vec(da2,{cls:'bwd-c'}),'da₂') + op('⊙') + item(vec(sp2,{cls:'bwd-c'}),"σ′(z₂)")
+           + op('=') + item(vec(dz2,{cls:'result-bwd-c'}),'dz₂ (3×1)') },
+
+  { phase:'backward', chipLayer:2, chip:'dW₂,db₂',
+    title:'dW₂, db₂ — gradients for layer 2',
+    desc:'Outer product again: dz₂ against a₁ᵀ, the activation one layer further back.',
+    formula:'dW₂ = dz₂ · a₁ᵀ  ·  db₂ = dz₂',
+    eq:()=> item(vec(dz2,{cls:'bwd-c'}),'dz₂ (3×1)') + op('·') + item(vec(a1,{cls:'fwd-c',row:true}),'a₁ᵀ (1×4)')
+           + op('=') + item(mat(dW2,'result-bwd-c'),'dW₂ (3×4)') },
+
+  { phase:'backward', chipLayer:1, chip:'da₁ ← handoff',
+    title:'da₁ — handed off to layer 1',
+    desc:'W₂ᵀ · dz₂. Same handoff pattern as before — layer 1 receives its da from layer 2, it doesn\'t derive it from the loss directly.',
+    formula:'da₁ = W₂ᵀ · dz₂',
+    eq:()=> item(mat(T(W2),'bwd-c'),'W₂ᵀ (4×3)') + op('·') + item(vec(dz2,{cls:'bwd-c'}),'dz₂ (3×1)')
+           + op('=') + item(vec(da1,{cls:'result-bwd-c'}),'da₁ (4×1)'),
+    edge:{from:2,to:1,dir:'bwd'} },
+
+  { phase:'backward', chipLayer:1, chip:'dz₁',
+    title:'dz₁ — blame for layer 1\'s pre-activation',
+    desc:'da₁ times layer 1\'s own activation slope. Notice how small these numbers have become — gradients shrink as they travel backward through more sigmoid layers.',
+    formula:'dz₁ = da₁ ⊙ σ′(z₁)',
+    eq:()=> item(vec(da1,{cls:'bwd-c'}),'da₁') + op('⊙') + item(vec(sp1,{cls:'bwd-c'}),"σ′(z₁)")
+           + op('=') + item(vec(dz1,{cls:'result-bwd-c'}),'dz₁ (4×1)') },
+
+  { phase:'backward', chipLayer:1, chip:'dW₁,db₁',
+    title:'dW₁, db₁ — gradients for layer 1',
+    desc:'Last set of parameter gradients: dz₁ against the original input xᵀ, since layer 1 is the first one and has no previous activation to draw on.',
+    formula:'dW₁ = dz₁ · xᵀ  ·  db₁ = dz₁',
+    eq:()=> item(vec(dz1,{cls:'bwd-c'}),'dz₁ (4×1)') + op('·') + item(vec(x,{cls:'fwd-c',row:true}),'xᵀ (1×3)')
+           + op('=') + item(mat(dW1,'result-bwd-c'),'dW₁ (4×3)') },
+
+  { phase:'backward', chipLayer:0, chip:'da₀ (discarded)',
+    title:'da₀ — nowhere left to send it',
+    desc:'W₁ᵀ · dz₁ would normally become the next layer\'s da — but layer 1 is the first layer. The input has no weights to update, so this value is computed and then simply discarded. Backprop is finished.',
+    formula:'da₀ = W₁ᵀ · dz₁   (unused)',
+    eq:()=> item(mat(T(W1),'bwd-c'),'W₁ᵀ (3×4)') + op('·') + item(vec(dz1,{cls:'bwd-c'}),'dz₁ (4×1)')
+           + op('=') + item(vec(da0,{cls:'result-bwd-c'}),'da₀ (3×1)'),
+    edge:{from:1,to:0,dir:'bwd'} },
+];
+
+/* ======================= DIAGRAM SETUP ======================= */
+const layerSizes = [3,4,3,2];
+const layerNames = ['Input','Hidden 1','Hidden 2','Output'];
+const layerX = [90, 340, 590, 810];
+const svgNS = 'http://www.w3.org/2000/svg';
+const svg = document.getElementById('diagram');
+
+function nodeY(n,i){ const spacing=48; return 130 - (n-1)*spacing/2 + i*spacing; }
+
+let nodeEls = [[],[],[],[]];
+let edgeEls = {}; // key "from-to" -> array of line elements
+
+function buildDiagram(){
+  // edges first (so nodes draw on top)
+  for(let L=0; L<3; L++){
+    const key = L+'-'+(L+1);
+    edgeEls[key] = [];
+    for(let i=0;i<layerSizes[L];i++){
+      for(let j=0;j<layerSizes[L+1];j++){
+        const line = document.createElementNS(svgNS,'line');
+        line.setAttribute('x1', layerX[L]+16);
+        line.setAttribute('y1', nodeY(layerSizes[L],i));
+        line.setAttribute('x2', layerX[L+1]-16);
+        line.setAttribute('y2', nodeY(layerSizes[L+1],j));
+        line.setAttribute('class','edge');
+        svg.appendChild(line);
+        edgeEls[key].push(line);
+      }
+    }
+  }
+  // nodes
+  for(let L=0; L<4; L++){
+    const label = document.createElementNS(svgNS,'text');
+    label.setAttribute('x', layerX[L]);
+    label.setAttribute('y', 18);
+    label.setAttribute('class','layer-label');
+    label.textContent = layerNames[L] + ' (' + layerSizes[L] + ')';
+    svg.appendChild(label);
+
+    for(let i=0;i<layerSizes[L];i++){
+      const g = document.createElementNS(svgNS,'g');
+      g.setAttribute('class','node');
+      const c = document.createElementNS(svgNS,'circle');
+      c.setAttribute('cx', layerX[L]);
+      c.setAttribute('cy', nodeY(layerSizes[L],i));
+      c.setAttribute('r', 13);
+      g.appendChild(c);
+      const t = document.createElementNS(svgNS,'text');
+      t.setAttribute('x', layerX[L]);
+      t.setAttribute('y', nodeY(layerSizes[L],i)+3);
+      t.setAttribute('class','val empty');
+      t.textContent = '–';
+      g.appendChild(t);
+      svg.appendChild(g);
+      nodeEls[L].push({g,c,t});
+    }
+    // chip badge per layer
+    const chipG = document.createElementNS(svgNS,'g');
+    chipG.setAttribute('class','chip');
+    chipG.setAttribute('id','chip-'+L);
+    const rect = document.createElementNS(svgNS,'rect');
+    rect.setAttribute('x', layerX[L]-30);
+    rect.setAttribute('y', 218);
+    rect.setAttribute('width', 60);
+    rect.setAttribute('height', 20);
+    rect.setAttribute('fill', '#5a4127');
+    chipG.appendChild(rect);
+    const ct = document.createElementNS(svgNS,'text');
+    ct.setAttribute('x', layerX[L]);
+    ct.setAttribute('y', 228+1);
+    ct.setAttribute('fill', '#f2a154');
+    ct.textContent = '';
+    chipG.appendChild(ct);
+    svg.appendChild(chipG);
+  }
+}
+buildDiagram();
+
+function fmtShort(v){ return Math.abs(v)<0.01 ? v.toFixed(3) : v.toFixed(2); }
+
+function updateDiagram(idx){
+  // reset edges
+  Object.values(edgeEls).flat().forEach(l=> l.setAttribute('class','edge'));
+  // reset chips
+  for(let L=0;L<4;L++){
+    const chip = document.getElementById('chip-'+L);
+    chip.classList.remove('show');
+  }
+  // reveal cumulative node values
+  const revealed = {0:null,1:null,2:null,3:null};
+  for(let i=0;i<=idx;i++){
+    if(steps[i].reveal) revealed[steps[i].reveal.layer] = steps[i].reveal.values;
+  }
+  for(let L=0;L<4;L++){
+    nodeEls[L].forEach((n,i)=>{
+      if(revealed[L]){
+        n.t.textContent = fmtShort(revealed[L][i]);
+        n.t.classList.remove('empty');
+        n.g.classList.add('lit');
+      } else {
+        n.t.textContent = '–';
+        n.t.classList.add('empty');
+        n.g.classList.remove('lit');
+      }
+    });
+  }
+  // active edge
+  const step = steps[idx];
+  if(step.edge){
+    const {from,to,dir} = step.edge;
+    const key = Math.min(from,to)+'-'+Math.max(from,to);
+    const cls = dir==='fwd' ? 'edge active-fwd' : 'edge active-bwd';
+    (edgeEls[key]||[]).forEach(l=> l.setAttribute('class',cls));
+  }
+  // chip
+  if(step.chipLayer !== undefined){
+    const chip = document.getElementById('chip-'+step.chipLayer);
+    const rect = chip.querySelector('rect');
+    const text = chip.querySelector('text');
+    text.textContent = step.chip;
+    const isBwd = step.phase === 'backward';
+    const isLoss = step.phase === 'loss';
+    rect.setAttribute('fill', isLoss ? '#4d302f' : (isBwd ? '#5a4127' : '#28524d'));
+    text.setAttribute('fill', isLoss ? '#ef6f6c' : (isBwd ? '#f2a154' : '#52d7c9'));
+    // width to fit text roughly
+    const w = Math.max(46, step.chip.length*7.2);
+    rect.setAttribute('width', w);
+    rect.setAttribute('x', layerX[step.chipLayer]-w/2);
+    chip.classList.add('show');
+  }
+}
+
+/* ======================= STEP PANEL + CONTROLS ======================= */
+let current = 0;
+let playing = false;
+let playTimer = null;
+
+const phaseBadge = document.getElementById('phaseBadge');
+const stepTitle  = document.getElementById('stepTitle');
+const stepDesc   = document.getElementById('stepDesc');
+const stepFormula= document.getElementById('stepFormula');
+const eqRow      = document.getElementById('eqRow');
+const stepCounter= document.getElementById('stepCounter');
+const dotsWrap   = document.getElementById('dots');
+const prevBtn    = document.getElementById('prevBtn');
+const nextBtn    = document.getElementById('nextBtn');
+const playBtn    = document.getElementById('playBtn');
+
+function buildDots(){
+  steps.forEach((s,i)=>{
+    const b = document.createElement('button');
+    b.className = 'dotbtn';
+    b.setAttribute('aria-label','Go to step '+(i+1));
+    b.addEventListener('click', ()=>{ stopPlay(); render(i); });
+    dotsWrap.appendChild(b);
+  });
+}
+buildDots();
+
+const phaseLabels = {forward:'FORWARD PASS', backward:'BACKWARD PASS', loss:'LOSS'};
+
+function render(idx){
+  current = idx;
+  const step = steps[idx];
+  phaseBadge.textContent = phaseLabels[step.phase];
+  phaseBadge.className = 'phase-badge p-'+step.phase;
+  stepTitle.textContent = step.title;
+  stepDesc.innerHTML = step.desc;
+  stepFormula.textContent = step.formula;
+  eqRow.innerHTML = step.eq();
+  stepCounter.textContent = `Step ${idx+1} / ${steps.length}`;
+  prevBtn.disabled = idx===0;
+  nextBtn.disabled = idx===steps.length-1;
+
+  [...dotsWrap.children].forEach((d,i)=>{
+    d.classList.remove('current','done-fwd','done-bwd','done-loss','p-forward','p-backward','p-loss');
+    if(i < idx){
+      const ph = steps[i].phase;
+      d.classList.add('done-'+(ph==='forward'?'fwd':ph==='backward'?'bwd':'loss'));
+    }
+    if(i === idx){
+      d.classList.add('current','p-'+step.phase);
+    }
+  });
+
+  updateDiagram(idx);
+}
+
+function stopPlay(){
+  playing = false;
+  playBtn.textContent = '▶ Play';
+  if(playTimer){ clearInterval(playTimer); playTimer=null; }
+}
+function startPlay(){
+  playing = true;
+  playBtn.textContent = '⏸ Pause';
+  playTimer = setInterval(()=>{
+    if(current >= steps.length-1){ stopPlay(); return; }
+    render(current+1);
+  }, 1900);
+}
+
+prevBtn.addEventListener('click', ()=>{ stopPlay(); if(current>0) render(current-1); });
+nextBtn.addEventListener('click', ()=>{ stopPlay(); if(current<steps.length-1) render(current+1); });
+playBtn.addEventListener('click', ()=>{ playing ? stopPlay() : startPlay(); });
+
+document.addEventListener('keydown', (e)=>{
+  if(e.key==='ArrowRight'){ stopPlay(); if(current<steps.length-1) render(current+1); }
+  if(e.key==='ArrowLeft'){ stopPlay(); if(current>0) render(current-1); }
+});
+
+render(0);
+</script>
+</body>
+</html>

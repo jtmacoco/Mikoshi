@@ -198,3 +198,7 @@ Mikoshi/Netrunner/ML Codebase/02 - MLP Core/02 - MLP Core_Assets/backprop.html
 Mikoshi/Netrunner/ML Codebase/02 - MLP Core/02 - MLP Core_Assets/backprop-viz.html
 700
 ```
+```html-embed
+Mikoshi/Netrunner/ML Codebase/02 - MLP Core/02 - MLP Core_Assets/mlp_example.html
+1200
+```
