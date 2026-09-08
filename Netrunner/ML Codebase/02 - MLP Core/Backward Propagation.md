@@ -33,6 +33,7 @@ da_prev = W.T · dz                # gradient passed to the previous layer
 
 Where:
 - `da` = gradient of the loss with respect to the layer's activation (comes from the layer *after* it, or from the loss function for the last layer)
+	- Derivative of the LOSS W.R.T the activation function (depends on the loss function + downstream layers)
 - `activation_prime(z)` = derivative of the activation function, evaluated at the cached `z` from the forward pass
 - `dz` = gradient of the loss with respect to the pre-activation
 - `dW`, `db` = gradients used to update this layer's weights and bias
@@ -80,16 +81,81 @@ Softmax couples every output to every input (via the shared denominator), so unl
 Think of it as a local exchange rate. If `da/dz = 0.5` at some point, that means a tiny change in `z` produces half as much change in `a`. So whatever sensitivity the loss has to `a` (`da`), the loss must be sensitive to `z` by only half as much — because `z`'s influence on the loss is _entirely funneled through_ `a`. Multiplying by `da/dz` converts "sensitivity in `a`-units" into "sensitivity in `z`-units."
 
 ---
+
+
+Here's a condensed, come-back-to-this-later version:
+
+## Backprop cheat sheet
+
+**Big picture:** Backprop = figuring out "how much is each piece to blame for the loss, and which way should it change?" Every `d-something` is a derivative of the loss (`L`), just taken with respect to a different variable.
+
+**The four quantities, in plain English:**
+
+| Symbol | Formal meaning | Plain English                                                               |
+| ------ | -------------- | --------------------------------------------------------------------------- |
+| `da`   | `∂L/∂a`        | "How much does the loss care about this neuron's **output**?"               |
+| `dz`   | `∂L/∂z`        | "How much does the loss care about this neuron's **pre-activation input**?" |
+| `dW`   | `∂L/∂W`        | "How much does the loss care about this **weight**?" ← used to update       |
+| `db`   | `∂L/∂b`        | "How much does the loss care about this **bias**?" ← used to update         |
+
+**Key facts about `da` specifically:**
+
+- `da` is NOT the loss, and NOT the derivative of the activation function. It's the derivative of the loss, w.r.t. `a`.
+- Last layer: `da` comes from differentiating the loss function directly (depends on which loss you picked - MSE, cross-entropy, etc. all give different `da`).
+- Every other layer: `da` = `da_prev` handed down from the layer in front of it (`da_prev = W.T · dz`). Not recomputed from scratch.
+
+**The chain rule, mapped to code:**
+
+```
+∂L/∂a · ∂a/∂z · ∂z/∂w   =   da  *  activation_prime(z)  *  a_prev
+                              └──────────┬──────────┘
+                                     dz (checkpoint — reused twice)
+```
+
+```python
+dz = da * activation_prime(z)   # ∂L/∂a * ∂a/∂z
+dW = dz · a_prev.T              # (above) * ∂z/∂w
+db = dz
+da_prev = W.T · dz              # handoff to previous layer
+```
+
+`dz` is computed as a checkpoint because it's reused twice: once for `dW`, once for `da_prev`.
+
+**Forward vs. backward — don't mix these up:**
+
+```
+FORWARD:   input → z → a → L        (compute the guess, then score it)
+BACKWARD:  L → da → dz → dW, db     (assign blame, right to left)
+```
+
+Backward only starts once forward is fully finished.
+
+**Why bother with derivatives at all:** gradient descent. The sign/size of `dW` tells you which direction and how far to nudge each weight to make `L` smaller:
+
+```
+W = W - learning_rate * dW
+```
+
+`da` and `dz` are just scaffolding — nothing gets updated with them directly. Only `dW` and `db` get used in the update step.
+
+**Special case worth remembering:** softmax + cross-entropy (used in MNIST-style classification) has a famous cancellation where all the messy math collapses to:
+
+```
+dz = a - y   (predicted probabilities minus one-hot target)
+```
+
+This is a _result_ of that specific pairing, not a general formula for `da` or `dz`.
+
 ## Backprop: Chain rule
 
 Compute the $\frac{\partial L}{\partial W}$ this says if **If I nudge this weight how much does the loss change**
 - $\frac{\partial L}{\partial a}$ - how loss changes with the layer's output (comes from the layer after it) 
 	- How loss changes activation
 - $\frac{\partial a}{\partial z}$ - derivative of the activation function
-	- how the activation output changes with its pre-activation input (the "undo activation" step)
+	- How the activation output changes with its pre-activation input (the "undo activation" step)
 - $\frac{\partial z}{\partial w}$ - just the input of that weight, since $z =  wx + b \Rightarrow \frac{\partial z}{\partial w} = x$
-	- how the pre-activation changes with this specific weight (this is just `a_prev`, the input to this layer
-
+	- How the pre-activation changes with this specific weight (this is just `a_prev`, the input to this layer
+	
 Can't compute $\frac{\partial z}{\partial w}$ contribution to the loss without first knowing $\frac{\partial a}{\partial z}$ contribution to the loss which itself needed $\frac{\partial L}{\partial a}$. t's a cascade - each factor only tells you the _local_ sensitivity (how one variable affects the very next one), and the chain rule strings all these local sensitivities together into one _global_ sensitivity (how a weight buried deep in the network affects the final loss, possibly through many layers)
 
 **Why this matters for how backprop is actually implemented  this is the efficient trick:**
@@ -98,6 +164,8 @@ Rather than recomputing the _entire_ chain from scratch for every single weight 
 
 ---
 ## How backprop uses derivatives
+
+- 
 
 **Why $\frac{\partial z} {\partial w} = x$ (the "subtract 1" rule)**
 
