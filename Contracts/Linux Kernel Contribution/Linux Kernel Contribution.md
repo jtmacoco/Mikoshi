@@ -104,7 +104,7 @@
 | Sat (lab) | Cache experiment: sum a large 2D array row-major vs column-major, time both. Then array traversal vs linked-list traversal of the same data. Connect the numbers to the cache sizes you found in /sys. |
 | Sun       | Rest / catch-up.                                                                                                                                                                                       |
 
-### Week 8 — Concurrency
+### [[Week 08 - Concurrency]]
 
 | Day       | Task (≈30 min)                                                                                                                                                                   |
 | --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
