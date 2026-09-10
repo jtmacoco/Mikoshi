@@ -149,7 +149,78 @@ dev_err(dev, "Failed to read register: %d\n", err);
 
 **console**: Is whatever device Linux is using as a primary human interface, it doesn't have to be a screen it can be a cable connecting to another computer
 
-- **teletype terminal**: tty, is a terminal device in Linux, an interface the kernel provides for text base I/O, aka a terminal
+- **teletype terminal**: `tty`, is a terminal device in Linux, an interface the kernel provides for text base I/O, aka a terminal
 - `sysctl` : A proc-based mechanism, `sysctl` is the mechanism for **reading and modifying kernel parameters at runtime**, without needing to recompile the kernel or reboot the system. It covers things like networking behavior, virtual memory tuning, filesystem limits, security settings, and more.
 
+```bash
+cat /proc/sys/kernel/printk
+4    4    1    7
+```
+
+We interpret the preceding four numbers as `printk` log levels (with `0` being the highest and `7` the lowest in terms of “urgency”). The preceding four-integer sequence’s meaning is this:
+
+- The current (console) log level. _The key implication is that all messages less than this value will be sent to the console device as well!_
+- The default level for messages that lack an explicit log level.
+- The minimum allowed log level.
+- The boot-time default log level.
+
 ### Writing output to Raspberry Pi Console
+
+```c
+#include <linux/init.h>
+#include <linux/module.h>
+
+MODULE_AUTHOR("Jonathan Macoco");
+MODULE_DESCRIPTION("LKP2E");
+MODULE_LICENSE("Dual MIT/GPL");
+
+MODULE_VERSION("0.2");
+
+static int __init printk_loglvl_init(void)
+{
+	pr_emerg ( "Hello, world @ log-level KERN_EMERG  [0]\n");
+	pr_alert ( "Hello, world @ log-level KERN_ALERT  [1]\n");
+	pr_crit  ( "Hello, world @ log-level KERN_CRIT   [2]\n");
+	pr_err   ( "Hello, world @ log-level KERN_ERR    [3]\n");
+	pr_warn(  "Hello, world @ log-level KERN_WARNING [4]\n");
+	pr_notice("Hello, world @ log-level KERN_NOTICE  [5]\n");
+	pr_info(  "Hello, world @ log-level KERN_INFO    [6]\n");
+	pr_debug( "Hello, world @ log-level KERN_DEBUG   [7]\n");
+
+	return 0;
+}
+static void __exit printk_loglvl_exit(void)
+{
+	pr_info("Goodbye, world @ log-level KERN_INFO    [6]\n");
+}
+
+module_init(printk_loglvl_init);
+module_exit(printk_loglvl_exit);
+```
+
+```bash title=general-make
+KDIR := $(abspath $(dir $(lastword $(MAKEFILE_LIST)))/../../linux)
+DRIVERS_OUT := $(abspath $(dir $(lastword $(MAKEFILE_LIST)))/../../drivers)
+
+obj-m += printk_loglvl.o
+
+all:
+	$(MAKE) -C $(KDIR) M=$(PWD) modules
+	cp *.ko $(DRIVERS_OUT)/
+
+clean:
+	$(MAKE) -C $(KDIR) M=$(PWD) clean
+	rm -f $(DRIVERS_OUT)/printk_loglvl.ko
+```
+
+![[Writing Your First Kernel Module Part 1-20260909223532277.png]]
+
+- This image above implies that all `printk` instances less than log level 7 will appear on the console device (terminal)
+- We can adjust the Makefile with the debug flag just need to add:
+
+```bash
+# Enable the pr_debug() as well (rm the comment from one of the lines below)
+# (Note: EXTRA_CFLAGS deprecated; use ccflags-y)
+#ccflags-y += -DDEBUG
+#CFLAGS_printk_loglvl.o := -DDEBUG
+```
