@@ -1,8 +1,7 @@
 ---
 title: Procurement
-source: "[[SYSTEM MANIFEST]]"
+source: "[[Directives]]"
 tags:
-  - moc
   - procurement
 created: 2026-07-19
 ---
