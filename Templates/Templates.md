@@ -37,3 +37,6 @@
 # [[Template-Daily-Math]]
 
 # [[Template-Kanban]]
+
+# [[Template-Data-shard-technical]]
+
