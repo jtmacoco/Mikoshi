@@ -23,6 +23,7 @@ SORT file.mtime DESC
 
 ```dataview
 LIST
-FROM "Mikoshi/Data Shards"
+FROM "Mikoshi/Data Shards" AND !"Mikoshi/Data Shards/Math Protocol/Daily Quiz"
 SORT file.name ASC
 ```
+
