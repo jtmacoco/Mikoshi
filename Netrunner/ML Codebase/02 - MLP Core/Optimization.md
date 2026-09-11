@@ -38,4 +38,42 @@ Optimization answers *"given that, how do I actually walk?"*
 
 You could in theory take the raw gradient and apply the simplest possible update (that's plain gradient descent, below) - but in practice, *how* you use the gradient (how big a step, whether you smooth it over time, whether you adapt it per-parameter) has a massive effect on training speed and stability. That's what the rest of this note covers: Batch GD → SGD → Mini-batch → Momentum → Adam/RMSprop, each one refining *how the gradient gets turned into a weight update.*
 
+- Optimizer = gradient descent
+
+## Watch Out For
+
+> [!danger] Don't confuse optimizer vs. batch size
+> These are **two separate dials**, not a hierarchy — don't mix them up.
+>
+> - **Optimizer** (`torch.optim`) → *how* you use a gradient to update params
+>   `SGD`, `Momentum`, `Adam`, `RMSProp`
+> - **Batch size** (`DataLoader`) → *how much data* you average before computing that gradient
+>   `1` (stochastic), `32/64/128` (minibatch), `full dataset` (batch)
+>
+>  Any optimizer can pair with any batch size - they're orthogonal.
+>  Minibatch is NOT a type of optimizer.
+>
+>  **OPTIMIZER DO NOT HAVE A BATCH SIZE**
+
+> [!important] Minibatch GD = a DataLoader setting, not an optimizer
+> "Minibatch gradient descent" is just a **description of your data setup** — it's not a class, not something with `.step()`.
+>
+> ```python
+> train_loader = DataLoader(
+>     dataset,
+>     batch_size=32,   # <- THIS is what makes it "minibatch"
+>     shuffle=True      # <- randomizes order each epoch (common pairing, not required)
+> )
+> ```
+>
+> - `batch_size=1` → stochastic GD
+> - `batch_size=32/64/128` → **minibatch** GD
+> - `batch_size=len(dataset)` → full-batch GD
+>
+> The optimizer (`SGD`, `Adam`, etc.) just consumes whatever gradient falls out of the batch — it never sees `batch_size` itself.
+>
+> Quick test: if it doesn't have `.step()`, it's not an optimizer.
+
 ---
+
+
