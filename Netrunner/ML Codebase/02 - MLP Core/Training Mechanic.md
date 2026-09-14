@@ -67,7 +67,7 @@ Each of these exists to answer one practical question: *"Given that the math wor
 
 ## Bias: Two Different Meanings
 
-These share a name but are **not the same concept**. Easy to conflate — keep them separate.
+These share a name but are **not the same concept**. Easy to conflate - keep them separate.
 
 ---
 
