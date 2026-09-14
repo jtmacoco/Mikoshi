@@ -90,21 +90,6 @@ These share a name but are **not the same concept**. Easy to conflate — keep t
 
 ---
 
-### Why the naming collision doesn't matter for training
-
-When you train a neural net and gradient descent "updates the bias," it's updating **parameter bias** (#2)  not directly touching **statistical bias** (#1).
-
-Statistical bias isn't a single tunable value. It's shaped _indirectly_ by:
-
-- Model capacity (more layers/params → generally lower bias, higher variance)
-- Feature choices
-- Regularization strength
-- Training duration
-
-So training updates _weights and (parameter) biases_ every step — but whether the _resulting model_ ends up high-bias or high-variance (statistically) depends on the sum of many design choices, not any single parameter.
-
----
-
 ### Quick mnemonic
 
 > **Parameter bias** = a number in the model. **Statistical bias** = a description of the model's overall behavior.
