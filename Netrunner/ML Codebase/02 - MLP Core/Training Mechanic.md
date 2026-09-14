@@ -35,4 +35,81 @@ Each of these exists to answer one practical question: *"Given that the math wor
 ## Bias/Variance Tradeoff
 
 **Bias**:
-- Bias is the error introduced by approximating a real world problem
+- Bias is the error introduced by approximating a real world problem (which may be complex) with a simplified model.
+- Formally: Bias = $\mathbb{E}[\hat{f}(x)] - f(x)$, the gap between the model's _average_ prediction (across different training sets) and the true value.
+- High bias → the model makes systematic errors regardless of the data it sees. It's too simple to capture the real pattern.
+- Symptom: **underfitting** — poor performance on both training and test data.
+- Example: fitting a straight line to data that's actually curved.
+
+**Variance**:
+- Variance is the error introduced by the model's sensitivity to small fluctuations in the training data.
+- Formally: Variance = $\mathbb{E}\left[(\hat{f}(x) - \mathbb{E}[\hat{f}(x)])^2\right]$, how much predictions swing if you retrain on a different sample.
+- High variance → the model fits the noise in the training data, not just the signal.
+- Symptom: **overfitting** — great performance on training data, poor performance on new/test data.
+- Example: a very deep decision tree that memorizes quirks of the training set.
+
+**Tradeoff**:
+
+- Total expected error decomposes as: **Error = Bias² + Variance + Irreducible noise**
+- Simple models → high bias, low variance.
+- Complex models → low bias, high variance.
+- The goal is to find the sweet spot that minimizes _total_ error, not to drive either term to zero individually.
+- In practice, tools like cross-validation, regularization, and ensembling (bagging reduces variance, boosting reduces bias) help navigate this tradeoff.
+
+**Target Analogy** (shooting at a bullseye): Think of the bullseye as the true value you're trying to predict, and each "shot" as a prediction from a model trained on a different sample of data.
+
+- **Low bias, low variance** — shots land in a tight cluster, right on the bullseye. This is the ideal model: accurate and consistent.
+- **High bias, low variance** — shots land in a tight cluster, but off to one side of the bullseye. The model is consistent, but consistently wrong (underfitting).
+- **Low bias, high variance** — shots are scattered widely, but they're centered around the bullseye on average. The model is right "on average" but unreliable for any single prediction (overfitting).
+- **High bias, high variance** — shots are scattered widely _and_ off-center. The worst case: inaccurate and inconsistent.
+
+![[Training Mechanic-20260913225257003.png]]
+
+## Bias: Two Different Meanings
+
+These share a name but are **not the same concept**. Easy to conflate — keep them separate.
+
+---
+
+### 1. Statistical bias (bias-variance tradeoff)
+
+- A **property/behavior** of a model, not a stored number.
+- Measures how far off the model's _average_ prediction is from the true value, if you imagine retraining on many different datasets.
+- Formula: `Bias = E[f̂(x)] − f(x)`
+- High statistical bias → underfitting, model is too simple, systematically wrong.
+- You don't "set" this directly — it emerges from model choices (architecture, complexity, features).
+- See: [[Bias-Variance Tradeoff]]
+
+### 2. Parameter bias (the `b` in `Wx + b`)
+
+- A **literal trainable parameter**, exactly like a weight.
+- Every neuron/layer has a bias term that shifts its output independent of the input.
+- Updated via backpropagation and gradient descent, same mechanism as weights.
+- No special meaning beyond "an offset the model learns" — it's just another number the optimizer tunes to minimize loss.
+- This is what people mean when they say "weights and biases."
+
+---
+
+### Why the naming collision doesn't matter for training
+
+When you train a neural net and gradient descent "updates the bias," it's updating **parameter bias** (#2)  not directly touching **statistical bias** (#1).
+
+Statistical bias isn't a single tunable value. It's shaped _indirectly_ by:
+
+- Model capacity (more layers/params → generally lower bias, higher variance)
+- Feature choices
+- Regularization strength
+- Training duration
+
+So training updates _weights and (parameter) biases_ every step — but whether the _resulting model_ ends up high-bias or high-variance (statistically) depends on the sum of many design choices, not any single parameter.
+
+---
+
+### Quick mnemonic
+
+> **Parameter bias** = a number in the model. **Statistical bias** = a description of the model's overall behavior.
+
+One is a knob. The other is what happens when you turn a bunch of knobs (including that one) in a particular direction.
+
+**Why isn't there an equivalent "variance" parameter to update?**  
+Because statistical variance isn't a single number sitting in the model waiting to be nudged  it's a description of how much the _whole trained model_ changes when you feed it different training sets. There's no single weight you can turn to directly set "variance = 0.3." Instead, variance is controlled indirectly, through things like:
