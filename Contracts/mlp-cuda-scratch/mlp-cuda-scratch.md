@@ -66,5 +66,23 @@ Mikoshi/Contracts/mlp-cuda-scratch/mlp-cuda-scratch-assets/linear_backprop_walkt
 600
 ```
 
+## Bias Questions
 
-## Links
+Each **weight** is tied to a specific `(input, neuron)` pair — that's why it needs the inner `j` loop, it has to touch every input feeding into neuron `i`.
+
+Each **bias**, though, belongs only to the neuron itself, not to any particular input. There's exactly one `bias[i]` per output neuron, regardless of how many inputs that neuron has. So it doesn't belong in the inner loop at all — it's correctly added _once_, after the inner loop finishes summing up all the weighted inputs.
+
+If you tried to add bias inside the inner `j` loop, you'd accidentally add it multiple times (once per input feature) — that would be a bug, not a feature.
+
+**Does it still affect the output? Yes, directly.**
+
+Look at the line: `output[i] = sum + bias[i];`
+
+`bias[i]` is added straight into `output[i]` — full strength, not scaled by any input. That's the whole point of a bias: it shifts the neuron's output regardless of what the inputs are, even if every `input[j]` were `0`.
+
+**Where does it get "adjusted" then?**
+
+Nowhere in the `forward` code you pasted — this is just the forward pass. Bias only gets updated during **backpropagation**, in whatever `backward()` method computes gradients. There, the gradient with respect to `bias[i]` is just the gradient flowing out of `output[i]` (summed over the batch, if you're batching) — it doesn't need the chain-rule multiplication by `input[j]` that weight gradients need, precisely because bias wasn't multiplied by any input on the way in.
+
+So the asymmetry you're seeing in `forward()` (bias outside the inner loop) is intentional and mirrors a similar asymmetry you'll see in `backward()`: weight gradients need the inputs, bias gradients don't.
+
