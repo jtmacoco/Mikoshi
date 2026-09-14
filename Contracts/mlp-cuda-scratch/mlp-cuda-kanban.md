@@ -26,9 +26,8 @@ kanban-plugin: board
 
 ## In Progress
 
-- [ ] Implement backward pass / autograd
 - [ ] Gradient Decent
-- [ ] Optimizer
+- [ ] Implement backward pass / autograd
 
 
 ## Testing
@@ -53,6 +52,8 @@ kanban-plugin: board
 - [x] Verify Linear layer works correctly with MLP class (compiles, not yet verified) ✅ 2026-08-23
 - [x] Activation function ✅ 2026-08-29
 - [x] Fix double ReLU call in mlp and linear files ✅ 2026-08-30
+- [x] Implement adamw ✅ 2026-09-12
+- [x] Optimizer ✅ 2026-09-13
 
 
 

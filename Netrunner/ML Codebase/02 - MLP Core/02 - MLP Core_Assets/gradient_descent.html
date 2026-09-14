@@ -1,0 +1,386 @@
+<div id="gd-root" style="all:initial;">
+<style>
+  #gd-root, #gd-root * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, sans-serif; }
+  #gd-root {
+    display: block;
+    width: 100%;
+    max-width: 780px;
+    margin: 12px auto;
+    background: #000000 !important;
+    border: 1px solid #333333;
+    border-radius: 14px;
+    padding: 18px 18px 14px;
+    color: #ffffff !important;
+  }
+  #gd-root h3 {
+    margin: 0 0 4px;
+    font-size: 15px;
+    font-weight: 600;
+    color: #ffffff !important;
+    letter-spacing: 0.2px;
+  }
+  #gd-root .gd-sub {
+    margin: 0 0 12px;
+    font-size: 12px;
+    color: #cccccc !important;
+  }
+  #gd-canvas-wrap {
+    position: relative;
+    width: 100%;
+    border-radius: 10px;
+    overflow: hidden;
+    background: #000000 !important;
+    border: 1px solid #333333;
+  }
+  #gd-canvas { display: block; width: 100%; height: auto; cursor: crosshair; }
+  #gd-hint {
+    position: absolute;
+    top: 8px; left: 10px;
+    font-size: 11px;
+    color: #cccccc !important;
+    pointer-events: none;
+  }
+  #gd-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    margin-top: 12px;
+  }
+  #gd-root select, #gd-root button {
+    background: #111111 !important;
+    color: #ffffff !important;
+    border: 1px solid #444444;
+    border-radius: 7px;
+    padding: 6px 10px;
+    font-size: 12.5px;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s;
+  }
+  #gd-root select:hover, #gd-root button:hover { background: #222222 !important; border-color: #666666; }
+  #gd-root button.primary { background: #4f7cff !important; border-color: #4f7cff; color: #fff !important; font-weight: 600; }
+  #gd-root button.primary:hover { background: #6a90ff !important; }
+  #gd-root button:disabled { opacity: 0.45; cursor: not-allowed; }
+  #gd-lr-wrap { display: flex; align-items: center; gap: 8px; font-size: 12.5px; color: #ffffff !important; }
+  #gd-lr-wrap input[type="range"] { width: 110px; accent-color: #4f7cff; }
+  #gd-lr-val { min-width: 42px; display: inline-block; color: #ffffff !important; font-variant-numeric: tabular-nums; }
+  #gd-stats {
+    margin-top: 12px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+  }
+  .gd-stat {
+    background: #111111 !important;
+    border: 1px solid #333333;
+    border-radius: 8px;
+    padding: 7px 9px;
+  }
+  .gd-stat-label { font-size: 10px; color: #cccccc !important; text-transform: uppercase; letter-spacing: 0.4px; }
+  .gd-stat-val { font-size: 14px; font-weight: 600; color: #ffffff !important; font-variant-numeric: tabular-nums; margin-top: 2px; }
+  .gd-stat-val.gd-pos { color: #7fe0a8 !important; }
+  .gd-stat-val.gd-neg { color: #ff8f8f !important; }
+  #gd-msg { margin-top: 10px; font-size: 12px; color: #cccccc !important; min-height: 16px; }
+</style>
+
+<h3>Gradient Descent, visually</h3>
+<p class="gd-sub">Click anywhere on the curve to drop a starting point, then step or play. Watch how the learning rate changes the path.</p>
+
+<div id="gd-canvas-wrap">
+  <canvas id="gd-canvas" width="740" height="360"></canvas>
+  <div id="gd-hint">click the curve to set a start point</div>
+</div>
+
+<div id="gd-controls">
+  <select id="gd-fn">
+    <option value="bowl">f(x) = x² &nbsp;(convex bowl)</option>
+    <option value="two">f(x) = 0.15x⁴ − 1.2x² + 2 &nbsp;(two minima)</option>
+    <option value="wavy">f(x) = 0.5x² + 2sin(2x) &nbsp;(many local minima)</option>
+  </select>
+
+  <div id="gd-lr-wrap">
+    learning rate
+    <input type="range" id="gd-lr" min="1" max="120" value="20" />
+    <span id="gd-lr-val">0.20</span>
+  </div>
+
+  <button id="gd-step">Step ▸</button>
+  <button id="gd-play" class="primary">Play ▶</button>
+  <button id="gd-reset">Reset ↺</button>
+</div>
+
+<div id="gd-stats">
+  <div class="gd-stat"><div class="gd-stat-label">iteration</div><div class="gd-stat-val" id="gd-iter">0</div></div>
+  <div class="gd-stat"><div class="gd-stat-label">x</div><div class="gd-stat-val" id="gd-x">—</div></div>
+  <div class="gd-stat"><div class="gd-stat-label">f(x)</div><div class="gd-stat-val" id="gd-fx">—</div></div>
+  <div class="gd-stat"><div class="gd-stat-label">gradient f'(x)</div><div class="gd-stat-val" id="gd-grad">—</div></div>
+</div>
+
+<div id="gd-msg"></div>
+</div>
+
+<script>
+(function() {
+  const root = document.getElementById('gd-root');
+  const canvas = root.querySelector('#gd-canvas');
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  const pad = 30;
+
+  const fns = {
+    bowl: {
+      f: x => x * x,
+      df: x => 2 * x,
+      xr: [-3.6, 3.6]
+    },
+    two: {
+      f: x => 0.15 * x**4 - 1.2 * x**2 + 2,
+      df: x => 0.6 * x**3 - 2.4 * x,
+      xr: [-3.4, 3.4]
+    },
+    wavy: {
+      f: x => 0.5 * x * x + 2 * Math.sin(2 * x),
+      df: x => x + 4 * Math.cos(2 * x),
+      xr: [-4.2, 4.2]
+    }
+  };
+
+  let fnKey = 'bowl';
+  let lr = 0.2;
+  let x = null;
+  let iter = 0;
+  let path = [];
+  let playing = false;
+  let playTimer = null;
+  let converged = false;
+
+  const fnSelect = root.querySelector('#gd-fn');
+  const lrSlider = root.querySelector('#gd-lr');
+  const lrVal = root.querySelector('#gd-lr-val');
+  const stepBtn = root.querySelector('#gd-step');
+  const playBtn = root.querySelector('#gd-play');
+  const resetBtn = root.querySelector('#gd-reset');
+  const hint = root.querySelector('#gd-hint');
+  const msg = root.querySelector('#gd-msg');
+
+  const iterEl = root.querySelector('#gd-iter');
+  const xEl = root.querySelector('#gd-x');
+  const fxEl = root.querySelector('#gd-fx');
+  const gradEl = root.querySelector('#gd-grad');
+
+  function current() { return fns[fnKey]; }
+
+  function yRange() {
+    const { f, xr } = current();
+    let lo = Infinity, hi = -Infinity;
+    for (let i = 0; i <= 200; i++) {
+      const xx = xr[0] + (xr[1] - xr[0]) * i / 200;
+      const yy = f(xx);
+      if (yy < lo) lo = yy;
+      if (yy > hi) hi = yy;
+    }
+    const margin = (hi - lo) * 0.12 || 1;
+    return [lo - margin, hi + margin];
+  }
+
+  function toPx(xx, yy, yr) {
+    const { xr } = current();
+    const px = pad + (xx - xr[0]) / (xr[1] - xr[0]) * (W - 2 * pad);
+    const py = H - pad - (yy - yr[0]) / (yr[1] - yr[0]) * (H - 2 * pad);
+    return [px, py];
+  }
+
+  function pxToX(px) {
+    const { xr } = current();
+    return xr[0] + (px - pad) / (W - 2 * pad) * (xr[1] - xr[0]);
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    const { f, xr } = current();
+    const yr = yRange();
+
+    // grid
+    ctx.strokeStyle = '#2a2a2a';
+    ctx.lineWidth = 1;
+    for (let i = 0; i <= 8; i++) {
+      const px = pad + (W - 2 * pad) * i / 8;
+      ctx.beginPath(); ctx.moveTo(px, pad); ctx.lineTo(px, H - pad); ctx.stroke();
+    }
+    for (let i = 0; i <= 6; i++) {
+      const py = pad + (H - 2 * pad) * i / 6;
+      ctx.beginPath(); ctx.moveTo(pad, py); ctx.lineTo(W - pad, py); ctx.stroke();
+    }
+
+    // curve
+    ctx.beginPath();
+    ctx.strokeStyle = '#5b8dff';
+    ctx.lineWidth = 2.5;
+    for (let i = 0; i <= 300; i++) {
+      const xx = xr[0] + (xr[1] - xr[0]) * i / 300;
+      const yy = f(xx);
+      const [px, py] = toPx(xx, yy, yr);
+      if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+    }
+    ctx.stroke();
+
+    // path trail
+    if (path.length > 1) {
+      for (let i = 1; i < path.length; i++) {
+        const a = alphaFor(i, path.length);
+        const [p1x, p1y] = toPx(path[i - 1], f(path[i - 1]), yr);
+        const [p2x, p2y] = toPx(path[i], f(path[i]), yr);
+        ctx.beginPath();
+        ctx.strokeStyle = `rgba(255,159,67,${a})`;
+        ctx.lineWidth = 2;
+        ctx.moveTo(p1x, p1y);
+        ctx.lineTo(p2x, p2y);
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.fillStyle = `rgba(255,159,67,${a})`;
+        ctx.arc(p2x, p2y, 3, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    // current point + tangent
+    if (x !== null) {
+      const fx = f(x);
+      const grad = current().df(x);
+      const [cx, cy] = toPx(x, fx, yr);
+
+      // tangent line segment
+      const span = (xr[1] - xr[0]) * 0.14;
+      const x1 = x - span, x2 = x + span;
+      const y1 = fx + grad * (x1 - x);
+      const y2 = fx + grad * (x2 - x);
+      const [t1x, t1y] = toPx(x1, y1, yr);
+      const [t2x, t2y] = toPx(x2, y2, yr);
+      ctx.beginPath();
+      ctx.strokeStyle = 'rgba(255,255,255,0.35)';
+      ctx.setLineDash([4, 4]);
+      ctx.lineWidth = 1.5;
+      ctx.moveTo(t1x, t1y);
+      ctx.lineTo(t2x, t2y);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // ball
+      ctx.beginPath();
+      ctx.fillStyle = converged ? '#7fe0a8' : '#ff9f43';
+      ctx.arc(cx, cy, 7, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.strokeStyle = '#14161c';
+      ctx.lineWidth = 2;
+      ctx.arc(cx, cy, 7, 0, Math.PI * 2);
+      ctx.stroke();
+    }
+  }
+
+  function alphaFor(i, n) {
+    return 0.15 + 0.65 * (i / n);
+  }
+
+  function updateStats() {
+    if (x === null) {
+      iterEl.textContent = '0';
+      xEl.textContent = '—';
+      fxEl.textContent = '—';
+      gradEl.textContent = '—';
+      return;
+    }
+    const { f, df } = current();
+    const grad = df(x);
+    iterEl.textContent = iter;
+    xEl.textContent = x.toFixed(3);
+    fxEl.textContent = f(x).toFixed(3);
+    gradEl.textContent = grad.toFixed(3);
+    gradEl.className = 'gd-stat-val ' + (grad > 0 ? 'gd-neg' : grad < 0 ? 'gd-pos' : '');
+  }
+
+  function step() {
+    if (x === null) { msg.textContent = 'Click on the curve first to place a starting point.'; return; }
+    const { df } = current();
+    const grad = df(x);
+    const nextX = x - lr * grad;
+    if (Math.abs(nextX - x) < 0.0005) {
+      converged = true;
+      stopPlaying();
+      msg.textContent = 'Converged — the gradient is ~0, so steps have stopped moving the point.';
+    } else if (Math.abs(nextX) > (current().xr[1] * 3)) {
+      stopPlaying();
+      msg.textContent = 'Diverging — the learning rate is too high for this function. Lower it and reset.';
+    } else {
+      msg.textContent = '';
+    }
+    x = nextX;
+    iter++;
+    path.push(x);
+    if (path.length > 400) path.shift();
+    updateStats();
+    draw();
+  }
+
+  function stopPlaying() {
+    playing = false;
+    clearInterval(playTimer);
+    playBtn.textContent = 'Play ▶';
+  }
+
+  playBtn.addEventListener('click', () => {
+    if (x === null) { msg.textContent = 'Click on the curve first to place a starting point.'; return; }
+    if (playing) {
+      stopPlaying();
+    } else {
+      playing = true;
+      converged = false;
+      playBtn.textContent = 'Pause ❚❚';
+      playTimer = setInterval(step, 260);
+    }
+  });
+
+  stepBtn.addEventListener('click', () => { stopPlaying(); step(); });
+
+  resetBtn.addEventListener('click', () => {
+    stopPlaying();
+    x = null; iter = 0; path = []; converged = false;
+    msg.textContent = '';
+    hint.style.opacity = '1';
+    updateStats();
+    draw();
+  });
+
+  fnSelect.addEventListener('change', () => {
+    fnKey = fnSelect.value;
+    resetBtn.click();
+  });
+
+  lrSlider.addEventListener('input', () => {
+    lr = lrSlider.value / 100;
+    lrVal.textContent = lr.toFixed(2);
+  });
+
+  canvas.addEventListener('click', (e) => {
+    stopPlaying();
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = W / rect.width;
+    const px = (e.clientX - rect.left) * scaleX;
+    const xr = current().xr;
+    let xx = pxToX(px);
+    xx = Math.max(xr[0], Math.min(xr[1], xx));
+    x = xx;
+    iter = 0;
+    path = [x];
+    converged = false;
+    msg.textContent = '';
+    hint.style.opacity = '0';
+    updateStats();
+    draw();
+  });
+
+  lrVal.textContent = lr.toFixed(2);
+  draw();
+})();
+</script>

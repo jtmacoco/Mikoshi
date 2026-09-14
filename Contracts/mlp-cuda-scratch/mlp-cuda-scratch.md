@@ -32,6 +32,10 @@ Develop from scratch MLP for MNIST dataset, then profile and use cuda to speed u
 -  2026-08-18: Made linear it's own object and re-named some files and moved some functions around
 -  2026-08-20: Linear function compiles and works with mlp class, haven't verified if it works
 -  2026-08-20: Working on backend process
+- Kind of stopped keeping up with this but I going to start again kind of felt this was helpful
+- 2026-09-12: Finished AdamW function need to check
+- 2026-09-12: Fix training loop so far
+- 2026-09-13: Adamw and gradient descent pass implemented
 
 
 ## Notes

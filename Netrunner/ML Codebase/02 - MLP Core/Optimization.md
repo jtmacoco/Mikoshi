@@ -7,7 +7,7 @@ type: concept
 created: 2026-09-07
 ---
 
-## What is Optimization
+## What is Optimization/Gradient Descent
 
 Optimization is the process of adjusting a network's weights and biases to minimize the loss function. Backpropagation tells you *which direction* and *how much* each parameter contributed to the error (the gradient); optimization is what actually *uses* that gradient to update the parameters.
 
@@ -15,7 +15,7 @@ Optimization is the process of adjusting a network's weights and biases to minim
 
 Think of the loss function as a landscape — a surface where height = error. Every point on that surface corresponds to one specific setting of all the network's weights. Training is the process of walking downhill on that surface until you reach a low point (ideally the lowest).
 
-Gradient descent is the basic strategy for that walk:
+**Gradient descent is the basic strategy for that walk**:
 
 1. Compute the gradient of the loss with respect to each weight (via backprop)
 2. The gradient points in the direction of *steepest increase*
@@ -39,6 +39,13 @@ Optimization answers *"given that, how do I actually walk?"*
 You could in theory take the raw gradient and apply the simplest possible update (that's plain gradient descent, below) - but in practice, *how* you use the gradient (how big a step, whether you smooth it over time, whether you adapt it per-parameter) has a massive effect on training speed and stability. That's what the rest of this note covers: Batch GD → SGD → Mini-batch → Momentum → Adam/RMSprop, each one refining *how the gradient gets turned into a weight update.*
 
 - Optimizer = gradient descent
+
+## Gradient Descent Visual
+
+```html-embed
+Mikoshi/Netrunner/ML Codebase/02 - MLP Core/02 - MLP Core_Assets/gradient_descent.html
+600
+```
 
 ## Watch Out For
 
@@ -75,5 +82,58 @@ You could in theory take the raw gradient and apply the simplest possible update
 > Quick test: if it doesn't have `.step()`, it's not an optimizer.
 
 ---
+## AdamW Optimizer
 
+**Formula**:
+
+$$
+m_t = \beta_1 m_{t-1} + (1-\beta_1)g_t
+$$
+
+$$
+v_t = \beta_2 v_{t-1} + (1-\beta_2)g_t^2
+$$
+
+$$
+\hat{m}_t = \frac{m_t}{1-\beta_1^t}
+$$
+
+$$
+\hat{v}_t = \frac{v_t}{1-\beta_2^t}
+$$
+
+$$
+\theta_t =
+\theta_{t-1}
+-
+\eta
+\frac{\hat{m}_t}{\sqrt{\hat{v}_t}+\epsilon}
+-
+\eta\lambda\theta_{t-1}
+$$
+
+
+**AdamW Legend**:
+
+| Symbol      | Meaning                                         |
+| ----------- | ----------------------------------------------- |
+| $\theta$    | Model parameters / weights                      |
+| $g_t$       | Gradient of the loss                            |
+| $m_t$       | First moment — tracks average gradient          |
+| $v_t$       | Second moment — tracks average squared gradient |
+| $\hat{m}_t$ | Bias-corrected first moment                     |
+| $\hat{v}_t$ | Bias-corrected second moment                    |
+| $\beta_1$   | Decay rate for $m_t$                            |
+| $\beta_2$   | Decay rate for $v_t$                            |
+| $\eta$      | Learning rate                                   |
+| $\lambda$   | Weight decay                                    |
+| $\epsilon$  | Small number to prevent division by zero        |
+| $t$         | Current optimization step                       |
+| $L$         | Loss function                                   |
+
+
+
+**Sudo Code/Formula**:
+
+![[Optimization-20260912230649782.png]]
 
