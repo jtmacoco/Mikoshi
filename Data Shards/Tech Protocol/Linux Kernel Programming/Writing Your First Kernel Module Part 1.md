@@ -32,7 +32,22 @@ To learn how to write drivers
 - **Sound support**: All the code that implements audio is here, from the firmware to drivers and codecs.
 - **Virtualization support**: Linux has become extremely popular with large and small cloud providers alike, a big reason being its high-quality, low-footprint virtualization engine, **Kernel-based Virtual Machine** (**KVM**).
 
+All this forms the major kernel subsystems; in addition, we have these:
+
+- Arch-specific (meaning CPU-specific) code
+- Kernel initialization
+- Security frameworks
+- Many types of device drivers
+
+- Follows **monolithic kernel architecture**: A monolithic design is where the kernel components live in and share the VAS (virtual address space).
+
+
+![[Writing Your First Kernel Module Part 1-20260914204847365.png]]
+
+
+
 ---
+
 ## Kernel Headers
 - `#include` are header kernel header files
 - They look through the modules build soft link which points to the kernel header files location

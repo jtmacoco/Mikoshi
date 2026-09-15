@@ -15,9 +15,6 @@ last_updated: 2026-09-10
 ---
 
 
-> This note grows as you read — jot things down mid-chapter rather than waiting to finish. Treat it like a live wiki page for this chapter, not a final report.
-
----
 
 ## TL;DR
 > Keep this updated as your understanding sharpens — it's fine if it's rough or wrong early on.
@@ -25,7 +22,6 @@ last_updated: 2026-09-10
 ---
 
 ## Vocabulary / Key Terms
-<!-- Add terms the moment you hit them, even before you fully understand them -->
 
 | Term | Definition | Notes |
 |------|------------|-------|
@@ -84,6 +80,8 @@ last_updated: 2026-09-10
 
 ---
 ## Practical Exercises / Labs
+
+
 
 ---
 
