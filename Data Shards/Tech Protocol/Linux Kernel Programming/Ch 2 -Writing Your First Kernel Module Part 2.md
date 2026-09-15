@@ -58,12 +58,7 @@ last_updated: 2026-09-10
 
 ## Code / Commands / Snippets
 
-```c
-// paste and annotate notable code as you go
-```
 
-**What it does:**
-**Gotchas / edge cases:**
 
 ---
 
@@ -73,14 +68,14 @@ last_updated: 2026-09-10
 ---
 
 ## Questions & Confusions
-- [ ]
+- 
 
 ---
 
 ## Connections
-- Builds on: [[]]
-- Contrasts with: [[]]
-- Referenced later in: [[]]
+- Builds on: 
+- Contrasts with: 
+- Referenced later in: 
 
 ---
 

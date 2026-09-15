@@ -7,6 +7,8 @@
 LIST FROM "Mikoshi/Templates"
 ```
 
+## Links
+
 - [[Daily-Notes]]
 - [[DailySetup]]
 - [[Tempalte-Netrunner-Reference]]

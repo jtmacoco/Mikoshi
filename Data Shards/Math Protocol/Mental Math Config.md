@@ -39,9 +39,8 @@ const chapters = {
   3: {
     chapter: "Chapter 3 - Intermediate Multiplication",
     sections: [
-      { op: "mult", digitsA: 2, digitsB: 2, count: 10 },
+      { op: "mult", digitsA: 2, digitsB: 2, count: 15 },
       { op: "mult11", digitsA: 2, count: 5 },
-      { op: "mult11", digitsA: 3, count: 5 },
     ]
   },
   4: {
@@ -76,6 +75,6 @@ const chapters = {
 };
 
 // ====== CHANGE ONLY THIS LINE TO SWITCH CHAPTERS ======
-const config = chapters[2];
+const config = chapters[3];
 ```
 

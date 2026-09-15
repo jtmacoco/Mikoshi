@@ -1,6 +1,6 @@
 ---
 title: Neuron
-source: "[[00 - Foundations]]"
+source: "[[Foundations]]"
 tags:
 type: concept
 created: 2026-09-13

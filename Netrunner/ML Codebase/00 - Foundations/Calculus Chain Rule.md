@@ -1,6 +1,6 @@
 ---
 title: Calculus Chain Rule
-source: "[[ML Codebase]]"
+source: "[[Foundations]]"
 tags:
   - math
   - machine-learning
