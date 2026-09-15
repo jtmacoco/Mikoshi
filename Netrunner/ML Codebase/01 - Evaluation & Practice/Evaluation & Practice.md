@@ -8,7 +8,7 @@ created: 2026-09-02
 
 ## Overview
 
-Reference guid for ML evaluation practices
+Reference guide for ML evaluation practices
 
 ## All Notes
 
