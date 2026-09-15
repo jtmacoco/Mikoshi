@@ -21,6 +21,18 @@ To learn how to write drivers
 ---
 # Notes
 
+## Kernel Space Components
+
+- **Core kernel**: This code handles the typical hardcore work of any modern operating system, including (user and kernel) process and thread creation/destruction, CPU scheduling, synchronization primitives, signaling, timers, interrupt handling, namespaces, cgroups, module support, crypto, and more.
+- **Memory Management** (**MM**): This handles all memory-related work, including the setup and maintenance of kernel and process **Virtual Address Spaces** (**VASs**).
+- **VFS** (**for filesystem support**): The **Virtual Filesystem Switch** (**VFS**) is an abstraction layer over the actual filesystems implemented within the Linux kernel (for example, `ext[2|4]`, `vfat`, `ntfs`, `msdos`, `iso9660`, `f2fS`, `u``fS`, and many more).
+- **Block I/O**: The code paths implementing the actual file I/O, from the filesystems right down to the block device driver and everything in between (really, quite a lot!), are encompassed here.
+- **Network protocol stack**: Linux is well known for its precise, to-the-letter-of-the-RFC, high-quality implementation of the well-known (and not-so-well-known) network protocols at all layers of the model, with TCP/IP being perhaps the most famous.
+- **Inter-Process Communication** (**IPC**) **support**: The implementation of IPC mechanisms is done here; Linux supports message queues, shared memory, semaphores (both the older SysV and the newer POSIX ones), and other IPC mechanisms.
+- **Sound support**: All the code that implements audio is here, from the firmware to drivers and codecs.
+- **Virtualization support**: Linux has become extremely popular with large and small cloud providers alike, a big reason being its high-quality, low-footprint virtualization engine, **Kernel-based Virtual Machine** (**KVM**).
+
+---
 ## Kernel Headers
 - `#include` are header kernel header files
 - They look through the modules build soft link which points to the kernel header files location
