@@ -23,9 +23,10 @@ last_updated: 2026-09-10
 
 ## Vocabulary / Key Terms
 
-| Term | Definition | Notes |
-|------|------------|-------|
-|      |            |       |
+| Term          | Definition                                          | Notes |
+| ------------- | --------------------------------------------------- | ----- |
+| Device Driver | Interface between OS and peripheral hardware device |       |
+| Device file   |                                                     |       |
 
 ---
 
@@ -47,8 +48,8 @@ last_updated: 2026-09-10
 ## Session Log
 <!-- Running, dated notes — the actual "as I read it" capture. Newest entry on top. -->
 
-### 2026-09-10 11:18
--
+### 2026-09-16 
+- Reading Intro
 
 ---
 
