@@ -22,9 +22,10 @@ last_updated: 2026-09-16
 ## Vocabulary / Key Terms
 <!-- Add terms the moment you hit them, even before you fully understand them -->
 
-| Term | Definition | Notes |
-|------|------------|-------|
-|      |            |       |
+| Term             | Definition                                    | Notes |
+| ---------------- | --------------------------------------------- | ----- |
+| Device Driver    | Interface between OS and peripheral hw device |       |
+| Device File/Node | Entry point into device driver                |       |
 
 ---
 
@@ -47,7 +48,10 @@ last_updated: 2026-09-16
 <!-- Running, dated notes — the actual "as I read it" capture. Newest entry on top. -->
 
 ### 2026-09-16 22:52
--
+- Read the intro
+- Kernel Distinguishes between device files by two attributes
+	1. Type of file - either character (char) or block
+	2. The major and minor number see [[Writing Your First Kernel Module Part 1]] for more info
 
 ---
 
