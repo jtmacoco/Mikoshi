@@ -6,8 +6,8 @@ created: 2026-07-04
 ---
 
 ## Overview
-- Stores notes on various topics
 
+- Stores notes on various topics
 
 ## Active
 

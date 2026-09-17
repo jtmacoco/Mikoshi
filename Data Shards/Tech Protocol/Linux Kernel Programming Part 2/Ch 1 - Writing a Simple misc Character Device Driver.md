@@ -1,29 +1,17 @@
-<%*
-// --- Prompts (edit defaults as you like) ---
-const bookTitle = await tp.system.prompt("Book title", "Linux Kernel Programming");
-const author = await tp.system.prompt("Author", "Kaiwan N. Billimoria");
-const chapterNum = await tp.system.prompt("Chapter number", "1");
-const chapterTitle = await tp.system.prompt("Chapter title", "");
-const topicTags = await tp.system.prompt("Topic tags (comma-separated)", "kernel, c");
-const prevChapter = await tp.system.prompt("Previous chapter number (blank if none)", "");
-const nextChapter = await tp.system.prompt("Next chapter number (blank if none)", "");
-
-const fileName = `Ch ${chapterNum} - ${chapterTitle}`;
-await tp.file.rename(fileName);
-tR += "";
-%>---
+---
 type: datashard
 category: book-chapter
-book: "[[<% bookTitle %>]]"
-author: "<% author %>"
-chapter: <% chapterNum %>
-chapter_title: "<% chapterTitle %>"
+book: "[[Linux Kernel Programming]]"
+author: "Kaiwan N. Billimoria"
+chapter: 1
+chapter_title: "Writing a Simple misc Character Device Driver"
 status: in-progress
 tags:
   - book-notes
-<% topicTags.split(",").map(t => `  - "${t.trim()}"`).join("\n") %>
-date_started: <% tp.date.now("YYYY-MM-DD") %>
-last_updated: <% tp.date.now("YYYY-MM-DD") %>
+  - "kernel"
+  - "c"
+date_started: 2026-09-16
+last_updated: 2026-09-16
 ---
 
 ## TL;DR
@@ -58,7 +46,7 @@ last_updated: <% tp.date.now("YYYY-MM-DD") %>
 ## Session Log
 <!-- Running, dated notes — the actual "as I read it" capture. Newest entry on top. -->
 
-### <% tp.date.now("YYYY-MM-DD HH:mm") %>
+### 2026-09-16 22:52
 -
 
 ---
@@ -112,10 +100,4 @@ last_updated: <% tp.date.now("YYYY-MM-DD") %>
 ---
 
 ## Backlinks
-- Table of contents: [[<% bookTitle %> - TOC]]
-<%* if (prevChapter) { -%>
-- Previous: [[<% bookTitle %> - Ch <% prevChapter %>]]
-<%* } -%>
-<%* if (nextChapter) { -%>
-- Next: [[<% bookTitle %> - Ch <% nextChapter %>]]
-<%* } -%>
+- Table of contents: [[Linux Kernel Programming - TOC]]
