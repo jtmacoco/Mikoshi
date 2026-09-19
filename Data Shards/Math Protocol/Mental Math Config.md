@@ -40,7 +40,8 @@ const chapters = {
     chapter: "Chapter 3 - Intermediate Multiplication",
     sections: [
       { op: "mult", digitsA: 2, digitsB: 2, count: 15 },
-      { op: "mult11", digitsA: 2, count: 5 },
+      { op: "mult11", digitsA: 2, count: 3 },
+	  { op: "square", digits: 2, count: 2 },
     ]
   },
   4: {
