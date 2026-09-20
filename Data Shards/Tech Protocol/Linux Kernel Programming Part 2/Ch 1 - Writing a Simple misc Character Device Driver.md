@@ -27,7 +27,8 @@ last_updated: 2026-09-17
 | Device Driver    | Interface between OS and peripheral hw device |       |
 | Device File/Node | Entry point into device driver                |       |
 | Major Number     | Represents the class of device                |       |
-| Minor Number     |                                               |       |
+| Minor Number     | The interpretation of the device              |       |
+| LDM              | Linux Device Model                            |       |
 
 ---
 
@@ -50,7 +51,13 @@ last_updated: 2026-09-17
 <!-- Running, dated notes — Newest entry on top. -->
 
 ### 2026-09-19 
-- 
+- **Minor number**: Typically interpreted as either physical or logical instance of the device, or represent functionality 
+- Misc can be used for giving every small character device it's own scarce major number this allows Linux to tell the drivers apart by their minor number
+- The LDM, a bit simplistically, can be thought of as having – and tying together – these major components:
+	- The **buses** on the system.
+	- The **devices** on them.
+	- The **device drivers** that drive the devices (also often referred to as **client** drivers).
+- Every single device must reside on a bus
 
 ### 2026-09-17 
 
