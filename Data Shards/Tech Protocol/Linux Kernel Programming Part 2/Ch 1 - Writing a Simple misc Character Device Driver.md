@@ -49,6 +49,9 @@ last_updated: 2026-09-17
 ## Session Log
 <!-- Running, dated notes — Newest entry on top. -->
 
+### 2026-09-19 
+- 
+
 ### 2026-09-17 
 
 - Devices/Drivers are organized in a tree like hierarchy within the kernel
