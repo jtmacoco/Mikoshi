@@ -50,9 +50,19 @@ last_updated: 2026-09-17
 ## Session Log
 <!-- Running, dated notes — Newest entry on top. -->
 
+### 2026-09- 20
+- When you pplug in a device like a USB, the bus driver (USB bus) notices it and matches it to the right device driver; once matched ("bound"), the kernel calls the driver's `probe()` function, which sets up the device (allocates memory, IRQs, etc) sit it's ready to use.
+- Drivers register in 2 places:
+	1.  **Bus** which physically connects through (I2C, PCI, USB, etc..)
+	2. **Subsystem Framework**: matches what kind of device it is (RTC, networking, etc)
+- Book goes over simplest drivers **misc** drivers, no need to implement `probe()`/`remove()` methods
+- To practice more complex driver that use `probe()` start by writing a simple **platform driver**, registering it with the kernel's `misc` framework and the platform bus, a pseudo-bus infrastructure that supports devices that do not physically reside on any physical bus
+	- Get Started here [kernel-platform-devices](https://www.kernel.org/doc/html/latest/driver-api/driver-model/platform.html#platform-devices-and-drivers) this is the doc for platform drivers 
+- To write a driver belonging to the `misc` class we need to register it ourselves
+
 ### 2026-09-19 
 - **Minor number**: Typically interpreted as either physical or logical instance of the device, or represent functionality 
-- Misc can be used for giving every small character device it's own scarce major number this allows Linux to tell the drivers apart by their minor number
+- `misc` can be used for giving every small character device it's own scarce major number this allows Linux to tell the drivers apart by their minor number
 - The LDM, a bit simplistically, can be thought of as having – and tying together – these major components:
 	- The **buses** on the system.
 	- The **devices** on them.
@@ -60,7 +70,6 @@ last_updated: 2026-09-17
 - Every single device must reside on a bus
 
 ### 2026-09-17 
-
 - Devices/Drivers are organized in a tree like hierarchy within the kernel
 - Block devices have capability to be mounted and a part of user file system **char devices don't**
 - Since block devices can be mounted storage devices are typically block based
