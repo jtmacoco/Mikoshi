@@ -11,7 +11,7 @@ tags:
   - kernel
   - c
 date_started: 2026-09-16
-last_updated: 2026-09-17
+last_updated: 2026-09-21
 ---
 
 ## TL;DR
@@ -50,6 +50,9 @@ last_updated: 2026-09-17
 ## Session Log
 <!-- Running, dated notes — Newest entry on top. -->
 
+### 2026-09- 21
+- I fixed my linux setup to have correct heaers and nvim setup, lsp didn't have clang
+- `misc_register()` API takes one parameter, a ptr to a data struct of type `miscdevice`
 ### 2026-09- 20
 - When you pplug in a device like a USB, the bus driver (USB bus) notices it and matches it to the right device driver; once matched ("bound"), the kernel calls the driver's `probe()` function, which sets up the device (allocates memory, IRQs, etc) sit it's ready to use.
 - Drivers register in 2 places:

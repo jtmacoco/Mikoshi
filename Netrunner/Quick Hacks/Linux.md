@@ -88,12 +88,32 @@ created: 2026-08-15
 ---
 
 ## Permissions
-| Command | Action |
-|---|---|
-| `chmod 755` | rwx r-x r-x |
-| `chmod 644` | rw- r-- r-- |
-| `sudo !!` | Rerun last command as sudo |
-| `chown -R` | Recursive ownership change |
+| Command        | Action                     |        |
+| -------------- | -------------------------- | ------ |
+| `chmod 755`    | rwx r-x r-x                |        |
+| `chmod 644`    | rw- r-- r--                |        |
+| `sudo !!`      | Rerun last command as sudo |        |
+| `chown -R`<br> | Recursive ownership change |        |
+
+| Value | Permission | Symbol |
+|:-----:|:-----------|:------:|
+| 4     | Read       | r      |
+| 2     | Write      | w      |
+| 1     | Execute    | x      |
+| 0     | None       | -      |
+
+| Position | Category | Description             |
+|:--------:|:---------|:-------------------------|
+| 1st      | User (u) | Owner of the file        |
+| 2nd      | Group (g)| Users in the file's group|
+| 3rd      | Others (o)| Everyone else           |
+### Example
+
+| Category | Value | Symbol | Meaning              |
+| :------- | :---: | :----: | :------------------- |
+| User     |   7   |  rwx   | Read, Write, Execute |
+| Group    |   5   |  r-x   | Read, Execute        |
+| Others   |   4   |  r--   | Read only            |
 
 ---
 
