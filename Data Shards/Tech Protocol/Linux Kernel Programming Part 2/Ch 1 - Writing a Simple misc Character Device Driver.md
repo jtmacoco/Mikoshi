@@ -22,13 +22,15 @@ last_updated: 2026-09-21
 ## Vocabulary / Key Terms
 <!-- Add terms the moment you hit them, even before you fully understand them -->
 
-| Term             | Definition                                    | Notes |
-| ---------------- | --------------------------------------------- | ----- |
-| Device Driver    | Interface between OS and peripheral hw device |       |
-| Device File/Node | Entry point into device driver                |       |
-| Major Number     | Represents the class of device                |       |
-| Minor Number     | The interpretation of the device              |       |
-| LDM              | Linux Device Model                            |       |
+| Term             | Definition                                        | Notes |
+| ---------------- | ------------------------------------------------- | ----- |
+| Device Driver    | Interface between OS and peripheral hw device     |       |
+| Device File/Node | Entry point into device driver                    |       |
+| Major Number     | Represents the class of device                    |       |
+| Minor Number     | The interpretation of the device                  |       |
+| LDM              | Linux Device Model                                |       |
+| Device           | physical (or virtual) thing itself, so like a USB |       |
+| Driver           | Software that knows how to talk to the device     |       |
 
 ---
 
@@ -53,6 +55,11 @@ last_updated: 2026-09-21
 ### 2026-09- 21
 - I fixed my linux setup to have correct heaers and nvim setup, lsp didn't have clang
 - `misc_register()` API takes one parameter, a ptr to a data struct of type `miscdevice`
+- All `misc` drivers are character type and use the same **major number 10** 
+- `file_operations` struct or **fops** contains function pointers (think of as **virtual methods**) which are possible system calls that could be issued to the (device) file; such as `read`, `write`, `poll`, etc...
+	- Basically has a bunch of function pointers to do stuff
+	- It's kernel's way of doing polymorphism in
+	- **I/YOU NEED TO SET THESE FUNCTION POINTERS**
 ### 2026-09- 20
 - When you pplug in a device like a USB, the bus driver (USB bus) notices it and matches it to the right device driver; once matched ("bound"), the kernel calls the driver's `probe()` function, which sets up the device (allocates memory, IRQs, etc) sit it's ready to use.
 - Drivers register in 2 places:
@@ -91,12 +98,34 @@ last_updated: 2026-09-21
 
 ## Code / Commands / Snippets
 
-```c
-// paste and annotate notable code as you go
+```c title=09/22/26
+//ch1 miscdrv
+#define pr_fmt(fmt) "%s:%s(): " fmt, KBUILD_MODNAME, __func__
+#include <linux/miscdevice.h>
+#include <linux/fs.h>
+
+static struct miscdevice llkd_miscdev = {
+    .minor = MISC_DYNAMIC_MINOR, //kernel dynamically asigns number
+    .name = "llkd_miscdrv", //name kernel uses for device
+    .mode = 0666, //sets node permisions 
+    .fops = &llkd_misc_fops, //conect to this driver's functionality
+};
+
+static int __init miscdrv_init(void){
+    int ret; //return
+    struct device *dev;
+    ret = misc_register(&llkd_miscdev);
+    if (ret != 0){
+        pr_notice("misc device registration failed, aborting\n");
+        return ret;
+    }
+}
 ```
 
-**What it does:**
-**Gotchas / edge cases:**
+**What it does:** Basic setup for a misc device
+**Notes On Code Above**:
+- `.name`: On successful registration kernel will automatically create a device node using this form `/dev/<name>`
+- permissions: see [[Linux#Permissions]] 
 
 ---
 
@@ -106,7 +135,7 @@ last_updated: 2026-09-21
 ---
 
 ## Questions & Confusions
-- 
+- In section with first code block why is ther 4 numbers in permissions instead of standard 3? 
 
 ---
 
