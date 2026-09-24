@@ -11,7 +11,7 @@ tags:
   - kernel
   - c
 date_started: 2026-09-16
-last_updated: 2026-09-21
+last_updated: 2026-09-23
 ---
 
 ## TL;DR
@@ -29,8 +29,10 @@ last_updated: 2026-09-21
 | Major Number     | Represents the class of device                    |       |
 | Minor Number     | The interpretation of the device                  |       |
 | LDM              | Linux Device Model                                |       |
-| Device           | physical (or virtual) thing itself, so like a USB |       |
+| Device           | Physical (or virtual) thing itself, so like a USB |       |
 | Driver           | Software that knows how to talk to the device     |       |
+| Fops             | File Operations                                   |       |
+| VFS              | Virtual Filesystem Switch                         |       |
 
 ---
 
@@ -52,6 +54,10 @@ last_updated: 2026-09-21
 ## Session Log
 <!-- Running, dated notes — Newest entry on top. -->
 
+### 2026-09- 23
+- All `misc` drivers are of the character type 
+- When a user-space process/thread opens a device file registered to this driver (via the misc framework), the kernel VFS allocates and initializes a `struct file` for that open and sets its `f_op` to the driver's `file_operations` (from `.fops` in `struct miscdevice`), so later calls like `read()`/`write()` are routed to the driver's functions. [[#VFS & FOPS]]
+
 ### 2026-09- 21
 - I fixed my linux setup to have correct heaers and nvim setup, lsp didn't have clang
 - `misc_register()` API takes one parameter, a ptr to a data struct of type `miscdevice`
@@ -60,8 +66,9 @@ last_updated: 2026-09-21
 	- Basically has a bunch of function pointers to do stuff
 	- It's kernel's way of doing polymorphism in
 	- **I/YOU NEED TO SET THESE FUNCTION POINTERS**
+	- This is like saying hey these are the function pointers you can use with this driver I'm making
 ### 2026-09- 20
-- When you pplug in a device like a USB, the bus driver (USB bus) notices it and matches it to the right device driver; once matched ("bound"), the kernel calls the driver's `probe()` function, which sets up the device (allocates memory, IRQs, etc) sit it's ready to use.
+- When you plug in a device like a USB, the bus driver (USB bus) notices it and matches it to the right device driver; once matched ("bound"), the kernel calls the driver's `probe()` function, which sets up the device (allocates memory, IRQs, etc) sit it's ready to use.
 - Drivers register in 2 places:
 	1.  **Bus** which physically connects through (I2C, PCI, USB, etc..)
 	2. **Subsystem Framework**: matches what kind of device it is (RTC, networking, etc)
@@ -86,7 +93,6 @@ last_updated: 2026-09-21
 - If it's not  a storage or network device then it's a character device (simply put)
 - `{major:minor}` pair is a single unsigned 32-bit quantity
 
-![[Ch 1 - Writing a Simple misc Character Device Driver-20260917235845549.png]]
 
 ### 2026-09-16 
 - Read the intro
@@ -131,6 +137,9 @@ static int __init miscdrv_init(void){
 
 ## Architecture / Diagrams
 
+![[Ch 1 - Writing a Simple misc Character Device Driver-20260917235845549.png]]
+
+- **What it is**: Minor/Major numbers and how they correlate.
 
 ---
 
@@ -147,7 +156,9 @@ static int __init miscdrv_init(void){
 ---
 
 ## Personal Analogies 
-- 
+
+### VFS & FOPS
+Think of your fops table as a business card listing "for reads, call this number; for writes, call that one." Registering the misc device hands the card to the kernel. Each time someone opens your device, the VFS makes a fresh case file (`struct file`) and staples your card to it (`f_op`). Whenever that person later asks to read or write, the VFS checks the stapled card and calls your function.
 
 ---
 ## Practical Exercises / Labs

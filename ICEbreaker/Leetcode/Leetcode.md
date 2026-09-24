@@ -25,7 +25,7 @@ GROUP BY status
 TABLE rows.file.link AS "Problems"
 FROM #leetcode
 FLATTEN file.tags AS tag
-WHERE tag != "#leetcode"
+WHERE tag != "#leetcode" and tag != "moc"
 GROUP BY tag
 SORT tag ASC
 ```
