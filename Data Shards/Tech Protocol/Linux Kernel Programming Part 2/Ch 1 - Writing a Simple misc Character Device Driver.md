@@ -57,6 +57,9 @@ last_updated: 2026-09-23
 ### 2026-09- 23
 - All `misc` drivers are of the character type 
 - When a user-space process/thread opens a device file registered to this driver (via the misc framework), the kernel VFS allocates and initializes a `struct file` for that open and sets its `f_op` to the driver's `file_operations` (from `.fops` in `struct miscdevice`), so later calls like `read()`/`write()` are routed to the driver's functions. [[#VFS & FOPS]]
+- If a process opens drivers device file via the `open` system call the driver should issue the related system file call `foo` (for example) on that device file
+	- Function will change based on system call say `open` or `read`
+	- Each system call maps to its own slot in the fops table, so a different driver function runs for each operation
 
 ### 2026-09- 21
 - I fixed my linux setup to have correct heaers and nvim setup, lsp didn't have clang
@@ -128,10 +131,36 @@ static int __init miscdrv_init(void){
 }
 ```
 
-**What it does:** Basic setup for a misc device
+**What it does:**
+Basic setup for a misc device
+
 **Notes On Code Above**:
 - `.name`: On successful registration kernel will automatically create a device node using this form `/dev/<name>`
 - permissions: see [[Linux#Permissions]] 
+
+```c title=09/23/26
+.fops = &llkd_misc_fops, /* connect to this driver's 'functionality' */
+```
+
+**What it does:** 
+Ties process's file operations pointer to the device driver's file operation structure
+
+**Notes On Code Above**:
+- Essential what the driver will do now that it's setup for this device
+- What kind of operations can this driver do 
+
+```c title=09/23/26
+open()   → f_op->open    → open_miscdrv()
+read()   → f_op->read    → read_miscdrv()
+write()  → f_op->write   → write_miscdrv()
+close()  → f_op->release → close_miscdrv()
+```
+
+**What it does:**
+Mapping of system calls to file operations
+
+**Notes On Code Above**: 
+- Different system calls mean different file operations (functions)
 
 ---
 
