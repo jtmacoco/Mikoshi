@@ -11,7 +11,7 @@ tags:
   - kernel
   - c
 date_started: 2026-09-16
-last_updated: 2026-09-23
+last_updated: 2026-09-24
 ---
 
 ## TL;DR
@@ -53,6 +53,12 @@ last_updated: 2026-09-23
 
 ## Session Log
 <!-- Running, dated notes — Newest entry on top. -->
+
+### 2026-09- 24
+- If a method is unsporrted say we didn't write the `fops` function for it like `poll()`
+	- VFS will detect `fops` pointer so `poll` and then it returns the correct negative integer signaling a fail
+	- Important, think back to semantics in programming languages if left undefined could cause issues
+
 
 ### 2026-09- 23
 - All `misc` drivers are of the character type 
