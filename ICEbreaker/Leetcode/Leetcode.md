@@ -18,6 +18,15 @@ WHERE status != null AND status != ""
 GROUP BY status
 ```
 
+# Last Solved
+
+```dataview
+LIST
+FROM "Mikoshi/ICEbreaker/Leetcode"
+WHERE status = "solved"
+SORT file.ctime DESC
+LIMIT 1
+```
 
 ## LeetCode Index
 
@@ -45,7 +54,7 @@ SORT file.mtime DESC
 LIST
 FROM "Mikoshi/ICEbreaker/Leetcode"
 WHERE status = "solved"
-SORT file.mtime DESC
+SORT number(file.name) ASC
 ```
 
 
