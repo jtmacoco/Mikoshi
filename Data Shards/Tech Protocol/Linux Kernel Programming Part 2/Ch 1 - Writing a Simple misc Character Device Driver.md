@@ -11,7 +11,7 @@ tags:
   - kernel
   - c
 date_started: 2026-09-16
-last_updated: 2026-09-24
+last_updated: 2026-09-27
 ---
 
 ## TL;DR
@@ -54,6 +54,13 @@ last_updated: 2026-09-24
 ## Session Log
 <!-- Running, dated notes — Newest entry on top. -->
 
+### 2026-09- 27
+- When writing a device driver use the `dev_*()` family so `dev_info()`, `dev_warn()`, `dev_err()`, `dev_dbg()`, etc. Rather than `printk()` or `pr_*()` (`pr_info()`, `pr_err()`)
+- `dev_*()` routines take a pointer to a `struct device` as their first arg, so the kernel uses it to automatically prefix each message with info about which device printed it
+- How should the driver author implement the different `f_ops` for a driver?
+	- **Key Point**: signature of our `f_ops` function say `open` function, it should be identical to the `file_operation` structure `open`
+	- This is true for any function
+	
 ### 2026-09- 24
 - If a method is unsporrted say we didn't write the `fops` function for it like `poll()`
 	- VFS will detect `fops` pointer so `poll` and then it returns the correct negative integer signaling a fail
@@ -168,7 +175,49 @@ Mapping of system calls to file operations
 **Notes On Code Above**: 
 - Different system calls mean different file operations (functions)
 
+```c title=09/27/26
+//ch1 miscdrv
+#define pr_fmt(fmt) "%s:%s(): " fmt, KBUILD_MODNAME, __func__
+#include <linux/miscdevice.h>
+#include <linux/fs.h>
+
+static const struct file_operations llkd_misc_fops = {
+    .open = open_miscdrv,
+    .read = read_miscdrv,
+    .write = write_miscdrv,
+    .release = close_miscdrv,
+};
+
+static struct miscdevice llkd_miscdev = {
+    .minor = MISC_DYNAMIC_MINOR, //kernel dynamically asigns number
+    .name = "llkd_miscdrv", //name kernel uses for device
+    .mode = 0666, //sets node permisions 
+    .fops = &llkd_misc_fops, //conect to this driver's functionality
+};
+
+```
 ---
+
+**What it does:**
+Added file ops process and threads can perform on this device
+**Notes On Code Above**: 
+- These are functions that have yet to be implemented will show later
+
+```c title=dev_vs_pr
+pr_info("device opened\n");
+dev_info(dev, "device opened\n");
+```
+
+**What it does:**
+outputs:
+```
+device opened
+misc llkd_miscdrv: device opened
+```
+
+**Notes On Code Above**: 
+- The first line gives no clue where it came from
+- The second tells you it came from the misc subsystem, and specifically from the `llkd_miscdrv` device
 
 ## Architecture / Diagrams
 
