@@ -14,6 +14,6 @@ Kernel reference guide
 
 ```dataview
 LIST
-FROM "Mikoshi/Netrunner/Kernel"
+FROM "Mikoshi/Netrunner/Linux Kernel"
 SORT file.name ASC
 ```

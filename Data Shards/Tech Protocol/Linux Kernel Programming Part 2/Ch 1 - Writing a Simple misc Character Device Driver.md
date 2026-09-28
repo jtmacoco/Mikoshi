@@ -18,6 +18,22 @@ last_updated: 2026-09-27
 > Keep this updated as your understanding sharpens — it's fine if it's rough or wrong early on.
 
 ---
+## Table of Contents
+```dataviewjs
+const path = dv.current().file.path;
+const file = app.vault.getAbstractFileByPath(path);
+const headings = app.metadataCache.getFileCache(file)?.headings ?? [];
+
+if (headings.length === 0) {
+  dv.paragraph("No sections found.");
+} else {
+  const minLevel = Math.min(...headings.map(h => h.level));
+  const md = headings
+    .map(h => `${"\t".repeat(h.level - minLevel)}- [[#${h.heading}|${h.heading}]]`)
+    .join("\n");
+  dv.paragraph(md);
+}
+```
 
 ## Vocabulary / Key Terms
 <!-- Add terms the moment you hit them, even before you fully understand them -->
@@ -55,12 +71,15 @@ last_updated: 2026-09-27
 <!-- Running, dated notes — Newest entry on top. -->
 
 ### 2026-09- 27
+> Go over `nonseekable_open()` I kinda skipped this part
 - When writing a device driver use the `dev_*()` family so `dev_info()`, `dev_warn()`, `dev_err()`, `dev_dbg()`, etc. Rather than `printk()` or `pr_*()` (`pr_info()`, `pr_err()`)
 - `dev_*()` routines take a pointer to a `struct device` as their first arg, so the kernel uses it to automatically prefix each message with info about which device printed it
 - How should the driver author implement the different `f_ops` for a driver?
 	- **Key Point**: signature of our `f_ops` function say `open` function, it should be identical to the `file_operation` structure `open`
 	- This is true for any function
-	
+- `file_path()` gets the path of a file
+**Code Section**: [[#09/27/26 Code]]
+
 ### 2026-09- 24
 - If a method is unsporrted say we didn't write the `fops` function for it like `poll()`
 	- VFS will detect `fops` pointer so `poll` and then it returns the correct negative integer signaling a fail
@@ -83,6 +102,7 @@ last_updated: 2026-09-27
 	- It's kernel's way of doing polymorphism in
 	- **I/YOU NEED TO SET THESE FUNCTION POINTERS**
 	- This is like saying hey these are the function pointers you can use with this driver I'm making
+	
 ### 2026-09- 20
 - When you plug in a device like a USB, the bus driver (USB bus) notices it and matches it to the right device driver; once matched ("bound"), the kernel calls the driver's `probe()` function, which sets up the device (allocates memory, IRQs, etc) sit it's ready to use.
 - Drivers register in 2 places:
@@ -141,6 +161,10 @@ Prints open when a process or thread calls the custom `mis` device
 **Notes On Code Above**: 
 - Open implementation for custom `mis` device making the open function
 - Allocate some memory for a buffer (to hold the pathname of our device)
+- `kzalloc`: Go to [[kzalloc]] note
+- Current issue `PRINT_CTX()` macro hasn't been made yet 
+- C allows for implicit casts (make a separate note on this later)
+- `unlikely`: Go to [[unlikely]] note
 
 ---
 
