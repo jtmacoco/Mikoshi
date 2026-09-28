@@ -1,6 +1,6 @@
 ---
 title: printk Levels
-source: "[[Kernel]]"
+source: "[[Linux Kernel]]"
 tags:
   - printk
   - linux

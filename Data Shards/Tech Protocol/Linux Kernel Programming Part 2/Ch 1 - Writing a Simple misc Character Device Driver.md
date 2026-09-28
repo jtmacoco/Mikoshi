@@ -120,6 +120,103 @@ last_updated: 2026-09-27
 
 ## Code / Commands / Snippets
 
+### 09/27/26 Code
+
+```c
+static int open_miscdrv(struct inode *inode, struct file *filp){
+    char *buf = kzalloc(PATH_MAX, GFP_KERNEL);
+    if (unlikely(!buf))
+        return -ENOMEM;
+    PRINT_CTX();// displays process (or atomic) context info
+     pr_info(" opening \"%s\" now; wrt open file: f_flags = 0x%x\n",
+        file_path(filp, buf, PATH_MAX), filp->f_flags);
+    kfree(buf);
+    return nonseekable_open(inode, filp);
+}
+```
+
+**What it does:**
+Prints open when a process or thread calls the custom `mis` device
+
+**Notes On Code Above**: 
+- Open implementation for custom `mis` device making the open function
+- Allocate some memory for a buffer (to hold the pathname of our device)
+
+---
+
+```c title=09/27/26
+//ch1 miscdrv
+#define pr_fmt(fmt) "%s:%s(): " fmt, KBUILD_MODNAME, __func__
+#include <linux/miscdevice.h>
+#include <linux/fs.h>
+
+static const struct file_operations llkd_misc_fops = {
+    .open = open_miscdrv,
+    .read = read_miscdrv,
+    .write = write_miscdrv,
+    .release = close_miscdrv,
+};
+
+static struct miscdevice llkd_miscdev = {
+    .minor = MISC_DYNAMIC_MINOR, //kernel dynamically asigns number
+    .name = "llkd_miscdrv", //name kernel uses for device
+    .mode = 0666, //sets node permisions 
+    .fops = &llkd_misc_fops, //conect to this driver's functionality
+};
+
+```
+---
+**What it does:**
+Added file ops process and threads can perform on this device
+**Notes On Code Above**: 
+- These are functions that have yet to be implemented will show later
+
+---
+```c title=dev_vs_pr
+pr_info("device opened\n");
+dev_info(dev, "device opened\n");
+```
+
+**What it does:**
+outputs:
+```
+device opened
+misc llkd_miscdrv: device opened
+```
+
+**Notes On Code Above**: 
+- The first line gives no clue where it came from
+- The second tells you it came from the misc subsystem, and specifically from the `llkd_miscdrv` device
+
+### 09/23/26 Code
+
+```c title=09/23/26
+.fops = &llkd_misc_fops, /* connect to this driver's 'functionality' */
+```
+
+**What it does:** 
+Ties process's file operations pointer to the device driver's file operation structure
+
+**Notes On Code Above**:
+- Essential what the driver will do now that it's setup for this device
+- What kind of operations can this driver do 
+
+---
+```c title=09/23/26
+open()   → f_op->open    → open_miscdrv()
+read()   → f_op->read    → read_miscdrv()
+write()  → f_op->write   → write_miscdrv()
+close()  → f_op->release → close_miscdrv()
+```
+
+**What it does:**
+Mapping of system calls to file operations
+
+**Notes On Code Above**: 
+- Different system calls mean different file operations (functions)
+
+### 09/22/26 Code
+
 ```c title=09/22/26
 //ch1 miscdrv
 #define pr_fmt(fmt) "%s:%s(): " fmt, KBUILD_MODNAME, __func__
@@ -151,73 +248,9 @@ Basic setup for a misc device
 - `.name`: On successful registration kernel will automatically create a device node using this form `/dev/<name>`
 - permissions: see [[Linux#Permissions]] 
 
-```c title=09/23/26
-.fops = &llkd_misc_fops, /* connect to this driver's 'functionality' */
-```
 
-**What it does:** 
-Ties process's file operations pointer to the device driver's file operation structure
 
-**Notes On Code Above**:
-- Essential what the driver will do now that it's setup for this device
-- What kind of operations can this driver do 
 
-```c title=09/23/26
-open()   → f_op->open    → open_miscdrv()
-read()   → f_op->read    → read_miscdrv()
-write()  → f_op->write   → write_miscdrv()
-close()  → f_op->release → close_miscdrv()
-```
-
-**What it does:**
-Mapping of system calls to file operations
-
-**Notes On Code Above**: 
-- Different system calls mean different file operations (functions)
-
-```c title=09/27/26
-//ch1 miscdrv
-#define pr_fmt(fmt) "%s:%s(): " fmt, KBUILD_MODNAME, __func__
-#include <linux/miscdevice.h>
-#include <linux/fs.h>
-
-static const struct file_operations llkd_misc_fops = {
-    .open = open_miscdrv,
-    .read = read_miscdrv,
-    .write = write_miscdrv,
-    .release = close_miscdrv,
-};
-
-static struct miscdevice llkd_miscdev = {
-    .minor = MISC_DYNAMIC_MINOR, //kernel dynamically asigns number
-    .name = "llkd_miscdrv", //name kernel uses for device
-    .mode = 0666, //sets node permisions 
-    .fops = &llkd_misc_fops, //conect to this driver's functionality
-};
-
-```
----
-
-**What it does:**
-Added file ops process and threads can perform on this device
-**Notes On Code Above**: 
-- These are functions that have yet to be implemented will show later
-
-```c title=dev_vs_pr
-pr_info("device opened\n");
-dev_info(dev, "device opened\n");
-```
-
-**What it does:**
-outputs:
-```
-device opened
-misc llkd_miscdrv: device opened
-```
-
-**Notes On Code Above**: 
-- The first line gives no clue where it came from
-- The second tells you it came from the misc subsystem, and specifically from the `llkd_miscdrv` device
 
 ## Architecture / Diagrams
 
