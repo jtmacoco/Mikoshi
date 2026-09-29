@@ -1,7 +1,8 @@
 ---
 title: MLP Core
-source: "[[SYSTEM MANIFEST]]"
-tags: [moc]
+source: "[[Netrunner]]"
+tags:
+  - moc
 created: 2026-09-01
 ---
 
