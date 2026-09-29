@@ -1,7 +1,8 @@
 ---
 title: Generative Models
-source: "[[SYSTEM MANIFEST]]"
-tags: [moc]
+source: "[[ML Codebase]]"
+tags:
+  - moc
 created: 2026-09-02
 ---
 

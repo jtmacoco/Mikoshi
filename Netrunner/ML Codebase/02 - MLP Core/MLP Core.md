@@ -1,6 +1,6 @@
 ---
 title: MLP Core
-source: "[[Netrunner]]"
+source: "[[ML Codebase]]"
 tags:
   - moc
 created: 2026-09-01

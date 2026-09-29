@@ -1,6 +1,6 @@
 ---
 title: Sequence Models
-source: "[[SYSTEM MANIFEST]]"
+source: "[[ML Codebase]]"
 tags:
   - moc
 created: 2026-09-02
