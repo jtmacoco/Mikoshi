@@ -70,7 +70,17 @@ if (headings.length === 0) {
 ## Session Log
 <!-- Running, dated notes — Newest entry on top. -->
 
+### 2026-09- 28
+- `errno` value returned by VFS not very intuitive
+	- If set `read()` func ptr of `f_op` to `NULL`, VFS will cause `EINVAL` value saying this failed because of invalid arg which is not right
+	- `lseek()` system call that has driver seek specific location in file aka the device we are writing
+	- kernel names `f_op` function pointer as `llseek` this is to remind us that the return value from `lseek` can be 64-bit (long long) quantity
+	- **Issue**: If we don't implement `llseek` it still returns a random positive value causing the user mode app to think it succeed; To fix do this 
+		1. Set `llseek` to the special `no_llseek` value
+		2. Invoke the `nonseekable_open()` func in driver's `open()` method, specifying that the file is non-seekable
+
 ### 2026-09- 27
+
 > Go over `nonseekable_open()` I kinda skipped this part
 - When writing a device driver use the `dev_*()` family so `dev_info()`, `dev_warn()`, `dev_err()`, `dev_dbg()`, etc. Rather than `printk()` or `pr_*()` (`pr_info()`, `pr_err()`)
 - `dev_*()` routines take a pointer to a `struct device` as their first arg, so the kernel uses it to automatically prefix each message with info about which device printed it
@@ -163,7 +173,7 @@ Prints open when a process or thread calls the custom `mis` device
 - Allocate some memory for a buffer (to hold the pathname of our device)
 - `kzalloc`: Go to [[kzalloc]] note
 - Current issue `PRINT_CTX()` macro hasn't been made yet 
-- C allows for implicit casts (make a separate note on this later)
+- C allows for implicit casts **(make a separate note on this later)**
 - `unlikely`: Go to [[unlikely]] note
 
 ---
