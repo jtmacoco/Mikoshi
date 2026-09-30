@@ -49,6 +49,7 @@ if (headings.length === 0) {
 | Driver           | Software that knows how to talk to the device     |       |
 | Fops             | File Operations                                   |       |
 | VFS              | Virtual Filesystem Switch                         |       |
+| `dd(1)`          | Disk Duplicator                                   |       |
 
 ---
 
@@ -71,7 +72,10 @@ if (headings.length === 0) {
 <!-- Running, dated notes — Newest entry on top. -->
 
 ### 2026-09- 29
-- 
+- Kernel VFS will auto-invoke driver's `f_op` methods
+- Can test the practice misc driver made with `dd(1)` 
+
+**Code Section**: [[#09/29/26 Code]]
 ### 2026-09- 28
 - `errno` value returned by VFS not very intuitive
 	- If set `read()` func ptr of `f_op` to `NULL`, VFS will cause `EINVAL` value saying this failed because of invalid arg which is not right
@@ -152,6 +156,47 @@ if (headings.length === 0) {
 
 ## Code / Commands / Snippets
 
+### 09/29/26 Code
+
+```c
+dd if=/dev/llkd_miscdrv of=readtest bs=4k count=1
+```
+
+**What it does:**
+Opens the file we pass as a parameter so `/dev/llkd_miscdrv` 
+
+**Notes On Code Above**: 
+- Fancy way of opening the driver file and reading it without creating a C program
+
+---
+
+```c
+/*  
+ * read_miscdrv()  
+ * The driver's read 'method'; it has effectively 'taken over' the read syscall  
+ * functionality! Here, we simply print out some info.  
+ * The POSIX standard requires that the read() and write() system calls return  
+ * the number of bytes read or written on success, 0 on EOF (for read) and -1 (-ve errno)  
+ * on failure; we simply return 'count', pretending that we 'always succeed'.  
+ */  
+static ssize_t read_miscdrv(struct file *filp, char __user *ubuf, size_t count, loff_t *off)**  
+{  
+        pr_info("to read %zd bytes\n", count);  
+        return count;  
+}
+```
+
+**What it does:**
+Shows the number of bytes the user space process wants to read
+
+**Notes On Code Above**: 
+- [[struct file]]
+- **`char __user *ubuf`**: a pointer to the buffer the user program passed to `read()`. This is where you're supposed to put the data.
+- **`loff_t *off`**: a pointer to the current file position. `loff_t` is the kernel's type for file offsets, a `long long`, so 64 bits even on 32-bit systems, which allows files larger than 4 GB. It's passed as a pointer so your function can update it, for example `*off += bytes_read;`, and the next `read()` continues where the last one left off.
+- `__user` is an annotation not a real type, it tells reader and static checker `sparse` that the ptr holds a **user-space address** not a kernel one
+- Must never dereference a user pointer directly in kernel code
+
+---
 ### 09/27/26 Code
 
 ```c
@@ -321,7 +366,7 @@ Think of your fops table as a business card listing "for reads, call this number
 
 ## Further Reading / Tangents
 <!-- Things this chapter made you curious about but that are out of scope for now -->
-- 
+- Look more into disk duplicator 
 
 ---
 
