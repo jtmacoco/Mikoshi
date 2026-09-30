@@ -70,6 +70,8 @@ if (headings.length === 0) {
 ## Session Log
 <!-- Running, dated notes — Newest entry on top. -->
 
+### 2026-09- 29
+- 
 ### 2026-09- 28
 - `errno` value returned by VFS not very intuitive
 	- If set `read()` func ptr of `f_op` to `NULL`, VFS will cause `EINVAL` value saying this failed because of invalid arg which is not right
@@ -175,6 +177,7 @@ Prints open when a process or thread calls the custom `mis` device
 - Current issue `PRINT_CTX()` macro hasn't been made yet 
 - C allows for implicit casts **(make a separate note on this later)**
 - `unlikely`: Go to [[unlikely]] note
+- `inode`:  Go to [[inode]] note
 
 ---
 
