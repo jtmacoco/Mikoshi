@@ -27,6 +27,13 @@ For a device file, the inode holds:
 | Static metadata     | Per-open state: `f_flags`, `f_pos`, `private_data` |
 
 ---
+## Analogy
+
+An **inode** is like the **catalog card** for a book. It describes the book itself: what it is, who owns it, where it lives, what kind of item it is. There's only one card per book, no matter how many people are reading it.
+
+A **`struct file`** (`filp`) is like a **borrowing slip**. Every time someone checks out the book, they get their own slip that tracks _their_ reading session: what page they're on, whether they're allowed to write notes in it, and so on. Ten people opening the same file means one inode but ten slips.
+
+---
 
 ## Example / Usage
 
