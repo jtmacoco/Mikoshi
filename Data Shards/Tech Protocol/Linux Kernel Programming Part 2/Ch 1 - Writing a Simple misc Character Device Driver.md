@@ -384,6 +384,7 @@ Basic setup for a misc device
 
 ## Questions & Confusions
 - In section with first code block why is ther 4 numbers in permissions instead of standard 3? 
+- so could I make a driver that uses all the memory then would that crash a computer? (kmalloc memory stuff) [[#09/29/26 Code]]
 
 ---
 
