@@ -71,9 +71,18 @@ if (headings.length === 0) {
 ## Session Log
 <!-- Running, dated notes — Newest entry on top. -->
 
+### 2026-09-30
+- kernel provides inline functions to transfer data from kernel to user space and vice versa
+	- `copy_to_user()`
+	- `copy_from_user()`
+	- Return value is number of uncopied bytes 
+	- A non-zero values = error 
+
+
 ### 2026-09- 29
 - Kernel VFS will auto-invoke driver's `f_op` methods
 - Can test the practice misc driver made with `dd(1)` 
+- `copy_from_user()` **can only be used in a process context where it's safe to sleep and never in any kind of atomic or interrupt context**
 
 **Code Section**: [[#09/29/26 Code]]
 ### 2026-09- 28
@@ -156,6 +165,34 @@ if (headings.length === 0) {
 
 ## Code / Commands / Snippets
 
+### 09/30/26 Code
+
+```c
+static ssize_t read_method(struct file *filp, char __user *ubuf, size_t count, loff_t *off)  
+{  
+     char *kbuf = kzalloc(...);  
+     [ ... ]  
+     /* ... do what's required to get data from the hardware device into kbuf ... */  
+    if (**copy_to_user(buf, kbuf, count)**) {  
+        dev_warn(dev, "copy_to_user() failed\n");  
+        goto out_rd_fail;  
+    }  
+    [ ... ]  
+    return count;    /* success */  
+out_rd_fail:  
+    kfree(kbuf);  
+ return -EIO; /* or -EFAULT */  
+}
+```
+
+**What it does:**
+Shows sudo code of passing data to user space from kernel space
+**Notes on 
+
+![[Ch 1 - Writing a Simple misc Character Device Driver-20260930221503158.png]]
+
+
+---
 ### 09/29/26 Code
 
 ```c
@@ -167,6 +204,9 @@ Opens the file we pass as a parameter so `/dev/llkd_miscdrv`
 
 **Notes On Code Above**: 
 - Fancy way of opening the driver file and reading it without creating a C program
+- Opens the file via `if=`, then it will read from the file
+- The output is to be written to the file specified by the parameter `of=`; the `bs` specifies the block size to perform I/O in
+- `count` is the number of times to perform I/O
 
 ---
 
