@@ -1,0 +1,550 @@
+<!-- Trie visualizer: insert / search / startsWith. Self-contained; paste into an html-embed block. -->
+<div class="tv-trie">
+  <div class="tv-controls">
+    <input class="tv-input" maxlength="10" value="apple" spellcheck="false" aria-label="Word">
+    <button class="tv-opbtn" data-op="insert">insert</button>
+    <button class="tv-opbtn" data-op="search">search</button>
+    <button class="tv-opbtn" data-op="startsWith">startsWith</button>
+    <span class="tv-gap"></span>
+    <button class="tv-play" title="Pause / resume">Pause</button>
+    <button class="tv-step" title="Advance one line">Step</button>
+    <label class="tv-speed">Speed <input type="range" min="1" max="5" value="3"></label>
+    <button class="tv-demo tv-primary">Run demo</button>
+    <button class="tv-reset">Reset</button>
+  </div>
+
+  <div class="tv-main">
+    <div class="tv-code" aria-label="Source code"></div>
+    <div class="tv-right">
+      <div class="tv-word"></div>
+      <svg class="tv-svg" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Trie diagram"></svg>
+      <div class="tv-legend">
+        <span><i class="tv-dot cur"></i>cur</span>
+        <span><i class="tv-dot path"></i>path from root</span>
+        <span><i class="tv-dot end"></i>endofword = True</span>
+      </div>
+      <div class="tv-msg"></div>
+      <div class="tv-vars"></div>
+    </div>
+  </div>
+
+  <div class="tv-log"></div>
+</div>
+
+<style>
+.tv-trie{
+  --fb-bg:#1f1f25; --fb-bg2:#2a2a32; --fb-tx:#e2e2e6; --fb-mut:#8d8f99; --fb-bd:#3c3c47; --fb-acc:#8b6cef;
+  --tv-bg: var(--background-primary, var(--fb-bg));
+  --tv-bg2: var(--background-secondary, var(--fb-bg2));
+  --tv-tx: var(--text-normal, var(--fb-tx));
+  --tv-mut: var(--text-muted, var(--fb-mut));
+  --tv-bd: var(--background-modifier-border, var(--fb-bd));
+  --tv-acc: var(--interactive-accent, var(--fb-acc));
+  --tv-ok:#36a873; --tv-bad:#e05a4f; --tv-end:#d99a1e;
+  --tv-mono: var(--font-monospace, ui-monospace, "SF Mono", Menlo, Consolas, monospace);
+  font-family: var(--font-interface, system-ui, -apple-system, "Segoe UI", sans-serif);
+  color:var(--tv-tx); background:var(--tv-bg);
+  border:1px solid var(--tv-bd); border-radius:10px; padding:12px;
+  font-size:13px; line-height:1.4;
+}
+@media (prefers-color-scheme: light){
+  .tv-trie{ --fb-bg:#ffffff; --fb-bg2:#f4f4f7; --fb-tx:#22222a; --fb-mut:#6c6e78; --fb-bd:#d9d9e0; --fb-acc:#6c4ee0; }
+}
+.tv-trie *{ box-sizing:border-box; }
+
+/* controls */
+.tv-controls{ display:flex; flex-wrap:wrap; align-items:center; gap:6px; margin-bottom:10px; }
+.tv-gap{ flex:1; min-width:4px; }
+.tv-trie button{
+  font:inherit; font-size:12.5px; height:auto; padding:5px 10px; border-radius:6px;
+  border:1px solid var(--tv-bd); background:var(--tv-bg2); color:var(--tv-tx);
+  cursor:pointer; box-shadow:none; line-height:1.3;
+}
+.tv-trie button:hover{ border-color:var(--tv-acc); }
+.tv-trie button:focus-visible, .tv-trie input:focus-visible{ outline:2px solid var(--tv-acc); outline-offset:1px; }
+.tv-trie .tv-opbtn{ font-family:var(--tv-mono); }
+.tv-trie .tv-primary{ background:var(--tv-acc); border-color:transparent; color:#fff; }
+.tv-input{
+  font:600 13px var(--tv-mono); width:110px; padding:5px 8px; border-radius:6px;
+  border:1px solid var(--tv-bd); background:var(--tv-bg); color:var(--tv-tx);
+}
+.tv-input.tv-shake{ animation:tv-shake .35s; border-color:var(--tv-bad); }
+@keyframes tv-shake{ 25%{transform:translateX(-4px)} 75%{transform:translateX(4px)} }
+.tv-speed{ display:flex; align-items:center; gap:4px; color:var(--tv-mut); font-size:12px; }
+.tv-speed input{ width:70px; }
+
+/* layout */
+.tv-main{ display:flex; flex-wrap:wrap; gap:12px; }
+.tv-right{ flex:1.3 1 320px; min-width:0; display:flex; flex-direction:column; gap:8px; }
+
+/* code */
+.tv-code{
+  flex:1 1 290px; position:relative; max-height:400px; overflow:auto;
+  background:var(--tv-bg2); border-radius:8px; padding:8px 0;
+  font:12px/1.65 var(--tv-mono);
+}
+.tv-line{ display:flex; white-space:pre; padding-right:12px; border-left:3px solid transparent; transition:background .2s; }
+.tv-ln{ flex:none; width:2.6em; padding-right:10px; text-align:right; color:var(--tv-mut); opacity:.6; user-select:none; }
+.tv-line.hl{ background:rgba(139,108,239,.2); background:color-mix(in srgb, var(--tv-acc) 22%, transparent); border-left-color:var(--tv-acc); }
+.tv-line.hl.ok{ background:rgba(54,168,115,.2); border-left-color:var(--tv-ok); }
+.tv-line.hl.bad{ background:rgba(224,90,79,.2); border-left-color:var(--tv-bad); }
+.tv-kw{ color:var(--tv-acc); font-weight:600; }
+.tv-fn{ font-weight:700; }
+.tv-sf{ color:#d0782f; }
+.tv-cn{ color:#2f95c9; }
+.tv-ty{ color:var(--tv-ok); }
+
+/* word */
+.tv-word{ display:flex; flex-wrap:wrap; align-items:center; gap:3px; min-height:30px; font:600 14px var(--tv-mono); }
+.tv-op{ color:var(--tv-mut); font-weight:400; padding:0 2px; }
+.tv-ch{
+  width:24px; height:28px; display:grid; place-items:center; border-radius:5px;
+  border:1px solid var(--tv-bd); background:var(--tv-bg2); transition:all .2s;
+}
+.tv-ch.done{ opacity:.5; }
+.tv-ch.act{ border-color:var(--tv-acc); background:rgba(139,108,239,.25); transform:translateY(-3px); }
+.tv-ch.miss{ border-color:var(--tv-bad); background:rgba(224,90,79,.22); }
+
+/* svg */
+.tv-svg{ width:100%; height:290px; background:var(--tv-bg2); border-radius:8px; display:block; }
+.tv-edge{ stroke:var(--tv-bd); stroke-width:2; transition:stroke .2s; }
+.tv-edge.path{ stroke:var(--tv-acc); stroke-width:3; }
+.tv-edge.peek{ stroke:var(--tv-ok); stroke-width:3; stroke-dasharray:5 4; }
+.tv-node .main{ fill:var(--tv-bg); stroke:var(--tv-mut); stroke-width:2; transition:fill .25s, stroke .25s, stroke-width .25s; }
+.tv-node .ring{ fill:none; stroke:transparent; stroke-width:2; }
+.tv-node text{ fill:var(--tv-tx); font:700 14px var(--tv-mono); text-anchor:middle; pointer-events:none; }
+.tv-node.root text{ font-size:10px; font-weight:600; fill:var(--tv-mut); }
+.tv-node.end .ring{ stroke:var(--tv-end); }
+.tv-node.end .main{ stroke:var(--tv-end); }
+.tv-node.path .main{ stroke:var(--tv-acc); }
+.tv-node.cur .main{ stroke:var(--tv-acc); stroke-width:4; fill:rgba(139,108,239,.3); }
+.tv-node.peek .main{ stroke:var(--tv-ok); stroke-width:3; }
+.tv-node.ok .main{ stroke:var(--tv-ok); fill:rgba(54,168,115,.3); }
+.tv-node.bad .main{ stroke:var(--tv-bad); fill:rgba(224,90,79,.25); }
+.tv-node.flash .main, .tv-node.flash .ring{ transform-box:fill-box; transform-origin:center; animation:tv-pop .55s ease-out; }
+@keyframes tv-pop{ 0%{transform:scale(.2)} 65%{transform:scale(1.25)} 100%{transform:scale(1)} }
+.tv-probe rect{ fill:var(--tv-bg); stroke-width:1.5; }
+.tv-probe text{ font:600 12px var(--tv-mono); text-anchor:middle; }
+.tv-probe.found rect{ stroke:var(--tv-ok); } .tv-probe.found text{ fill:var(--tv-ok); }
+.tv-probe.miss rect{ stroke:var(--tv-bad); } .tv-probe.miss text{ fill:var(--tv-bad); }
+
+.tv-legend{ display:flex; flex-wrap:wrap; gap:14px; font-size:11.5px; color:var(--tv-mut); }
+.tv-legend span{ display:flex; align-items:center; gap:5px; }
+.tv-dot{ width:11px; height:11px; border-radius:50%; border:2px solid; display:inline-block; }
+.tv-dot.cur{ border-color:var(--tv-acc); background:rgba(139,108,239,.35); border-width:3px; }
+.tv-dot.path{ border-color:var(--tv-acc); }
+.tv-dot.end{ border-color:var(--tv-end); box-shadow:0 0 0 2px var(--tv-bg2), 0 0 0 3.5px var(--tv-end); }
+
+/* message + vars */
+.tv-msg{ min-height:36px; padding:8px 10px; border-left:3px solid var(--tv-acc); background:var(--tv-bg2); border-radius:0 6px 6px 0; }
+.tv-msg.ok{ border-left-color:var(--tv-ok); } .tv-msg.bad{ border-left-color:var(--tv-bad); }
+.tv-vars{ display:grid; grid-template-columns:repeat(auto-fill, minmax(130px,1fr)); gap:6px; }
+.tv-var{ border:1px solid var(--tv-bd); border-radius:6px; padding:4px 8px; min-width:0; }
+.tv-vk{ display:block; font-size:11px; color:var(--tv-mut); }
+.tv-vv{ display:block; font:600 12.5px var(--tv-mono); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.tv-vv.ok{ color:var(--tv-ok); } .tv-vv.bad{ color:var(--tv-bad); }
+
+/* history */
+.tv-log{ display:flex; flex-wrap:wrap; gap:6px; margin-top:12px; padding-top:10px; border-top:1px solid var(--tv-bd); font:12px var(--tv-mono); }
+.tv-chip{ padding:3px 9px; border-radius:999px; border:1px solid var(--tv-bd); background:var(--tv-bg2); }
+.tv-chip.t{ border-color:var(--tv-ok); color:var(--tv-ok); }
+.tv-chip.f{ border-color:var(--tv-bad); color:var(--tv-bad); }
+.tv-chip.pending{ opacity:.45; border-style:dashed; }
+.tv-empty{ color:var(--tv-mut); font-family:var(--font-interface, system-ui, sans-serif); }
+
+@media (prefers-reduced-motion: reduce){
+  .tv-trie *{ transition:none !important; animation:none !important; }
+}
+</style>
+
+<script>
+(function(){
+  const ABORT = {};
+  const CODE = [
+    "class TrieNode():",
+    "    def __init__(self):",
+    "        self.children = {}",
+    "        self.endofword = False",
+    "class Trie:",
+    "",
+    "    def __init__(self):",
+    "        self.root = TrieNode()",
+    "",
+    "    def insert(self, word: str) -> None:",
+    "        cur = self.root",
+    "        for ch in word:",
+    "            if ch not in cur.children:",
+    "                cur.children[ch] = TrieNode()",
+    "            cur = cur.children[ch]",
+    "        cur.endofword=True",
+    "",
+    "    def search(self, word: str) -> bool:",
+    "        cur = self.root",
+    "        for ch in word:",
+    "            if ch not in cur.children:",
+    "                return False",
+    "            cur = cur.children[ch]",
+    "        return cur.endofword",
+    "",
+    "    def startsWith(self, prefix: str) -> bool:",
+    "        cur = self.root",
+    "        for ch in prefix:",
+    "            if ch not in cur.children:",
+    "                return False",
+    "            cur = cur.children[ch]",
+    "        return True"
+  ];
+  // 1-based line numbers for each phase of each method
+  const LINES = {
+    insert:     { def:10, cur:11, loop:12, test:13, act:14, move:15, end:16 },
+    search:     { def:18, cur:19, loop:20, test:21, act:22, move:23, end:24 },
+    startsWith: { def:26, cur:27, loop:28, test:29, act:30, move:31, end:32 }
+  };
+  const DEMO = [
+    ["init"], ["insert","apple"], ["search","apple"], ["search","app"],
+    ["startsWith","app"], ["insert","app"], ["search","app"],
+    ["insert","bat"], ["search","bad"], ["startsWith","ba"]
+  ];
+
+  const KW = new Set(["class","def","for","in","if","not","return"]);
+  const CN = new Set(["True","False","None"]);
+  const TY = new Set(["str","bool"]);
+  const esc = s => s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  function hl(line){
+    let prev = "";
+    return line.replace(/[A-Za-z_]\w*|[^A-Za-z_]+/g, tok => {
+      if (/^[A-Za-z_]/.test(tok)) {
+        let c = "";
+        if (prev === "def" || prev === "class") c = "fn";
+        else if (KW.has(tok)) c = "kw";
+        else if (tok === "self") c = "sf";
+        else if (CN.has(tok)) c = "cn";
+        else if (TY.has(tok)) c = "ty";
+        prev = tok;
+        return c ? '<span class="tv-' + c + '">' + tok + "</span>" : tok;
+      }
+      if (tok.trim()) prev = "";
+      return esc(tok);
+    });
+  }
+
+  document.querySelectorAll(".tv-trie:not([data-ready])").forEach(init);
+
+  function init(R){
+    R.dataset.ready = "1";
+    const $ = s => R.querySelector(s);
+    const codeEl = $(".tv-code"), svg = $(".tv-svg"), wordEl = $(".tv-word"), msgEl = $(".tv-msg"),
+          varsEl = $(".tv-vars"), logEl = $(".tv-log"), input = $(".tv-input"),
+          playBtn = $(".tv-play"), stepBtn = $(".tv-step"), speedEl = $(".tv-speed input");
+
+    const lineEls = CODE.map((t, i) => {
+      const d = document.createElement("div");
+      d.className = "tv-line";
+      d.innerHTML = '<span class="tv-ln">' + (i + 1) + '</span><span class="tv-src">' + (hl(t) || " ") + "</span>";
+      codeEl.appendChild(d);
+      return d;
+    });
+
+    /* ---------- SVG trie ---------- */
+    const NS = "http://www.w3.org/2000/svg";
+    const mk = (tag, attrs, parent) => {
+      const e = document.createElementNS(NS, tag);
+      for (const k in attrs) e.setAttribute(k, attrs[k]);
+      if (parent) parent.appendChild(e);
+      return e;
+    };
+    const gE = mk("g", {}, svg), gN = mk("g", {}, svg);
+    const probeG = mk("g", { class: "tv-probe" }, svg);
+    const probeRect = mk("rect", { rx: 5, ry: 5, height: 22 }, probeG);
+    const probeText = mk("text", { y: 15 }, probeG);
+    let probeW = 0;
+
+    const GX = 46, GY = 64, R0 = 17;
+    let nodes = [], root = null, vb = [-170, -60, 340, 250], raf = 0;
+    let S = {};
+
+    function newNode(ch, parent){
+      const n = { ch, parent, children: new Map(), end: false,
+                  x: parent ? parent.x : 0, y: parent ? parent.y : 0, tx: 0, ty: 0 };
+      if (parent) { n.e = mk("line", { class: "tv-edge" }, gE); parent.children.set(ch, n); }
+      n.g = mk("g", { class: "tv-node" + (parent ? "" : " root") }, gN);
+      n.ring = mk("circle", { r: R0 + 4, class: "ring" }, n.g);
+      n.c = mk("circle", { r: R0, class: "main" }, n.g);
+      n.t = mk("text", { dy: "0.35em" }, n.g);
+      n.t.textContent = parent ? ch : "root";
+      nodes.push(n);
+      return n;
+    }
+    const kids = n => [...n.children.values()].sort((a, b) => a.ch < b.ch ? -1 : a.ch > b.ch ? 1 : 0);
+
+    function layout(){
+      let leaf = 0;
+      (function dfs(n, d){
+        const k = kids(n);
+        n.ty = d * GY;
+        if (!k.length) n.tx = leaf++ * GX;
+        else { k.forEach(c => dfs(c, d + 1)); n.tx = (k[0].tx + k[k.length - 1].tx) / 2; }
+      })(root, 0);
+      kick();
+    }
+    function targetVB(){
+      let a = Infinity, b = -Infinity, d = 0;
+      nodes.forEach(n => { a = Math.min(a, n.tx); b = Math.max(b, n.tx); d = Math.max(d, n.ty); });
+      const W = Math.max(b - a + 140, 340), H = Math.max(d + 105, 250);
+      return [(a + b) / 2 - W / 2, -62, W, H];
+    }
+    function draw(){
+      svg.setAttribute("viewBox", vb.map(v => v.toFixed(1)).join(" "));
+      nodes.forEach(n => {
+        n.g.setAttribute("transform", "translate(" + n.x.toFixed(1) + "," + n.y.toFixed(1) + ")");
+        if (n.e) {
+          const p = n.parent, dx = n.x - p.x, dy = n.y - p.y, L = Math.hypot(dx, dy) || 1;
+          n.e.setAttribute("x1", p.x + dx / L * R0); n.e.setAttribute("y1", p.y + dy / L * R0);
+          n.e.setAttribute("x2", n.x - dx / L * R0); n.e.setAttribute("y2", n.y - dy / L * R0);
+        }
+      });
+      if (S.probe && S.cur)
+        probeG.setAttribute("transform", "translate(" + (S.cur.x - probeW / 2) + "," + (S.cur.y - R0 - 32) + ")");
+    }
+    function tick(){
+      const T = targetVB(), k = 0.2;
+      let moving = false;
+      nodes.forEach(n => {
+        n.x += (n.tx - n.x) * k; n.y += (n.ty - n.y) * k;
+        if (Math.abs(n.tx - n.x) > 0.3 || Math.abs(n.ty - n.y) > 0.3) moving = true;
+        else { n.x = n.tx; n.y = n.ty; }
+      });
+      vb = vb.map((v, i) => {
+        const nv = v + (T[i] - v) * k;
+        if (Math.abs(T[i] - nv) > 0.3) { moving = true; return nv; }
+        return T[i];
+      });
+      draw();
+      raf = moving ? requestAnimationFrame(tick) : 0;
+    }
+    function kick(){ if (!raf) raf = requestAnimationFrame(tick); }
+
+    function resetTrie(){
+      gE.replaceChildren(); gN.replaceChildren();
+      nodes = [];
+      root = newNode("", null);
+      layout();
+      root.x = root.tx; root.y = root.ty; vb = targetVB(); draw();
+    }
+
+    const pathStr = n => {
+      const chars = [];
+      for (let m = n; m && m.parent; m = m.parent) chars.unshift(m.ch);
+      return chars.length ? "root → " + chars.join(" → ") : "root";
+    };
+
+    /* ---------- render one step ---------- */
+    function render(){
+      const outcome = S.result === true ? "ok" : S.result === false ? "bad" : "";
+      lineEls.forEach((el, i) => {
+        const on = i === S.line - 1;
+        el.classList.toggle("hl", on);
+        el.classList.toggle("ok", on && outcome === "ok");
+        el.classList.toggle("bad", on && outcome === "bad");
+      });
+      if (S.line) {
+        const el = lineEls[S.line - 1];
+        const top = el.offsetTop - codeEl.clientHeight / 2 + el.offsetHeight / 2;
+        codeEl.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
+      }
+
+      const onPath = new Set();
+      for (let n = S.cur; n; n = n.parent) onPath.add(n);
+      const peekNode = S.probe && S.probe.found && S.cur ? S.cur.children.get(S.probe.ch) : null;
+      nodes.forEach(n => {
+        const cl = n.g.classList;
+        cl.toggle("cur", n === S.cur && !outcome);
+        cl.toggle("ok", n === S.cur && outcome === "ok");
+        cl.toggle("bad", n === S.cur && outcome === "bad");
+        cl.toggle("path", onPath.has(n) && n !== S.cur);
+        cl.toggle("end", n.end);
+        cl.toggle("peek", n === peekNode);
+        cl.toggle("flash", n === S.flash);
+        if (n.e) { n.e.classList.toggle("path", onPath.has(n)); n.e.classList.toggle("peek", n === peekNode); }
+      });
+
+      if (S.probe && S.cur) {
+        const txt = "'" + S.probe.ch + "' in cur.children? " + (S.probe.found ? "yes" : "no");
+        probeText.textContent = txt;
+        probeW = txt.length * 7.3 + 16;
+        probeRect.setAttribute("width", probeW);
+        probeText.setAttribute("x", probeW / 2);
+        probeG.setAttribute("class", "tv-probe " + (S.probe.found ? "found" : "miss"));
+        probeG.style.display = "";
+      } else probeG.style.display = "none";
+
+      if (S.word != null && S.op !== "init") {
+        wordEl.innerHTML = '<span class="tv-op">' + S.op + '("</span>' +
+          [...S.word].map((c, j) => {
+            let cls = "tv-ch";
+            if (j === S.missAt) cls += " miss";
+            else if (j === S.i) cls += " act";
+            else if (j < S.i) cls += " done";
+            return '<span class="' + cls + '">' + c + "</span>";
+          }).join("") + '<span class="tv-op">")</span>';
+      } else wordEl.innerHTML = S.op === "init" ? '<span class="tv-op">obj = Trie()</span>' : "";
+
+      msgEl.textContent = S.msg || "";
+      msgEl.className = "tv-msg " + outcome;
+
+      const v = (k, val, cls) => '<div class="tv-var"><span class="tv-vk">' + k + '</span><span class="tv-vv ' + (cls || "") + '">' + val + "</span></div>";
+      let h = "";
+      if (S.op && S.op !== "init") {
+        h += v("ch", S.ch != null ? "'" + S.ch + "'" : "—");
+        h += v("cur", S.cur ? pathStr(S.cur) : "—");
+        h += v("cur.endofword", S.cur ? (S.cur.end ? "True" : "False") : "—");
+        if (S.result !== undefined && S.op !== "insert")
+          h += v("returns", S.result ? "True" : "False", outcome);
+      }
+      varsEl.innerHTML = h;
+      draw();
+    }
+
+    /* ---------- stepping ---------- */
+    const DELAYS = [1600, 1100, 750, 480, 260];
+    let playing = true, resolver = null, timer = 0, epoch = 0;
+    const delay = () => DELAYS[speedEl.value - 1];
+    const gate = () => new Promise(res => { resolver = res; if (playing) timer = setTimeout(release, delay()); });
+    function release(){ clearTimeout(timer); timer = 0; const r = resolver; resolver = null; if (r) r(); }
+    function updPlay(){ playBtn.textContent = playing ? "Pause" : "Play"; }
+
+    playBtn.addEventListener("click", () => {
+      playing = !playing; updPlay();
+      clearTimeout(timer);
+      if (playing && resolver) timer = setTimeout(release, delay());
+    });
+    stepBtn.addEventListener("click", () => {
+      if (playing) { playing = false; updPlay(); }
+      release();
+    });
+
+    /* ---------- operations ---------- */
+    let queue = [], running = false, log = [];
+
+    async function runOp(op, word){
+      const ep = epoch;
+      S = { op, word, i: -1, ch: null, cur: null, probe: null, result: undefined, missAt: -1, line: 0, msg: "" };
+      const step = async (line, msg) => {
+        S.line = line; S.msg = msg; render();
+        await gate();
+        if (ep !== epoch) throw ABORT;
+      };
+
+      if (op === "init") {
+        resetTrie(); S.cur = root;
+        await step(7, "obj = Trie() runs the constructor.");
+        pushLog("Trie()", "");
+        await step(8, "self.root = TrieNode(): an empty root with no children and endofword = False.");
+        return;
+      }
+
+      const L = LINES[op];
+      await step(L.def, "Call " + op + '("' + word + '").');
+      S.cur = root;
+      await step(L.cur, "Start at the root: cur = self.root.");
+
+      for (let i = 0; i < word.length; i++) {
+        const ch = word[i];
+        S.i = i; S.ch = ch; S.probe = null;
+        await step(L.loop, "Next character: ch = '" + ch + "'.");
+        const found = S.cur.children.has(ch);
+        S.probe = { ch, found };
+        await step(L.test, found
+          ? "'" + ch + "' is already a child of cur, so skip ahead."
+          : "'" + ch + "' is not a child of cur.");
+        if (!found) {
+          if (op === "insert") {
+            S.probe = null;
+            const n = newNode(ch, S.cur); layout(); S.flash = n;
+            await step(L.act, "Create a new TrieNode for '" + ch + "' under " + pathStr(S.cur) + ".");
+            S.flash = null;
+          } else {
+            S.result = false; S.missAt = i;
+            pushLog(op + '("' + word + '") → False', "f");
+            await step(L.act, "The path breaks at '" + ch + "', so return False.");
+            return;
+          }
+        }
+        S.probe = null;
+        S.cur = S.cur.children.get(ch);
+        await step(L.move, "Move down: cur = cur.children['" + ch + "'].");
+      }
+      S.i = word.length;
+
+      if (op === "insert") {
+        S.cur.end = true; S.flash = S.cur;
+        pushLog('insert("' + word + '")', "");
+        await step(L.end, 'Mark the last node: endofword = True. "' + word + '" is now stored.');
+      } else if (op === "search") {
+        S.result = S.cur.end;
+        pushLog('search("' + word + '") → ' + (S.result ? "True" : "False"), S.result ? "t" : "f");
+        await step(L.end, S.result
+          ? 'All characters matched and endofword is True, so "' + word + '" is a stored word.'
+          : 'All characters matched, but endofword is False: "' + word + '" is only a prefix of a stored word.');
+      } else {
+        S.result = true;
+        pushLog('startsWith("' + word + '") → True', "t");
+        await step(L.end, 'Every character was found, so "' + word + '" is a valid prefix. endofword doesn\'t matter here.');
+      }
+    }
+
+    function pushLog(text, cls){ log.push({ text, cls }); renderLog(); }
+    function renderLog(){
+      if (!log.length && !queue.length) { logEl.innerHTML = '<span class="tv-empty">Operations you run will be listed here.</span>'; return; }
+      logEl.innerHTML =
+        log.map(e => '<span class="tv-chip ' + e.cls + '">' + esc(e.text) + "</span>").join("") +
+        queue.map(([o, w]) => '<span class="tv-chip pending">' + (o === "init" ? "Trie()" : o + '("' + w + '")') + "</span>").join("");
+    }
+
+    async function pump(){
+      if (running) return;
+      running = true;
+      while (queue.length) {
+        const [op, w] = queue.shift();
+        renderLog();
+        try { await runOp(op, w); } catch (e) { if (e !== ABORT) throw e; }
+      }
+      running = false;
+      idle("Done. Type another word, or keep exploring the trie above.");
+    }
+    function enqueue(op, w){ queue.push([op, w]); renderLog(); pump(); }
+
+    function idle(msg){
+      S = { msg };
+      render();
+    }
+    function hardReset(){
+      epoch++; queue = []; release();
+      resetTrie(); log = []; renderLog();
+      idle("Type a word and press insert, search or startsWith, or run the demo.");
+    }
+
+    const getWord = () => input.value.toLowerCase().replace(/[^a-z]/g, "").slice(0, 10);
+    R.querySelectorAll("[data-op]").forEach(b => b.addEventListener("click", () => {
+      const w = getWord();
+      if (!w) {
+        input.classList.remove("tv-shake"); void input.offsetWidth; input.classList.add("tv-shake");
+        input.focus(); return;
+      }
+      input.value = w;
+      enqueue(b.dataset.op, w);
+    }));
+    input.addEventListener("keydown", e => {
+      if (e.key === "Enter") { e.preventDefault(); R.querySelector('[data-op="insert"]').click(); }
+    });
+    $(".tv-demo").addEventListener("click", () => {
+      hardReset(); playing = true; updPlay();
+      DEMO.forEach(([o, w]) => queue.push([o, w]));
+      renderLog(); pump();
+    });
+    $(".tv-reset").addEventListener("click", hardReset);
+
+    hardReset();
+  }
+})();
+</script>
