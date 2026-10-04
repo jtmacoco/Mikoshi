@@ -11,11 +11,11 @@ tags:
   - kernel
   - c
 date_started: 2026-09-16
-last_updated: 2026-09-28
+last_updated: 2026-10-03
 ---
 
 ## TL;DR
-> Keep this updated as your understanding sharpens — it's fine if it's rough or wrong early on.
+> Drivers are complicated
 
 ---
 ## Table of Contents
@@ -56,9 +56,41 @@ if (headings.length === 0) {
 ## Core Concepts
 <!-- One entry per idea — add as you encounter them, expand later -->
 
-- **Concept:**
-  - Why it matters:
-  - Related to: 
+- **Concept:** Device files are the entry point to a driver
+  - Why it matters: User space never calls a driver directly. It opens `/dev/<name>`, and the kernel uses the file's type (char/block) plus its `{major:minor}` pair to route the call to the right driver.
+  - Related to: Major/minor numbers, VFS, [[Writing Your First Kernel Module Part 1]]
+---
+- **Concept:** Char vs. block vs. network devices
+  - Why it matters: Block devices are storage and can be mounted. Network devices are their own category. Almost everything else is a char device, and that's the kind this chapter writes.
+  - Related to: Device files, misc drivers
+---
+- **Concept:** The Linux Device Model (bus, device, driver)
+  - Why it matters: Every device sits on a bus. The bus matches a device to a driver ("binding"), then calls the driver's `probe()`. Drivers register with both a bus and a subsystem framework.
+  - Related to: `probe()`/`remove()`, platform drivers, misc framework
+---
+- **Concept:** The misc framework
+  - Why it matters: It's the simplest way to write a char driver. Every misc driver shares major 10 and gets its own minor (often `MISC_DYNAMIC_MINOR`). `misc_register()` creates the `/dev` node for you, and there's no `probe()` to write.
+  - Related to: `struct miscdevice`, LDM, platform drivers
+---
+- **Concept:** `file_operations` (fops) = kernel polymorphism
+  - Why it matters: On `open()`, the VFS creates a `struct file` and points its `f_op` at your fops table. After that, each syscall (`read`, `write`, `release`...) is dispatched to your matching function. Your function signatures must match the `file_operations` struct exactly.
+  - Related to: VFS, `struct file`, [[#VFS & FOPS]]
+---
+- **Concept:** The user/kernel boundary
+  - Why it matters: `__user` pointers hold user-space addresses and must never be dereferenced in the kernel. Move data only with `copy_to_user()`/`copy_from_user()`, which return the number of bytes *not* copied (non-zero = failure, usually return `-EFAULT`).
+  - Related to: `read`/`write` methods, `sparse`
+---
+- **Concept:** Process context vs. atomic/interrupt context
+  - Why it matters: Some kernel functions can sleep (`copy_from_user()`, `kzalloc(..., GFP_KERNEL)`). They're only safe in process context, never in interrupt or atomic context.
+  - Related to: `PRINT_CTX()`, memory allocation flags
+---
+- **Concept:** Error conventions: return `-errno`
+  - Why it matters: Kernel methods signal failure by returning a negative errno (`-ENOMEM`, `-EIO`, `-EFAULT`). Unimplemented methods can produce misleading results (e.g., `read = NULL` gives `EINVAL`, and an unimplemented `llseek` can appear to succeed), so be explicit, like calling `nonseekable_open()`.
+  - Related to: fops, `llseek`
+---
+- **Concept:** Log with `dev_*()`, not `pr_*()`, in drivers
+  - Why it matters: `dev_info()` and friends take a `struct device *` and prefix each message with the subsystem and device name, so you can tell which device printed what.
+  - Related to: `pr_fmt`, `printk`
 
 ---
 
@@ -71,6 +103,14 @@ if (headings.length === 0) {
 ## Session Log
 <!-- Running, dated notes — Newest entry on top. -->
 
+### 2026-10-03
+-  
+
+**Summary**: 
+Writing a misc driver with a secret, so slightly more complex than the previous driver written.
+
+
+---
 ### 2026-09-30
 - kernel provides inline functions to transfer data from kernel to user space and vice versa
 	- `copy_to_user()`
@@ -78,13 +118,17 @@ if (headings.length === 0) {
 	- Return value is number of uncopied bytes 
 	- A non-zero values = error 
 
+**Code Section** [[#09/30/26 Code]]
 
+---
 ### 2026-09- 29
 - Kernel VFS will auto-invoke driver's `f_op` methods
 - Can test the practice misc driver made with `dd(1)` 
 - `copy_from_user()` **can only be used in a process context where it's safe to sleep and never in any kind of atomic or interrupt context**
 
 **Code Section**: [[#09/29/26 Code]]
+
+---
 ### 2026-09- 28
 - `errno` value returned by VFS not very intuitive
 	- If set `read()` func ptr of `f_op` to `NULL`, VFS will cause `EINVAL` value saying this failed because of invalid arg which is not right
@@ -94,6 +138,7 @@ if (headings.length === 0) {
 		1. Set `llseek` to the special `no_llseek` value
 		2. Invoke the `nonseekable_open()` func in driver's `open()` method, specifying that the file is non-seekable
 
+---
 ### 2026-09- 27
 
 > Go over `nonseekable_open()` I kinda skipped this part
@@ -103,14 +148,16 @@ if (headings.length === 0) {
 	- **Key Point**: signature of our `f_ops` function say `open` function, it should be identical to the `file_operation` structure `open`
 	- This is true for any function
 - `file_path()` gets the path of a file
+
 **Code Section**: [[#09/27/26 Code]]
 
+---
 ### 2026-09- 24
 - If a method is unsporrted say we didn't write the `fops` function for it like `poll()`
 	- VFS will detect `fops` pointer so `poll` and then it returns the correct negative integer signaling a fail
 	- Important, think back to semantics in programming languages if left undefined could cause issues
 
-
+---
 ### 2026-09- 23
 - All `misc` drivers are of the character type 
 - When a user-space process/thread opens a device file registered to this driver (via the misc framework), the kernel VFS allocates and initializes a `struct file` for that open and sets its `f_op` to the driver's `file_operations` (from `.fops` in `struct miscdevice`), so later calls like `read()`/`write()` are routed to the driver's functions. [[#VFS & FOPS]]
@@ -118,6 +165,7 @@ if (headings.length === 0) {
 	- Function will change based on system call say `open` or `read`
 	- Each system call maps to its own slot in the fops table, so a different driver function runs for each operation
 
+---
 ### 2026-09- 21
 - I fixed my linux setup to have correct heaers and nvim setup, lsp didn't have clang
 - `misc_register()` API takes one parameter, a ptr to a data struct of type `miscdevice`
@@ -128,6 +176,7 @@ if (headings.length === 0) {
 	- **I/YOU NEED TO SET THESE FUNCTION POINTERS**
 	- This is like saying hey these are the function pointers you can use with this driver I'm making
 	
+---
 ### 2026-09- 20
 - When you plug in a device like a USB, the bus driver (USB bus) notices it and matches it to the right device driver; once matched ("bound"), the kernel calls the driver's `probe()` function, which sets up the device (allocates memory, IRQs, etc) sit it's ready to use.
 - Drivers register in 2 places:
@@ -138,6 +187,7 @@ if (headings.length === 0) {
 	- Get Started here [kernel-platform-devices](https://www.kernel.org/doc/html/latest/driver-api/driver-model/platform.html#platform-devices-and-drivers) this is the doc for platform drivers 
 - To write a driver belonging to the `misc` class we need to register it ourselves
 
+---
 ### 2026-09-19 
 - **Minor number**: Typically interpreted as either physical or logical instance of the device, or represent functionality 
 - `misc` can be used for giving every small character device it's own scarce major number this allows Linux to tell the drivers apart by their minor number
@@ -147,6 +197,7 @@ if (headings.length === 0) {
 	- The **device drivers** that drive the devices (also often referred to as **client** drivers).
 - Every single device must reside on a bus
 
+---
 ### 2026-09-17 
 - Devices/Drivers are organized in a tree like hierarchy within the kernel
 - Block devices have capability to be mounted and a part of user file system **char devices don't**
@@ -154,7 +205,7 @@ if (headings.length === 0) {
 - If it's not  a storage or network device then it's a character device (simply put)
 - `{major:minor}` pair is a single unsigned 32-bit quantity
 
-
+---
 ### 2026-09-16 
 - Read the intro
 - Kernel Distinguishes between device files by two attributes
@@ -287,9 +338,10 @@ static struct miscdevice llkd_miscdev = {
 };
 
 ```
----
+
 **What it does:**
 Added file ops process and threads can perform on this device
+
 **Notes On Code Above**: 
 - These are functions that have yet to be implemented will show later
 
@@ -300,6 +352,7 @@ dev_info(dev, "device opened\n");
 ```
 
 **What it does:**
+
 outputs:
 ```
 device opened
@@ -310,6 +363,7 @@ misc llkd_miscdrv: device opened
 - The first line gives no clue where it came from
 - The second tells you it came from the misc subsystem, and specifically from the `llkd_miscdrv` device
 
+---
 ### 09/23/26 Code
 
 ```c title=09/23/26
