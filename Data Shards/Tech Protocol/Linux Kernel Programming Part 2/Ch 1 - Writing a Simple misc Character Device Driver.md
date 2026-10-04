@@ -50,6 +50,7 @@ if (headings.length === 0) {
 | Fops             | File Operations                                   |       |
 | VFS              | Virtual Filesystem Switch                         |       |
 | `dd(1)`          | Disk Duplicator                                   |       |
+| Devres           | Device Resoureces                                 |       |
 
 ---
 
@@ -104,7 +105,16 @@ if (headings.length === 0) {
 <!-- Running, dated notes — Newest entry on top. -->
 
 ### 2026-10-03
--  
+-  driver context or private driver data structure
+	- have a conveniently accessible data structure containing all relevant info in one place
+- Divide driver implementation into 5 pars
+	1. driver initialization,
+	2. read method
+	3. write method functionality implementation,
+	4. driver cleanup
+	5. userspace application that will use our device driver
+	
+**Code Section**: [[#10/03/26 Code]]
 
 **Summary**: 
 Writing a misc driver with a secret, so slightly more complex than the previous driver written.
@@ -118,13 +128,13 @@ Writing a misc driver with a secret, so slightly more complex than the previous 
 	- Return value is number of uncopied bytes 
 	- A non-zero values = error 
 
-**Code Section** [[#09/30/26 Code]]
+**Code Section**: [[#09/30/26 Code]]
 
 ---
 ### 2026-09- 29
 - Kernel VFS will auto-invoke driver's `f_op` methods
 - Can test the practice misc driver made with `dd(1)` 
-- `copy_from_user()` **can only be used in a process context where it's safe to sleep and never in any kind of atomic or interrupt context**
+- `copy_from_user()` ==can only be used in a process context where it's safe to sleep and never in any kind of atomic or interrupt context==
 
 **Code Section**: [[#09/29/26 Code]]
 
@@ -141,7 +151,6 @@ Writing a misc driver with a secret, so slightly more complex than the previous 
 ---
 ### 2026-09- 27
 
-> Go over `nonseekable_open()` I kinda skipped this part
 - When writing a device driver use the `dev_*()` family so `dev_info()`, `dev_warn()`, `dev_err()`, `dev_dbg()`, etc. Rather than `printk()` or `pr_*()` (`pr_info()`, `pr_err()`)
 - `dev_*()` routines take a pointer to a `struct device` as their first arg, so the kernel uses it to automatically prefix each message with info about which device printed it
 - How should the driver author implement the different `f_ops` for a driver?
@@ -216,6 +225,67 @@ Writing a misc driver with a secret, so slightly more complex than the previous 
 
 ## Code / Commands / Snippets
 
+### 10/03/26 Code
+
+```c
+// ch1/miscdrv_rdwr/​miscdrv_rdwr.c  
+[ ... ]  
+static int __init miscdrv_rdwr_init(void)  
+{  
+    int ret;  
+    struct device *dev;  
+  
+    ret = misc_register(&llkd_miscdev);  
+    [ ... ]  
+    dev = llkd_miscdev.this_device;
+    [ ... ]  
+    ctx = devm_kzalloc(dev, sizeof(struct drv_ctx), GFP_KERNEL);
+    if (unlikely(!ctx))  
+        return -ENOMEM;  
+  
+    ctx->dev = dev;  
+    strscpy(ctx->oursecret, "initmsg", 8);  
+    [ ... ]  
+    return 0;         /* success */  
+}
+```
+
+**What it does:**
+- Init's the `dev` member of `ctx` private struct as well as the *secrete* string
+
+**Notes on Code Above**: 
+- `devm_kzalloc`: 
+	- Takes in a device pointer but the memory is not allocated to the device, rather the device ptr is used make a note that this chunk of memory was allocated and it belongs to me (this is my memory), so when I die, destroy this memory too
+	- The device pointer is like a guardian who is responsible for the memory: it doesn't provide or approve it but once the device is destroyed the memory it's responsible for is freed with it
+	- In the background the device ptr keeps a list (a tracker of sorts) of the memory it's responsible for so when we remove the device (exit) it the kernel goes through the list and frees the memory,  This is called **devres**
+	- So the memory gets allocated to ctx
+
+---
+```c
+// ch1/miscdrv_rdwr/miscdrv_rdwr.c  
+[ ... ]  
+/* The driver 'context' (or private) data structure;  
+ * all relevant 'state info' reg the driver is here. */  
+struct drv_ctx {  
+    struct device *dev;  
+    int tx, rx, err, myword;  
+    u32 config1, config2;  
+    u64 config3;  
+#define MAXBYTES 128 /* Must match the userspace app; we should actually  
+                      * use a common header file for things like this */  
+    char oursecret[MAXBYTES];
+};  
+static struct drv_ctx *ctx;
+
+```
+
+**What it does:**
+- A struct containing all the information in one place
+
+**Notes on Code Above**: 
+- Nothing fancy just creates a struct 
+
+---
 ### 09/30/26 Code
 
 ```c
@@ -424,10 +494,7 @@ Basic setup for a misc device
 - `.name`: On successful registration kernel will automatically create a device node using this form `/dev/<name>`
 - permissions: see [[Linux#Permissions]] 
 
-
-
-
-
+---
 ## Architecture / Diagrams
 
 ![[Ch 1 - Writing a Simple misc Character Device Driver-20260917235845549.png]]
