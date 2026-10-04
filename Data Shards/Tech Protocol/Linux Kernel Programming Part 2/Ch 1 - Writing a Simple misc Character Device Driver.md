@@ -107,7 +107,7 @@ if (headings.length === 0) {
 ### 2026-10-03
 -  driver context or private driver data structure
 	- have a conveniently accessible data structure containing all relevant info in one place
-- Divide driver implementation into 5 pars
+- Divide driver implementation into 5 parts (can be seen in the code section)
 	1. driver initialization,
 	2. read method
 	3. write method functionality implementation,
@@ -227,7 +227,55 @@ Writing a misc driver with a secret, so slightly more complex than the previous 
 
 ### 10/03/26 Code
 
-```c
+```c title=read_method
+static ssize_t read_miscdrv_rdwr(struct file *filp, char __user *ubuf,
+                                 size_t count, loff_t *off)
+{
+    int ret = count, secret_len = strlen(ctx->oursecret);
+    struct device *dev = ctx->dev;
+    char tasknm[TASK_COMM_LEN];
+
+    PRINT_CTX();
+    dev_info(dev, "%s wants to read (upto) %zd bytes\n",
+             get_task_comm(tasknm, current), count);
+
+    ret = -EINVAL;
+    if (count < MAXBYTES) {
+        [...] << we don't display some validity checks here >>
+
+    /* In a 'real' driver, we would now actually read the content of the
+     * [...]
+     * Returns 0 on success, i.e., non-zero return implies an I/O fault).
+     * Here, we simply copy the content of our context structure's
+     * 'secret' member to userspace.
+     */
+    ret = -EFAULT;
+    if (copy_to_user(ubuf, ctx->oursecret, secret_len)) {
+        dev_warn(dev, "copy_to_user() failed\n");
+        goto out_notok;
+    }
+    ret = secret_len;
+
+    /* Update stats */
+    ctx->tx += secret_len; /* our 'transmit' is wrt this driver */
+    dev_info(dev, " %d bytes read, returning... (stats: tx=%d, rx=%d)\n",
+             secret_len, ctx->tx, ctx->rx);
+
+out_notok:
+    return ret;
+}
+```
+
+**What it does:**
+- When someone reads the device file it hands back the secret 
+
+**Notes on the code above:**
+- `tasknm` is a small local buffer holding the name of the process doing the read
+- `out_notok` is a label that `goto` can jump to
+
+---
+
+```c title=init
 // ch1/miscdrv_rdwr/​miscdrv_rdwr.c  
 [ ... ]  
 static int __init miscdrv_rdwr_init(void)  
