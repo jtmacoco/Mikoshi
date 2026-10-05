@@ -11,7 +11,7 @@ tags:
   - kernel
   - c
 date_started: 2026-09-16
-last_updated: 2026-10-03
+last_updated: 2026-10-04
 ---
 
 ## TL;DR
@@ -51,6 +51,7 @@ if (headings.length === 0) {
 | VFS              | Virtual Filesystem Switch                         |       |
 | `dd(1)`          | Disk Duplicator                                   |       |
 | Devres           | Device Resoureces                                 |       |
+| UVA              | User Space Virtual Address                        |       |
 
 ---
 
@@ -104,6 +105,16 @@ if (headings.length === 0) {
 ## Session Log
 <!-- Running, dated notes — Newest entry on top. -->
 
+### 2026-10-04
+- naive usage of `copy_from/to_user()`can cause security issues as malicious users can overwrite memory to their advantage
+	- Hackers can try to insert code through this function since driver has kernel level privileges  
+
+**Summary**:
+Still going over writing the secret misc driver but specifically the write functionality. Went over the actual C application that calls the driver as well but I didn't add it to the notes since its fairly basic IMO. It just takes in the device driver file and performs read and write on the file. Going over now ==Hacking the secret driver==
+
+**Code Section***: [[#10/04/26 Code]]
+
+---
 ### 2026-10-03
 -  driver context or private driver data structure
 	- have a conveniently accessible data structure containing all relevant info in one place
@@ -225,6 +236,84 @@ Writing a misc driver with a secret, so slightly more complex than the previous 
 
 ## Code / Commands / Snippets
 
+### 10/04/26 Code
+
+```c title=cleanup
+static void __exit miscdrv_rdwr_exit(void)  
+{  
+    misc_deregister(&llkd_miscdev);  
+    pr_info("LLKD misc (rdwr) driver deregistered, bye\n");  
+}
+```
+
+**What it does**:
+- de-registers device and frees memory 
+**Notes on code above**:
+- Nothing special 
+
+
+---
+
+```c title=write_method
+static ssize_t  
+**write_miscdrv_rdwr**(struct file *filp, const char __user *ubuf, size_t count, loff_t *off)  
+{  
+    int ret = count;  
+    void *kbuf = NULL;  
+    struct device *dev = ctx->dev;  
+    char tasknm[TASK_COMM_LEN];  
+  
+    PRINT_CTX();  
+    if (unlikely(count > MAXBYTES)) { /* paranoia */  
+        dev_warn(dev, "count %zu exceeds max # of bytes allowed, "  
+                "aborting write\n", count);  
+        goto out_nomem;  
+    }  
+    dev_info(dev, "%s wants to write %zd bytes\n", get_task_comm(tasknm, current), count);  
+  
+    ret = -ENOMEM;  
+    kbuf = kvmalloc(count, GFP_KERNEL);  
+    if (unlikely(!kbuf))  
+        goto out_nomem;  
+    memset(kbuf, 0, count);  
+  
+    /* Copy in the user supplied buffer 'ubuf' - the data content  
+     * to write ... */  
+    ret = -EFAULT;  
+    if (copy_from_user(kbuf, ubuf, count)) {  
+        dev_warn(dev, "copy_from_user() failed\n");  
+        goto out_cfu;  
+     }  
+  
+    /* In a 'real' driver, we would now actually write (for 'count' bytes)  
+     * the content of the 'ubuf' buffer to the device hardware (or   
+     * whatever), and then return.  
+     * Here, we do nothing, we just pretend we've done everything :-)  
+     */  
+    strscpy(ctx->oursecret, kbuf, (count > MAXBYTES ? MAXBYTES : count));  
+    [...]  
+    // Update stats  
+    ctx->rx += count; // our 'receive' is wrt this driver  
+  
+    ret = count;  
+    dev_info(dev, " %zd bytes written, returning... (stats: tx=%d, rx=%d)\n",  
+            count, ctx->tx, ctx->rx);  
+out_cfu:  
+    kvfree(kbuf);  
+out_nomem:  
+    return ret;  
+}
+```
+
+**What it does:**
+Changes the secrete message from 
+
+**Notes on the code above:**
+- `kvmalloc()`: allocates memory for a buffer to hold the user data
+- Copy data from user space app to the kernel buffer, `kbuf`
+- Use `dev_xxx()` so `dev_inf()` instead of `printk` routines, *recommended for drivers*
+
+---
 ### 10/03/26 Code
 
 ```c title=read_method
@@ -587,4 +676,7 @@ Think of your fops table as a business card listing "for reads, call this number
 ---
 
 ## Backlinks
-- Table of contents: [[Linux Kernel Programming - TOC]]
+- Table of contents: [[Linux Kernel Programming Part 2]]
+- `unlikely`: [[unlikely]]
+- `inode`: [[inode]]
+- `kzalloc`: [[kzalloc]]
