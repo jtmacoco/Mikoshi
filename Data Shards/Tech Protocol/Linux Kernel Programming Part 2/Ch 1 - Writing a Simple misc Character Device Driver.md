@@ -52,6 +52,9 @@ if (headings.length === 0) {
 | `dd(1)`          | Disk Duplicator                                   |       |
 | Devres           | Device Resoureces                                 |       |
 | UVA              | User Space Virtual Address                        |       |
+| KASAN            | Kernel Address Sanitizer                          |       |
+| RUID             | Real User ID                                      |       |
+| EUID             | Effective User ID                                 |       |
 
 ---
 
@@ -108,6 +111,10 @@ if (headings.length === 0) {
 ### 2026-10-04
 - naive usage of `copy_from/to_user()`can cause security issues as malicious users can overwrite memory to their advantage
 	- Hackers can try to insert code through this function since driver has kernel level privileges  
+- *KASAN*: A compiler instrumentation feature
+- Added `HACKIT` writing zeroes into the process's UID member and making it user mode obtain root access
+- RUID or EUID if set to specific value 0 it implies they have root access
+- Now typically use POSIX Capabilities mode, it allows to give specific access and capabilities on a thread rather than giving a process or thread complete access to the system as root
 
 **Summary**:
 Still going over writing the secret misc driver but specifically the write functionality. Went over the actual C application that calls the driver as well but I didn't add it to the notes since its fairly basic IMO. It just takes in the device driver file and performs read and write on the file. Going over now ==Hacking the secret driver==
@@ -237,6 +244,112 @@ Writing a misc driver with a secret, so slightly more complex than the previous 
 ## Code / Commands / Snippets
 
 ### 10/04/26 Code
+
+```c title=bad_driver_buggy_write0
+// in ch1/bad_miscdrv  
+**$ diff -u ../miscdrv/rdwr_test.c rdwr_test_hackit.c**  
+[ ... ]  
++**#define HACKIT**  
+[ ... ]  
++#ifndef HACKIT  
++     strncpy(buf, argv[3], num);  
++#else  
++     printf("%s: attempting to get root ...\n", argv[0]);  
++     /*  
++      * Write only 0's ... our 'bad' driver will write this into  
++      * this process's current->cred->uid member, thus making us  
++      * root !  
++      */  
++     memset(buf, 0, num);  
+ #endif  
+- } else { // test writing ..  
+          n = **write**(fd, buf, num);  
+[ ... ]  
++     printf("%s: wrote %zd bytes to %s\n", argv[0], n, argv[2]);  
++#ifdef HACKIT  
++     if (getuid() == 0) {  
++         printf(" !Pwned! uid==%d\n", getuid());  
++         **/* the hacker's holy grail: spawn a root shell */**  
++         **execl**("/bin/sh", "sh", (char *)NULL);  
++     }  
++#endif  
+[ ... ]
+
+
+**$ diff -u ../miscdrv_rdwr/miscdrv_rdwr.c bad_miscdrv.c**  
+[...]             
+         // << this is within the driver's write method >>  
+ static ssize_t write_miscdrv_rdwr(struct file *filp, const char __user *ubuf,  
+ size_t count, loff_t *off)  
+ {  
+        int ret = count;  
+        struct device *dev = ctx->dev;  
++       void *new_dest = NULL;  
+[ ... ]  
++#define DANGER_GETROOT_BUG  
++//#undef DANGER_GETROOT_BUG  
++#ifdef DANGER_GETROOT_BUG  
++     /* Make the destination of the copy_from_user() point to the current  
++      * process context's **(real) UID**; this way, we redirect the driver to  
++      * write zero's here. Why? Simple: traditionally, a **UID == 0** is what  
++      * defines root capability!  
++      */  
++      **new_dest = &current->cred->uid;  
+**+      count = 4; /* change count as we're only updating a 32-bit quantity */  
++      pr_info(" [current->cred=%px]\n", (TYPECST)current->cred);  
++#else  
++      new_dest = kbuf;  
++#endif
+
+```
+
+**What it does**:
+- Gives root access to userspace process
+
+**Notes on code above**:
+- I combined two code sections here since they are the changes for the same functionality 
+- when `DANGER_GETROOT_BUG` is defined, it sets the `new_dest` ptr to the address of the real UID member within the credential structure
+- `current` is a kernel macro that gives you a ptr to the `struct task_struct` of the process (or thread) that is currently running on the CPU
+- `task_struct` is kernel's big process descriptor: it holds PID, name, credentials, memory map, etc..
+
+
+---
+
+```c title=bad_driver_buggy_read
+// in ch1/bad_miscdrv  
+$ diff -u ../miscdrv_rdwr/miscdrv_rdwr.c bad_miscdrv.c*
+[ ... ]  
++#include <linux/cred.h>            ​// access to struct cred  
+#include "../../convenient.h"  
+[ ... ]  
+static ssize_t **read_miscdrv_rdwr**(struct file *filp, char __user *ubuf,  
+[ ... ]  
++ void *kbuf = NULL;  
++ **void *new_dest** = NULL;  
+[ ... ]  
++#define READ_BUG  
++//#undef READ_BUG  
++#ifdef READ_BUG  
+[ ... ]  
++ new_dest = ubuf+(512*1024);
++#else  
++ new_dest = ubuf;  
++#endif  
+[ ... ]  
++ if (copy_to_user(**new_dest**, ctx->oursecret, secret_len)) {  
+[ ... ]
+```
+**What it does**:
+- Changes user space destination pointer to point to an illegal location
+
+**Notes on code above**:
+- Note defines a macro that alters the user space destination by adding certain number of bytes (illegal)
+- Moves 512kb ahead of the correct destination
+- Throws a `bad address` as the `perror`
+	- internally several checks are done to avoid these kinds of issues thus bad address error
+	
+
+---
 
 ```c title=cleanup
 static void __exit miscdrv_rdwr_exit(void)  
@@ -647,10 +760,24 @@ Basic setup for a misc device
 ---
 
 ## Connections
-- Builds on: 
-- Contrasts with: 
-- Referenced later in: 
-
+- Builds on:
+	- [[Writing Your First Kernel Module Part 1]]: module init/exit, Makefile, `insmod`/`rmmod`; a misc driver is just a module that also calls `misc_register()`
+	- Kernel memory allocation: [[kzalloc]], GFP flags, and `devm_*` (devres) managed allocations
+	- VFS internals: [[inode]], `struct file`, and how syscalls get routed
+	- Process credentials: `task_struct` → `cred` (RUID/EUID), which is exactly what the HACKIT demo overwrites
+	- C function pointers: fops is a vtable built by hand
+- Contrasts with:
+	- "Full" char drivers: `alloc_chrdev_region()` + `cdev_add()` + `class_create()`/`device_create()`, where you do by hand what the misc framework does for you (major number, `/dev` node)
+	- Platform drivers: have `probe()`/`remove()` and bind via a bus; misc drivers skip that
+	- Block and network drivers: mountable storage and the netdev stack, not file-like byte streams
+	- `pr_*()` logging in plain modules vs `dev_*()` in drivers
+	- Plain `memcpy()` vs `copy_to/from_user()`: why user pointers need special handling
+- Referenced later in:
+	- User–kernel communication (Ch 2): `ioctl` is just another fops method; procfs/sysfs/debugfs are alternatives to a device file
+	- Interrupts (Ch 4): why `copy_from_user()` can't be used in atomic context
+	- Kernel synchronization (Ch 6–7): the secret driver's context struct is shared by every opener with no lock, which is a race condition waiting to happen
+	- Security: POSIX capabilities, KASAN
+	
 ---
 
 ## Personal Analogies 
@@ -660,18 +787,29 @@ Think of your fops table as a business card listing "for reads, call this number
 
 ---
 ## Practical Exercises / Labs
+> Questions from book
 
+- Load up the first miscdrv skeleton misc driver kernel module and issue lseek(2) on it; what happens? (Does it succeed? What's the return value from lseek?) If not, okay, how will you fix this?
+- Write a misc class character driver that behaves as a simple converter program (assume its path name is /dev/convert). For example, writing the temperature in Fahrenheit units, it should return (write to the kernel log) the temperature in Celsius. Thus, doing echo 98.6 > /dev/convert should result in the value 37 C being written to the kernel log. Additionally, do the following:
+    1. Validate that the data passed to your driver is a numeric value.
+    2. How will you handle floating-point values? (Tip: refer to the section _Floating point not allowed in the kernel_ in _Linux Kernel Programming_, _Chapter 5_, _Writing Your First Kernel Module LKMs – Part 2._)
+- Write a "task display" driver; here, we'd like a user space process to write a thread (or process) PID to it. When you now read from the driver's device node (assume its path name is /dev/task_display), you should receive details regarding the task (which is pulled from its task structure, of course). For example, doing echo 1 > /dev/task_display followed by cat /dev/task_display should have the driver emit task details of PID 1 to the kernel log. Don't forget to add validity checks (check the PID is valid, and so on).
+- (A bit more advanced:) Write a "proper" LDM-based driver; the misc drivers covered here did register with the kernel's misc framework, but simply, implicitly, used the raw character interface as the bus. The LDM prefers that a driver must register with a kernel framework and a bus driver. Hence, write a "demo" driver that registers itself with the kernel's misc framework and the platform bus. This will involve creating a fake platform device as well.  
+    (_Note the following t__ips_:  
+    a) Do refer to [Chapter 2](https://learning.oreilly.com/library/view/linux-kernel-programming/9781801079518/4042025e-27a1-40f4-a2f7-223f601107dc.xhtml), _User-Kernel Communication Pathways_, particularly the _Creating a simple platform device_ and _Platform devices_ sections.  
+    b) A possible solution to this driver can be found here: solutions_to_assgn/ch12/misc_plat/.)
+	
 ---
 
 ## Further Reading / Tangents
-<!-- Things this chapter made you curious about but that are out of scope for now -->
+
 - Look more into disk duplicator 
 
 ---
 
-## Chapter Summary (fill in once finished)
-> Written last, in your own words, no peeking at the book.
+## Chapter Summary 
 
+This chapter introduced the basics of writing device drivers specifically `misc` drivers. We went through blocks and character drivers also examining the major and minor numbers. This chapter focused mainly on the `misc` framework and writing a `misc` driver due to it's simplicity and ease to make. We went over examples such as initializing a simple driver to reading and writing to and from the driver using a simple C program (aka application while simple). Then went into detail about I/O and how it works internally. The chapter ends with *hacks* on the potential dangers of reading and writing to the driver/device if not done carefully further emphasizing security is important
 
 ---
 
