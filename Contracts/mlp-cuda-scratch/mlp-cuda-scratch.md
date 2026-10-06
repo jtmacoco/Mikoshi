@@ -86,3 +86,12 @@ Nowhere in the `forward` code you pasted — this is just the forward pass. Bias
 
 So the asymmetry you're seeing in `forward()` (bias outside the inner loop) is intentional and mirrors a similar asymmetry you'll see in `backward()`: weight gradients need the inputs, bias gradients don't.
 
+---
+## Links
+
+- [[Backpropagation]]
+- [[Mikoshi/Netrunner/ML Codebase/02 - MLP Core/Forward Propagation|Forward Propagation]]
+- [[Mikoshi/Netrunner/ML Codebase/02 - MLP Core/Optimization|Optimization]]
+- [[Derivative]]
+- [[Calculus Chain Rule]]
+- [[Neuron]]
