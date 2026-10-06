@@ -11,52 +11,53 @@ status: personal
 
 Track my quiz progress
 
-| Date       | Chapter                            | Score | Time (s) | Accuracy |
-| ---------- | ---------------------------------- | ----- | -------- | -------- |
-| 2026-06-15 | Chapter 1 - Addition & Subtraction | 20/25 | 528.5    | 80%      |
-| 2026-07-16 | Chapter 1 - Addition & Subtraction | 24/25 | 503.8    | 96%      |
-| 2026-07-17 | Chapter 1 - Addition & Subtraction | 21/25 | 560.9    | 84%      |
-| 2026-07-18 | Chapter 1 - Addition & Subtraction | 19/25 | 508.6    | 76%      |
-| 2026-07-19 | Chapter 1 - Addition & Subtraction | 21/25 | 359.0    | 84%      |
-| 2026-07-20 | Chapter 1 - Addition & Subtraction | 23/25 | 504.1    | 92%      |
-| 2026-07-21 | Chapter 1 - Addition & Subtraction | 18/25 | 597.4    | 72%      |
-| 2026-07-22 | Chapter 1 - Addition & Subtraction | 22/25 | 585.9    | 88%      |
-| 2026-07-27 | Chapter 1 - Addition & Subtraction | 22/25 | 564.0    | 88%      |
-| 2026-07-28 | Chapter 1 - Addition & Subtraction | 22/25 | 474.6    | 88%      |
-| 2026-07-29 | Chapter 1 - Addition & Subtraction | 22/25 | 536.0    | 88%      |
-| 2026-07-30 | Chapter 1 - Addition & Subtraction | 22/25 | 562.7    | 88%      |
-| 2026-07-31 | Chapter 1 - Addition & Subtraction | 24/25 | 387.7    | 96%      |
-| 2026-08-02 | Chapter 1 - Addition & Subtraction | 21/25 | 483.8    | 84%      |
-| 2026-08-02 | Chapter 2 - Basic Multiplication   | 21/25 | 685.7    | 84%      |
-| 2026-08-04 | Chapter 2 - Basic Multiplication   | 24/25 | 721.5    | 96%      |
-| 2026-08-05 | Chapter 2 - Basic Multiplication   | 24/25 | 865.3    | 96%      |
-| 2026-08-06 | Chapter 2 - Basic Multiplication | 21/25 | 618.3 | 84% |
-| 2026-08-07 | Chapter 2 - Basic Multiplication | 22/25 | 674.7 | 88% |
-| 2026-08-08 | Chapter 2 - Basic Multiplication | 19/25 | 518.6 | 76% |
-| 2026-08-09 | Chapter 2 - Basic Multiplication | 22/25 | 657.8 | 88% |
-| 2026-08-11 | Chapter 2 - Basic Multiplication | 25/25 | 579.7 | 100% |
-| 2026-08-13 | Chapter 2 - Basic Multiplication | 24/25 | 408.1 | 96% |
-| 2026-08-14 | Chapter 2 - Basic Multiplication | 25/25 | 679.3 | 100% |
-| 2026-08-15 | Chapter 2 - Basic Multiplication | 24/25 | 603.3 | 96% |
-| 2026-08-15 | Chapter 2 - Basic Multiplication | 23/25 | 517.7 | 92% |
-| 2026-08-16 | Chapter 2 - Basic Multiplication | 25/25 | 529.1 | 100% |
-| 2026-08-18 | Chapter 2 - Basic Multiplication | 22/25 | 517.5 | 88% |
-| 2026-08-19 | Chapter 2 - Basic Multiplication | 19/25 | 530.7 | 76% |
-| 2026-08-20 | Chapter 2 - Basic Multiplication | 23/25 | 444.8 | 92% |
-| 2026-08-21 | Chapter 2 - Basic Multiplication | 20/25 | 480.6 | 80% |
-| 2026-08-22 | Chapter 2 - Basic Multiplication | 23/25 | 496.0 | 92% |
-| 2026-09-10 | Chapter 2 - Basic Multiplication | 24/25 | 685.5 | 96% |
-| 2026-09-11 | Chapter 2 - Basic Multiplication | 21/25 | 423.3 | 84% |
-| 2026-09-13 | Chapter 2 - Basic Multiplication | 22/25 | 352.5 | 88% |
-| 2026-09-15 | Chapter 3 - Intermediate Multiplication | 17/20 | 1403.3 | 85% |
-| 2026-09-17 | Chapter 3 - Intermediate Multiplication | 20/20 | 1094.5 | 100% |
-| 2026-09-18 | Chapter 3 - Intermediate Multiplication | 19/20 | 1087.2 | 95% |
-| 2026-09-19 | Chapter 3 - Intermediate Multiplication | 18/20 | 918.7 | 90% |
-| 2026-09-22 | Chapter 3 - Intermediate Multiplication | 17/20 | 1009.6 | 85% |
-| 2026-09-24 | Chapter 3 - Intermediate Multiplication | 19/20 | 987.4 | 95% |
-| 2026-09-25 | Chapter 3 - Intermediate Multiplication | 18/20 | 1105.2 | 90% |
-| 2026-09-28 | Chapter 3 - Intermediate Multiplication | 16/20 | 1198.3 | 80% |
-| 2026-09-29 | Chapter 3 - Intermediate Multiplication | 19/20 | 802.8 | 95% |
-| 2026-09-30 | Chapter 3 - Intermediate Multiplication | 15/20 | 923.0 | 75% |
-| 2026-10-01 | Chapter 3 - Intermediate Multiplication | 18/20 | 700.8 | 90% |
-| 2026-10-04 | Chapter 3 - Intermediate Multiplication | 19/20 | 939.3 | 95% |
+| Date       | Chapter                                 | Score | Time (s) | Accuracy |
+| ---------- | --------------------------------------- | ----- | -------- | -------- |
+| 2026-06-15 | Chapter 1 - Addition & Subtraction      | 20/25 | 528.5    | 80%      |
+| 2026-07-16 | Chapter 1 - Addition & Subtraction      | 24/25 | 503.8    | 96%      |
+| 2026-07-17 | Chapter 1 - Addition & Subtraction      | 21/25 | 560.9    | 84%      |
+| 2026-07-18 | Chapter 1 - Addition & Subtraction      | 19/25 | 508.6    | 76%      |
+| 2026-07-19 | Chapter 1 - Addition & Subtraction      | 21/25 | 359.0    | 84%      |
+| 2026-07-20 | Chapter 1 - Addition & Subtraction      | 23/25 | 504.1    | 92%      |
+| 2026-07-21 | Chapter 1 - Addition & Subtraction      | 18/25 | 597.4    | 72%      |
+| 2026-07-22 | Chapter 1 - Addition & Subtraction      | 22/25 | 585.9    | 88%      |
+| 2026-07-27 | Chapter 1 - Addition & Subtraction      | 22/25 | 564.0    | 88%      |
+| 2026-07-28 | Chapter 1 - Addition & Subtraction      | 22/25 | 474.6    | 88%      |
+| 2026-07-29 | Chapter 1 - Addition & Subtraction      | 22/25 | 536.0    | 88%      |
+| 2026-07-30 | Chapter 1 - Addition & Subtraction      | 22/25 | 562.7    | 88%      |
+| 2026-07-31 | Chapter 1 - Addition & Subtraction      | 24/25 | 387.7    | 96%      |
+| 2026-08-02 | Chapter 1 - Addition & Subtraction      | 21/25 | 483.8    | 84%      |
+| 2026-08-02 | Chapter 2 - Basic Multiplication        | 21/25 | 685.7    | 84%      |
+| 2026-08-04 | Chapter 2 - Basic Multiplication        | 24/25 | 721.5    | 96%      |
+| 2026-08-05 | Chapter 2 - Basic Multiplication        | 24/25 | 865.3    | 96%      |
+| 2026-08-06 | Chapter 2 - Basic Multiplication        | 21/25 | 618.3    | 84%      |
+| 2026-08-07 | Chapter 2 - Basic Multiplication        | 22/25 | 674.7    | 88%      |
+| 2026-08-08 | Chapter 2 - Basic Multiplication        | 19/25 | 518.6    | 76%      |
+| 2026-08-09 | Chapter 2 - Basic Multiplication        | 22/25 | 657.8    | 88%      |
+| 2026-08-11 | Chapter 2 - Basic Multiplication        | 25/25 | 579.7    | 100%     |
+| 2026-08-13 | Chapter 2 - Basic Multiplication        | 24/25 | 408.1    | 96%      |
+| 2026-08-14 | Chapter 2 - Basic Multiplication        | 25/25 | 679.3    | 100%     |
+| 2026-08-15 | Chapter 2 - Basic Multiplication        | 24/25 | 603.3    | 96%      |
+| 2026-08-15 | Chapter 2 - Basic Multiplication        | 23/25 | 517.7    | 92%      |
+| 2026-08-16 | Chapter 2 - Basic Multiplication        | 25/25 | 529.1    | 100%     |
+| 2026-08-18 | Chapter 2 - Basic Multiplication        | 22/25 | 517.5    | 88%      |
+| 2026-08-19 | Chapter 2 - Basic Multiplication        | 19/25 | 530.7    | 76%      |
+| 2026-08-20 | Chapter 2 - Basic Multiplication        | 23/25 | 444.8    | 92%      |
+| 2026-08-21 | Chapter 2 - Basic Multiplication        | 20/25 | 480.6    | 80%      |
+| 2026-08-22 | Chapter 2 - Basic Multiplication        | 23/25 | 496.0    | 92%      |
+| 2026-09-10 | Chapter 2 - Basic Multiplication        | 24/25 | 685.5    | 96%      |
+| 2026-09-11 | Chapter 2 - Basic Multiplication        | 21/25 | 423.3    | 84%      |
+| 2026-09-13 | Chapter 2 - Basic Multiplication        | 22/25 | 352.5    | 88%      |
+| 2026-09-15 | Chapter 3 - Intermediate Multiplication | 17/20 | 1403.3   | 85%      |
+| 2026-09-17 | Chapter 3 - Intermediate Multiplication | 20/20 | 1094.5   | 100%     |
+| 2026-09-18 | Chapter 3 - Intermediate Multiplication | 19/20 | 1087.2   | 95%      |
+| 2026-09-19 | Chapter 3 - Intermediate Multiplication | 18/20 | 918.7    | 90%      |
+| 2026-09-22 | Chapter 3 - Intermediate Multiplication | 17/20 | 1009.6   | 85%      |
+| 2026-09-24 | Chapter 3 - Intermediate Multiplication | 19/20 | 987.4    | 95%      |
+| 2026-09-25 | Chapter 3 - Intermediate Multiplication | 18/20 | 1105.2   | 90%      |
+| 2026-09-28 | Chapter 3 - Intermediate Multiplication | 16/20 | 1198.3   | 80%      |
+| 2026-09-29 | Chapter 3 - Intermediate Multiplication | 19/20 | 802.8    | 95%      |
+| 2026-09-30 | Chapter 3 - Intermediate Multiplication | 15/20 | 923.0    | 75%      |
+| 2026-10-01 | Chapter 3 - Intermediate Multiplication | 18/20 | 700.8    | 90%      |
+| 2026-10-04 | Chapter 3 - Intermediate Multiplication | 19/20 | 939.3    | 95%      |
+| 2026-10-06 | Chapter 3 - Intermediate Multiplication | 19/20 | 965.4    | 95%      |

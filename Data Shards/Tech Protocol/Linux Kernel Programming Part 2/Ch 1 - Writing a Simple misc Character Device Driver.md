@@ -15,7 +15,7 @@ last_updated: 2026-10-04
 ---
 
 ## TL;DR
-> Drivers are complicated
+>`misc` drivers are the easiest way to write a char driver. Register a `struct miscdevice` (all share major 10) and the kernel makes the `/dev` node for you. You fill in a `file_operations` table, and the VFS calls your functions when a user opens, reads, or writes the device file. Only move data with `copy_to_user()`/`copy_from_user()`. Careless copies can let an attacker get root.
 
 ---
 ## Table of Contents
