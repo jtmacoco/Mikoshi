@@ -55,6 +55,7 @@ if (headings.length === 0) {
 | KASAN            | Kernel Address Sanitizer                          |
 | RUID             | Real User ID                                      |
 | EUID             | Effective User ID                                 |
+| GPL              | General Public License                            |
 
 ---
 
