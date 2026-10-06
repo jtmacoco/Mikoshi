@@ -38,23 +38,23 @@ if (headings.length === 0) {
 ## Vocabulary / Key Terms
 <!-- Add terms the moment you hit them, even before you fully understand them -->
 
-| Term             | Definition                                        | Notes |
-| ---------------- | ------------------------------------------------- | ----- |
-| Device Driver    | Interface between OS and peripheral hw device     |       |
-| Device File/Node | Entry point into device driver                    |       |
-| Major Number     | Represents the class of device                    |       |
-| Minor Number     | The interpretation of the device                  |       |
-| LDM              | Linux Device Model                                |       |
-| Device           | Physical (or virtual) thing itself, so like a USB |       |
-| Driver           | Software that knows how to talk to the device     |       |
-| Fops             | File Operations                                   |       |
-| VFS              | Virtual Filesystem Switch                         |       |
-| `dd(1)`          | Disk Duplicator                                   |       |
-| Devres           | Device Resoureces                                 |       |
-| UVA              | User Space Virtual Address                        |       |
-| KASAN            | Kernel Address Sanitizer                          |       |
-| RUID             | Real User ID                                      |       |
-| EUID             | Effective User ID                                 |       |
+| Term             | Definition                                        |
+| ---------------- | ------------------------------------------------- |
+| Device Driver    | Interface between OS and peripheral hw device     |
+| Device File/Node | Entry point into device driver                    |
+| Major Number     | Represents the class of device                    |
+| Minor Number     | The interpretation of the device                  |
+| LDM              | Linux Device Model                                |
+| Device           | Physical (or virtual) thing itself, so like a USB |
+| Driver           | Software that knows how to talk to the device     |
+| Fops             | File Operations                                   |
+| VFS              | Virtual Filesystem Switch                         |
+| `dd(1)`          | Disk Duplicator                                   |
+| Devres           | Device Resoureces                                 |
+| UVA              | User Space Virtual Address                        |
+| KASAN            | Kernel Address Sanitizer                          |
+| RUID             | Real User ID                                      |
+| EUID             | Effective User ID                                 |
 
 ---
 
