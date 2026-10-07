@@ -1,8 +1,8 @@
 # TODO
-- [ ] Apply To Jobs
+- [x] Apply To Jobs ✅ 2026-10-06
 - [ ] Practice C
 - [ ] Practice CUDA
-- [ ] Mental Math
-- [ ] Leetcode
+- [x] Mental Math ✅ 2026-10-06
+- [x] Leetcode ✅ 2026-10-06
 
 # Shard Log
