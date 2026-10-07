@@ -635,6 +635,8 @@ Prints open when a process or thread calls the custom `mis` device
 - C allows for implicit casts **(make a separate note on this later)**
 - `unlikely`: Go to [[unlikely]] note
 - `inode`:  Go to [[inode]] note
+- Convention to make every function `static`
+- *Rule of thumb*: Make function  `static` whenever only that one `.c` file uses it
 
 ---
 
@@ -665,6 +667,9 @@ Added file ops process and threads can perform on this device
 
 **Notes On Code Above**: 
 - These are functions that have yet to be implemented will show later
+- In C `struct file_operations` is a type because you can't drop the `stcut` part in C
+- the dot use in `.open` is initializer syntax it's like saying `fops.open`
+- This is kind of like overriding in C++ since `.release`, and the others have some function definition but we change that 
 
 ---
 ```c title=dev_vs_pr
@@ -819,3 +824,4 @@ This chapter introduced the basics of writing device drivers specifically `misc`
 - `unlikely`: [[unlikely]]
 - `inode`: [[inode]]
 - `kzalloc`: [[kzalloc]]
+- static: [[Static]]
