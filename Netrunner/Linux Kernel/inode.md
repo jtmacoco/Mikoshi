@@ -10,7 +10,10 @@ created: 2026-09-29
 ---
 ## What is inode
 
-`struct inode` is the kernel's in-memory representation of a **file on a filesystem** (including device nodes like `/dev/miscdrv`). There is exactly **one inode per file**, shared by everyone who opens it.
+`struct inode` is the kernel's in-memory representation of a **file on a filesystem** (including device nodes like `/dev/miscdrv`). There is exactly **one inode per file**, shared by everyone who opens it. Pretty much inode is just the metadata 
+
+- the **on-disk inode**, which is what I described before: metadata stored by the filesystem (ext4, xfs, etc.), each in its own format
+- **`struct inode`**, which is a C struct inside the kernel. When a file is in use, the kernel reads the on-disk inode and fills in a `struct inode` in RAM.
 
 For a device file, the inode holds:
 - `i_rdev`: device number (major:minor), used to route `open()` to the right driver
