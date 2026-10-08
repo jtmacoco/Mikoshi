@@ -629,6 +629,7 @@ static int open_miscdrv(struct inode *inode, struct file *filp){
 Prints open when a process or thread calls the custom `mis` device
 
 **Notes On Code Above**: 
+- `file_path()` is a built in function a part of the kernels VFS layer
 - `GFP_KERNEL` most common allocation flag for kernel memory allocators
 	- flag tells allocator how it  may get the memory especially if it is allowed to sleep
 - Open implementation for custom `mis` device making the open function
