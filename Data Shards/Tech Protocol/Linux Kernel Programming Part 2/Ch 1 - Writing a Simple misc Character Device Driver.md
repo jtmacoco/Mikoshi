@@ -118,7 +118,7 @@ if (headings.length === 0) {
 - Now typically use POSIX Capabilities mode, it allows to give specific access and capabilities on a thread rather than giving a process or thread complete access to the system as root
 
 **Summary**:
-Still going over writing the secret misc driver but specifically the write functionality. Went over the actual C application that calls the driver as well but I didn't add it to the notes since its fairly basic IMO. It just takes in the device driver file and performs read and write on the file. Going over now ==Hacking the secret driver==
+Still going over writing the secret misc driver but specifically the write functionality. Went over the actual C application that calls the driver as well but I didn't add it to the notes since its fairly basic IMO. It just takes in the device driver file and performs read and write on the file. Going over now ==Hacking the secret driver==. Finished the chapter!
 
 **Code Section***: [[#10/04/26 Code]]
 
