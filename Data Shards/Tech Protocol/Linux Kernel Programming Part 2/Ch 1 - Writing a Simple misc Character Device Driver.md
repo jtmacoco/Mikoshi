@@ -56,6 +56,7 @@ if (headings.length === 0) {
 | RUID             | Real User ID                                      |
 | EUID             | Effective User ID                                 |
 | GPL              | General Public License                            |
+| GFP_KERNEL       | Get Free Pages                                    |
 
 ---
 
@@ -628,7 +629,10 @@ static int open_miscdrv(struct inode *inode, struct file *filp){
 Prints open when a process or thread calls the custom `mis` device
 
 **Notes On Code Above**: 
+- `GFP_KERNEL` most common allocation flag for kernel memory allocators
+	- flag tells allocator how it  may get the memory especially if it is allowed to sleep
 - Open implementation for custom `mis` device making the open function
+- `PATH_MAX` is max length of a filesystem path name in bytes this is give from the `limits.h` 
 - Allocate some memory for a buffer (to hold the pathname of our device)
 - `kzalloc`: Go to [[kzalloc]] note
 - Current issue `PRINT_CTX()` macro hasn't been made yet 
@@ -810,6 +814,7 @@ Think of your fops table as a business card listing "for reads, call this number
 ## Further Reading / Tangents
 
 - Look more into disk duplicator 
+- Look more into different allocation flags similar to `GFP_KERNEL`
 
 ---
 
