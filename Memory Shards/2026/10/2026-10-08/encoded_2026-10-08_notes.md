@@ -2,7 +2,7 @@
 - [x] Apply To Jobs ✅ 2026-10-08
 - [ ] Practice C
 - [ ] Practice CUDA
-- [ ] Mental Math
+- [x] Mental Math ✅ 2026-10-08
 - [ ] Leetcode
 
 # Shard Log
