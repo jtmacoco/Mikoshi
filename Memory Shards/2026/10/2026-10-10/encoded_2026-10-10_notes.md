@@ -1,5 +1,5 @@
 # TODO
-- [ ] Apply To Jobs
+- [x] Apply To Jobs ✅ 2026-10-10
 - [ ] Practice C
 - [ ] Practice CUDA
 - [x] Mental Math ✅ 2026-10-10
