@@ -11,3 +11,4 @@ Description: Keeps track of daily entries
 - [[encoded_2026-10-06_notes]]
 - [[encoded_2026-10-07_notes]]
 - [[encoded_2026-10-08_notes]]
+- [[encoded_2026-10-09_notes]]
