@@ -592,10 +592,10 @@ Opens the file we pass as a parameter so `/dev/llkd_miscdrv`
  * the number of bytes read or written on success, 0 on EOF (for read) and -1 (-ve errno)  
  * on failure; we simply return 'count', pretending that we 'always succeed'.  
  */  
-static ssize_t read_miscdrv(struct file *filp, char __user *ubuf, size_t count, loff_t *off)**  
+static ssize_t read_miscdrv(struct file *filp, char __user *ubuf, size_t count, loff_t *off)
 {  
         pr_info("to read %zd bytes\n", count);  
-        return count;  
+        return 0;  
 }
 ```
 
@@ -607,7 +607,12 @@ Shows the number of bytes the user space process wants to read
 - **`char __user *ubuf`**: a pointer to the buffer the user program passed to `read()`. This is where you're supposed to put the data.
 - **`loff_t *off`**: a pointer to the current file position. `loff_t` is the kernel's type for file offsets, a `long long`, so 64 bits even on 32-bit systems, which allows files larger than 4 GB. It's passed as a pointer so your function can update it, for example `*off += bytes_read;`, and the next `read()` continues where the last one left off.
 - `__user` is an annotation not a real type, it tells reader and static checker `sparse` that the ptr holds a **user-space address** not a kernel one
-- Must never dereference a user pointer directly in kernel code
+- **Must never dereference a user pointer directly in kernel code**
+- `ssize_t` is just signed `size_t` so  negative nums are allowed
+- Returns the number of bytes read 
+	- **Positive (`n > 0`):** “I copied `n` bytes into the user’s buffer.” That’s a success.
+	- **Zero:** “There’s nothing left,” meaning end of file. That’s also a success, not an error.
+	- **Negative:** an error, written as a negated errno code, such as `return -EFAULT;` or `return -EINVAL;`.
 
 ---
 ### 09/27/26 Code
@@ -642,6 +647,7 @@ Prints open when a process or thread calls the custom `mis` device
 - `inode`:  Go to [[inode]] note
 - Convention to make every function `static`
 - *Rule of thumb*: Make function  `static` whenever only that one `.c` file uses it
+- `f_flags` store the flags userspace passed to `open` so for example `O_RDONLY`, these are just a bitmask
 
 ---
 
