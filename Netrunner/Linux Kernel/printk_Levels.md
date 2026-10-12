@@ -20,17 +20,29 @@ Quick reference for printk levels.
 
 ## Example / Usage
 
-| Macro | Value | Meaning |
-|---|---|---|
-| `KERN_EMERG` | 0 | System is unusable |
-| `KERN_ALERT` | 1 | Action must be taken immediately |
-| `KERN_CRIT` | 2 | Critical conditions |
-| `KERN_ERR` | 3 | Error conditions |
-| `KERN_WARNING` | 4 | Warning conditions |
-| `KERN_NOTICE` | 5 | Normal but significant condition |
-| `KERN_INFO` | 6 | Informational |
-| `KERN_DEBUG` | 7 | Debug-level messages |
-| `KERN_DEFAULT` | "" | The default |
+| Macro          | Shorthand     | Value | Meaning                          |
+| -------------- | ------------- | ----- | -------------------------------- |
+| `KERN_EMERG`   | `pr_emerg()`  | 0     | System is unusable               |
+| `KERN_ALERT`   | `pr_alert()`  | 1     | Action must be taken immediately |
+| `KERN_CRIT`    | `pr_crit()`   | 2     | Critical conditions              |
+| `KERN_ERR`     | `pr_err()`    | 3     | Error conditions                 |
+| `KERN_WARNING` | `pr_warn()`   | 4     | Warning conditions               |
+| `KERN_NOTICE`  | `pr_notice()` | 5     | Normal but significant condition |
+| `KERN_INFO`    | `pr_info()`   | 6     | Informational                    |
+| `KERN_DEBUG`   | `pr_debug()`  | 7     | Debug-level messages             |
+| `KERN_DEFAULT` | —             | ""    | The default                      |
+
+```c
+/* These two lines are equivalent */
+printk(KERN_WARNING "temperature too high: %d\n", temp);
+pr_warn("temperature too high: %d\n", temp);
+```
+
+> [!note]
+> - `pr_debug()` only prints when `DEBUG` is defined or dynamic debug is enabled for that call site.
+> - `KERN_DEFAULT` has no `pr_*` shorthand, so use `printk(KERN_DEFAULT ...)` directly.
+> - Use `pr_warn()`, not `pr_warning()`; the older name was removed from the kernel.
+
 
 `KERN_SOH` (`\001`, ASCII Start Of Header) is prepended to each level value — it's the marker that tells the kernel a priority follows, not a level itself.
 
