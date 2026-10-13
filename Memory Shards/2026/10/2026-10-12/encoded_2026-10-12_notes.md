@@ -3,6 +3,6 @@
 - [ ] Practice C
 - [ ] Practice CUDA
 - [x] Mental Math ✅ 2026-10-12
-- [ ] Leetcode
+- [x] Leetcode ✅ 2026-10-12
 
 # Shard Log

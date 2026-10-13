@@ -811,6 +811,145 @@ Think of your fops table as a business card listing "for reads, call this number
 - Write a misc class character driver that behaves as a simple converter program (assume its path name is /dev/convert). For example, writing the temperature in Fahrenheit units, it should return (write to the kernel log) the temperature in Celsius. Thus, doing echo 98.6 > /dev/convert should result in the value 37 C being written to the kernel log. Additionally, do the following:
     1. Validate that the data passed to your driver is a numeric value.
     2. How will you handle floating-point values? (Tip: refer to the section _Floating point not allowed in the kernel_ in _Linux Kernel Programming_, _Chapter 5_, _Writing Your First Kernel Module LKMs – Part 2._)
+```c title=converter_driver
+#include "linux/compiler.h"
+#include <linux/fs.h>
+#include <linux/init.h>
+#include <linux/module.h>
+#include <linux/slab.h>     /* For kzalloc */
+#include <linux/miscdevice.h> /* For misc_register and misc_deregister */
+
+MODULE_AUTHOR("Jonathan Macoco");
+MODULE_DESCRIPTION("random misc driver");
+MODULE_LICENSE("Dual MIT/GPL");//only thing needed rest are optional
+MODULE_VERSION("0.2");
+
+
+
+struct drv_ctx {
+	struct device *dev;
+	int tx, rx, err, myword;
+	u32 config1, config2;
+	u64 config3;
+#define MAXBYTES    128		/* Must match the userspace app; we should actually
+				 * use a common header file for things like this */
+};
+static struct drv_ctx *ctx;
+
+static int open_miscdrv(struct inode *inode, struct file *flip){
+	char *buf = kzalloc(PATH_MAX, GFP_KERNEL);
+	if (unlikely(!buf))
+		return -ENOMEM;
+	char *fp = file_path(flip, buf, PATH_MAX);
+	pr_info ("opening \"%s\" now; wrt open file: f_flags = 0x%x\n",
+	  fp,flip->f_flags);
+	kfree(buf);
+	return nonseekable_open(inode,flip);
+}
+
+static ssize_t read_miscdrv(struct file *flip, char __user *ubuf, size_t count, loff_t *off){
+	pr_info("to read %zd bytes\n",count);
+	return 0;
+}
+static int convert_to_c(int f_num){
+	int ret = 0;
+	ret = ((f_num-320)*5)/9;
+	return ret;
+}
+static ssize_t write_miscdrv(struct file *flip, const char __user *ubuf, size_t count, loff_t *off){
+	int ret = count;
+	if (count == 0){
+		goto no_mem;
+	}
+	struct device *dev = ctx->dev;
+	char taskm[TASK_COMM_LEN];
+	ret = -EINVAL;
+	if (unlikely(count > MAXBYTES)){
+		pr_warn("%s wants to read (upto) %zd bytes\n",
+	  		get_task_comm(taskm,current),count);
+		goto no_mem;
+	}
+	char *kbuf = kzalloc(count+1, GFP_KERNEL);
+	ret = -ENOMEM;
+	if (unlikely(!kbuf)){
+		goto out_cfu;
+	}
+	ret = -EFAULT;
+	if (copy_from_user(kbuf, ubuf, count)) {  
+		dev_warn(dev, "copy_from_user() failed\n");  
+		goto out_cfu;
+	}  
+	if (kbuf[count-1] == '\n'){
+		kbuf[count-1] = '\0';
+	}
+	int num = 0;
+	int flag = 0;
+	for (size_t i = 0; i < count; i++){
+		if (kbuf[i] == '\0') continue;
+		if (kbuf[i] == '.'){ 
+			flag = 1;
+			continue;
+		}
+		num = num * 10 + (kbuf[i] - '0');//similar to freq problems done in leetcode
+		if (flag == 1){
+			break;
+		}
+	}
+	int c_num = convert_to_c(num);
+	int first = c_num/10;
+	int second = c_num%10;
+	ret = count;
+	//pr_info("bytes to write %zd bytes, input text was: %s, parsed num is %d, c num is %d\n", count, kbuf, num, c_num);
+	pr_info("%s degrees fahrenheit is %d.%d degrees in celcius\n",kbuf,first,second);
+	goto out_cfu;
+out_cfu:
+	kfree(kbuf);
+no_mem:
+	return ret;
+}
+
+static const struct file_operations misc_fops = {
+	.open  = open_miscdrv,
+	.read  = read_miscdrv,
+	.write = write_miscdrv
+};
+
+
+static struct miscdevice my_miscdev = {
+	.minor = MISC_DYNAMIC_MINOR,
+	.name = "my_miscdrv",
+	.mode = 0666,
+	.fops = &misc_fops,
+};
+
+static int __init mymisc_init(void){
+	int ret;
+	struct device *dev;
+	ret = misc_register(&my_miscdev);
+	if (ret != 0){
+		pr_notice("misc device registration failed\n");
+		return ret;
+	}
+	dev = my_miscdev.this_device;
+	ctx = devm_kzalloc(dev, sizeof(struct drv_ctx), GFP_KERNEL);
+	if (unlikely(!ctx)){
+		misc_deregister(&my_miscdev);
+		return -ENOMEM;
+	}
+	ctx->dev = dev;
+	pr_info ("hello: loaded MACOCO \n");
+	return ret;
+};
+
+static void __exit mymisc_exit(void){
+	misc_deregister(&my_miscdev);
+	pr_info("Exiting goodbye cruel world MACOCO!\n");
+}
+
+module_init(mymisc_init);
+module_exit(mymisc_exit);
+
+```
 - Write a "task display" driver; here, we'd like a user space process to write a thread (or process) PID to it. When you now read from the driver's device node (assume its path name is /dev/task_display), you should receive details regarding the task (which is pulled from its task structure, of course). For example, doing echo 1 > /dev/task_display followed by cat /dev/task_display should have the driver emit task details of PID 1 to the kernel log. Don't forget to add validity checks (check the PID is valid, and so on).
 - (A bit more advanced:) Write a "proper" LDM-based driver; the misc drivers covered here did register with the kernel's misc framework, but simply, implicitly, used the raw character interface as the bus. The LDM prefers that a driver must register with a kernel framework and a bus driver. Hence, write a "demo" driver that registers itself with the kernel's misc framework and the platform bus. This will involve creating a fake platform device as well.  
     (_Note the following t__ips_:  
