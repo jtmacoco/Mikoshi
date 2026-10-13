@@ -962,6 +962,7 @@ module_exit(mymisc_exit);
 
 - Look more into disk duplicator 
 - Look more into different allocation flags similar to `GFP_KERNEL`
+- Floating points not allowed in the Linux kernel read more why this is.
 
 ---
 
