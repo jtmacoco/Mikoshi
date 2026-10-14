@@ -10,7 +10,7 @@ tags:
 created: 2026-07-03
 author: Kaiwan N. Billimoria
 subject: kernel programming / device drivers
-status: reading
+status: completed
 rating:
 ---
 

@@ -14,7 +14,7 @@ created: 2026-07-04
 ```dataview
 LIST
 FROM "Mikoshi/Data Shards"
-WHERE status = "active" OR status = "on-contract" OR status = "reading"
+WHERE status = "active" OR status = "on-contract" OR status = "reading" OR status = "in-progress"
 SORT file.mtime DESC
 ```
 
