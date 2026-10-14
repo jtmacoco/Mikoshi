@@ -167,7 +167,9 @@ Writing a misc driver with a secret, so slightly more complex than the previous 
 	- **Issue**: If we don't implement `llseek` it still returns a random positive value causing the user mode app to think it succeed; To fix do this 
 		1. Set `llseek` to the special `no_llseek` value
 		2. Invoke the `nonseekable_open()` func in driver's `open()` method, specifying that the file is non-seekable
-
+	- `nonseekable_open()` makes seeks on a device that can’t seek fail loudly, instead of appearing to succeed.
+- simple test for any driver is: **“Does offset N always refer to the same piece of data?”** If yes, support seek. If no, make it non-seekable.
+- You need seek whenever the device has **addressable contents**, meaning data that sits at fixed locations you can jump to. In the analogy from before, these devices are books, not radios.
 ---
 ### 2026-09- 27
 
@@ -979,3 +981,4 @@ This chapter introduced the basics of writing device drivers specifically `misc`
 - `kzalloc`: [[kzalloc]]
 - static: [[Static]]
 - printk levels: [[printk_Levels]]
+- struct device: [[struct device]]
