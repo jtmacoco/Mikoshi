@@ -9,3 +9,5 @@
 - Open Source contribution with CUDA or parallel programming
 - Personal custom assistant local LLM 
 - Make a note for GDB gef 
+---
+- Look into credit cards with travel points or something better then what I currently have
