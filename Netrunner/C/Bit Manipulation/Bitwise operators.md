@@ -110,22 +110,22 @@ Bitwise operators work on the binary representation of integers, one bit at a ti
 
 ## Common Tricks & Idioms
 
-|Goal|Code|Notes|
-|---|---|---|
-|Check if even/odd|`x & 1`|`0` = even, `1` = odd|
-|Multiply by 2ⁿ|`x << n`|Faster than `*` in some contexts|
-|Divide by 2ⁿ|`x >> n`|Floor division for positive numbers|
-|Check if power of 2|`x != 0 && (x & (x - 1)) == 0`|Powers of 2 have exactly one bit set|
-|Swap two variables|`a ^= b; b ^= a; a ^= b;`|No temp variable needed|
-|Set a bit|`x \| (1 << n)`|Turns bit `n` to 1|
-|Clear a bit|`x & ~(1 << n)`|Turns bit `n` to 0|
-|Toggle a bit|`x ^ (1 << n)`|Flips bit `n`|
-|Check a bit|`(x >> n) & 1`|Returns 0 or 1|
-|Get lowest set bit|`x & (-x)`|Isolates rightmost 1-bit|
-|Clear lowest set bit|`x & (x - 1)`|Useful for counting set bits|
-|Count set bits (Brian Kernighan)|Loop `x &= (x-1)` until `x==0`, count iterations|O(number of 1 bits)|
-|Absolute value (no branch)|`(x ^ (x >> 31)) - (x >> 31)`|32-bit signed int trick|
-|Check opposite signs|`(a ^ b) < 0`|True if signs differ|
+| Goal                             | Code                                             | Notes                                |
+| -------------------------------- | ------------------------------------------------ | ------------------------------------ |
+| Check if even/odd                | `x & 1`                                          | `0` = even, `1` = odd                |
+| Multiply by 2ⁿ                   | `x << n`                                         | Faster than `*` in some contexts     |
+| Divide by 2ⁿ                     | `x >> n`                                         | Floor division for positive numbers  |
+| Check if power of 2              | `x != 0 && (x & (x - 1)) == 0`                   | Powers of 2 have exactly one bit set |
+| Swap two variables               | `a ^= b; b ^= a; a ^= b;`                        | No temp variable needed              |
+| Set a bit                        | `x \| (1 << n)`                                  | Turns bit `n` to 1                   |
+| Clear a bit                      | `x & ~(1 << n)`                                  | Turns bit `n` to 0                   |
+| Toggle a bit                     | `x ^ (1 << n)`                                   | Flips bit `n`                        |
+| Check a bit                      | `(x >> n) & 1`                                   | Returns 0 or 1                       |
+| Get lowest set bit               | `x & (-x)`                                       | Isolates rightmost 1-bit             |
+| Clear lowest set bit             | `x & (x - 1)`                                    | Useful for counting set bits         |
+| Count set bits (Brian Kernighan) | Loop `x &= (x-1)` until `x==0`, count iterations | O(number of 1 bits)                  |
+| Absolute value (no branch)       | `(x ^ (x >> 31)) - (x >> 31)`                    | 32-bit signed int trick              |
+| Check opposite signs             | `(a ^ b) < 0`                                    | True if signs differ                 |
 
 ---
 
