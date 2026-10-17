@@ -10,4 +10,9 @@
 - Personal custom assistant local LLM 
 - Make a note for GDB gef 
 ---
+## Credit
 - Look into credit cards with travel points or something better then what I currently have
+---
+## Leetcode Notes
+- Make  a  note on general way to approach various leetcode topics like DP, intervals, two-pointer, etc.
+- One general note per topic
