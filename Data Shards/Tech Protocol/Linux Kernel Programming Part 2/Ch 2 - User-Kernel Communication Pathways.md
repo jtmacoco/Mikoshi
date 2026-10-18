@@ -20,7 +20,6 @@ last_updated: 2026-10-17
 ---
 
 ## Vocabulary / Key Terms
-<!-- Add terms the moment you hit them, even before you fully understand them -->
 
 | Term | Definition | Notes |
 |------|------------|-------|
@@ -29,7 +28,6 @@ last_updated: 2026-10-17
 ---
 
 ## Core Concepts
-<!-- One entry per idea — add as you encounter them, expand later -->
 
 - **Concept:**
   - Why it matters:
@@ -47,7 +45,8 @@ last_updated: 2026-10-17
 <!-- Running, dated notes — the actual "as I read it" capture. Newest entry on top. -->
 
 ### 2026-10-17 21:28
--
+- 
+**Summary**: 
 
 ---
 
@@ -58,7 +57,8 @@ last_updated: 2026-10-17
 ```
 
 **What it does:**
-**Gotchas / edge cases:**
+
+**Notes On Code Above:**
 
 ---
 
