@@ -761,6 +761,7 @@ Basic setup for a misc device
 
 **Notes On Code Above**:
 - `.name`: On successful registration kernel will automatically create a device node using this form `/dev/<name>`
+	- Device name in the /dev/ directory uses this field
 - permissions: see [[Linux#Permissions]] 
 - `misc_register` takes in a pointer to a `struct miscdevice` and returns an `int` and anything negative is bad 
 
@@ -953,6 +954,125 @@ module_exit(mymisc_exit);
 
 ```
 - Write a "task display" driver; here, we'd like a user space process to write a thread (or process) PID to it. When you now read from the driver's device node (assume its path name is /dev/task_display), you should receive details regarding the task (which is pulled from its task structure, of course). For example, doing echo 1 > /dev/task_display followed by cat /dev/task_display should have the driver emit task details of PID 1 to the kernel log. Don't forget to add validity checks (check the PID is valid, and so on).
+
+```c title=task_driver
+#include "linux/compiler.h"
+#include <linux/fs.h>
+#include <linux/init.h>
+#include <linux/module.h>
+#include <linux/slab.h>     /* For kzalloc */
+#include <linux/miscdevice.h> /* For misc_register and misc_deregister */
+#include <linux/pid.h>
+
+
+
+MODULE_LICENSE("Dual MIT/GPL");
+
+#define MAXBYTES    128		
+struct drv_ctx{ struct device *dev;
+	pid_t  target_pid;
+};
+
+static struct drv_ctx *ctx;
+
+static ssize_t read_taskdrv(struct file *flip, char __user *ubuf, size_t count, loff_t *off){
+	return 0;
+}
+static ssize_t write_taskdrv(struct file *flip, const char __user *ubuf, size_t count, loff_t *off){
+	ssize_t ret = count;
+	struct device *dev = ctx->dev;
+	ret = -EINVAL;
+	if (unlikely(count > MAXBYTES)) {
+		dev_warn(dev, "count %zu exceeds max # of bytes allowed, "
+			"aborting write\n", count);
+		goto no_mem;
+	}
+	char *kbuf = kzalloc(count+1, GFP_KERNEL);
+	ret = -ENOMEM;
+	if (unlikely(!kbuf)){
+		goto no_mem;
+	}
+	ret = -EFAULT;
+	if (copy_from_user(kbuf,ubuf,count)){
+		dev_warn(dev, "failed to copy_from_user\n");
+		goto out_cfu;
+	}
+	pid_t pid;
+	ret = kstrtoint(kbuf,10,&pid);
+	if (ret){
+		dev_warn(dev, "failed to convert to in\n");
+		goto out_cfu;
+	}
+	if (pid <= 0) {
+		ret = -EINVAL;
+		goto out_cfu;
+	}
+	struct pid *pid_struct;
+	struct task_struct *task;
+	ret = -ESRCH;
+	pid_struct = find_get_pid(pid);
+	if (!pid_struct){
+		pr_err("PID %d not found\n", pid);
+	 	goto out_cfu;
+	}
+	task = pid_task(pid_struct, PIDTYPE_PID);//like freeing the struct
+	if (!task){
+		pr_err("task not found\n");
+		goto out_cfu;
+
+	}
+	ret = count;
+	dev_info(dev, "PID %d (%s) utime=%llu ns stime=%llu ns\n",
+	 pid, task->comm, task->utime, task->stime);
+	
+out_cfu:
+	kfree(kbuf);
+no_mem:
+	return ret;
+}
+static int open_taskdrv(struct inode *inode, struct file *flip){
+	return nonseekable_open(inode,flip);
+}
+
+static const struct file_operations task_fops = {
+	.open = open_taskdrv,
+	.read = read_taskdrv,
+	.write = write_taskdrv
+};
+
+static struct miscdevice task_device = {
+	.minor = MISC_DYNAMIC_MINOR,
+	.name = "taskdrv",
+	.mode = 0666,
+	.fops = &task_fops,
+
+};
+
+static int __init taskdrv_init(void){
+	int ret;
+	struct device *dev;
+	ret = misc_register(&task_device);
+	if (ret != 0){
+		pr_notice("misc registration failed :(\n");
+		return ret;
+	}
+	dev = task_device.this_device;
+	ctx = devm_kzalloc(dev,sizeof(struct drv_ctx), GFP_KERNEL);
+	if (unlikely(!ctx)){
+		return -ENOMEM;
+	}
+	ctx->dev = dev;
+	pr_info("successfully registred device boi!!!\n");
+	return 0;
+}
+static void __exit taskdrv_exit(void){
+	misc_deregister(&task_device);
+	pr_info("GOODBYE MACOCO\n");
+}
+module_init(taskdrv_init);
+module_exit(taskdrv_exit);
+```
+
 - (A bit more advanced:) Write a "proper" LDM-based driver; the misc drivers covered here did register with the kernel's misc framework, but simply, implicitly, used the raw character interface as the bus. The LDM prefers that a driver must register with a kernel framework and a bus driver. Hence, write a "demo" driver that registers itself with the kernel's misc framework and the platform bus. This will involve creating a fake platform device as well.  
     (_Note the following t__ips_:  
     a) Do refer to [Chapter 2](https://learning.oreilly.com/library/view/linux-kernel-programming/9781801079518/4042025e-27a1-40f4-a2f7-223f601107dc.xhtml), _User-Kernel Communication Pathways_, particularly the _Creating a simple platform device_ and _Platform devices_ sections.  
