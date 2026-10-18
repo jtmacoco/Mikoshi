@@ -20,17 +20,17 @@ Quick reference for printk levels.
 
 ## Example / Usage
 
-| Macro          | Shorthand     | Value | Meaning                          |
-| -------------- | ------------- | ----- | -------------------------------- |
-| `KERN_EMERG`   | `pr_emerg()`  | 0     | System is unusable               |
-| `KERN_ALERT`   | `pr_alert()`  | 1     | Action must be taken immediately |
-| `KERN_CRIT`    | `pr_crit()`   | 2     | Critical conditions              |
-| `KERN_ERR`     | `pr_err()`    | 3     | Error conditions                 |
-| `KERN_WARNING` | `pr_warn()`   | 4     | Warning conditions               |
-| `KERN_NOTICE`  | `pr_notice()` | 5     | Normal but significant condition |
-| `KERN_INFO`    | `pr_info()`   | 6     | Informational                    |
-| `KERN_DEBUG`   | `pr_debug()`  | 7     | Debug-level messages             |
-| `KERN_DEFAULT` | —             | ""    | The default                      |
+| Macro          | Shorthand     | Device variant | Value | Meaning                          |
+| -------------- | ------------- | -------------- | ----- | -------------------------------- |
+| `KERN_EMERG`   | `pr_emerg()`  | `dev_emerg()`  | 0     | System is unusable               |
+| `KERN_ALERT`   | `pr_alert()`  | `dev_alert()`  | 1     | Action must be taken immediately |
+| `KERN_CRIT`    | `pr_crit()`   | `dev_crit()`   | 2     | Critical conditions              |
+| `KERN_ERR`     | `pr_err()`    | `dev_err()`    | 3     | Error conditions                 |
+| `KERN_WARNING` | `pr_warn()`   | `dev_warn()`   | 4     | Warning conditions               |
+| `KERN_NOTICE`  | `pr_notice()` | `dev_notice()` | 5     | Normal but significant condition |
+| `KERN_INFO`    | `pr_info()`   | `dev_info()`   | 6     | Informational                    |
+| `KERN_DEBUG`   | `pr_debug()`  | `dev_dbg()`    | 7     | Debug-level messages             |
+| `KERN_DEFAULT` | —             | —              | ""    | The default                      |
 
 ```c
 /* These two lines are equivalent */
