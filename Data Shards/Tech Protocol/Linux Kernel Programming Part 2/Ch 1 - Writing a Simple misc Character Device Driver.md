@@ -5,13 +5,13 @@ book: "[[Linux Kernel Programming]]"
 author: Kaiwan N. Billimoria
 chapter: 1
 chapter_title: Writing a Simple misc Character Device Driver
-status: in-progress
+status: completed
 tags:
   - book-notes
   - kernel
   - c
 date_started: 2026-09-16
-last_updated: 2026-10-04
+last_updated: 2026-10-17
 ---
 
 ## TL;DR
@@ -211,7 +211,7 @@ Writing a misc driver with a secret, so slightly more complex than the previous 
 ### 2026-09- 20
 - When you plug in a device like a USB, the bus driver (USB bus) notices it and matches it to the right device driver; once matched ("bound"), the kernel calls the driver's `probe()` function, which sets up the device (allocates memory, IRQs, etc) sit it's ready to use.
 - Drivers register in 2 places:
-	1.  **Bus** which physically connects through (I2C, PCI, USB, etc..)
+	1.  **Bus** which physically connects through (I2C, PCI, USB, etc..), **HARDWARE**
 	2. **Subsystem Framework**: matches what kind of device it is (RTC, networking, etc)
 - Book goes over simplest drivers **misc** drivers, no need to implement `probe()`/`remove()` methods
 - To practice more complex driver that use `probe()` start by writing a simple **platform driver**, registering it with the kernel's `misc` framework and the platform bus, a pseudo-bus infrastructure that supports devices that do not physically reside on any physical bus
