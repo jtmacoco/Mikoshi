@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Meeting Rooms Heap</title>
+<style>
+  :root{
+    --bg:#ffffff; --fg:#1f2328; --muted:#6b7280; --line:#e5e7eb; --card:#f6f7f9;
+    --accent:#2563eb; --ok:#16a34a; --bad:#dc2626; --pending:#cbd5e1;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#1e1e1e; --fg:#e5e7eb; --muted:#9ca3af; --line:#3a3f47; --card:#262a30;
+      --accent:#60a5fa; --ok:#4ade80; --bad:#f87171; --pending:#4b5563;
+    }
+  }
+  *{box-sizing:border-box}
+  body{margin:0;padding:16px;background:var(--bg);color:var(--fg);
+       font:14px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+  .wrap{max-width:760px;margin:0 auto}
+  h1{font-size:17px;margin:0 0 4px}
+  .sub{color:var(--muted);margin:0 0 14px;font-size:13px}
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px;margin-bottom:12px}
+  .label{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:8px}
+  svg{width:100%;height:auto;display:block}
+  .heap{display:flex;gap:8px;flex-wrap:wrap;min-height:74px;align-items:flex-end}
+  .slot{position:relative;width:78px;border-radius:8px;padding:8px 6px;text-align:center;color:#fff;
+        transition:transform .35s ease, box-shadow .35s ease, opacity .35s ease;}
+  .slot .end{font-size:22px;font-weight:700;line-height:1}
+  .slot .room{font-size:11px;opacity:.9;margin-top:4px}
+  .slot .idx{position:absolute;top:-16px;left:0;right:0;font-size:10px;color:var(--muted)}
+  .slot.top{box-shadow:0 0 0 3px var(--fg)}
+  .slot.changed{transform:translateY(-6px)}
+  .empty{color:var(--muted);font-style:italic;align-self:center}
+  .msg{font-size:15px;min-height:44px}
+  .msg b.ok{color:var(--ok)} .msg b.bad{color:var(--bad)}
+  .stats{display:flex;gap:16px;color:var(--muted);font-size:13px;margin-top:6px}
+  .stats strong{color:var(--fg)}
+  .controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  button{font:inherit;padding:6px 12px;border-radius:8px;border:1px solid var(--line);
+         background:var(--bg);color:var(--fg);cursor:pointer}
+  button:hover{border-color:var(--accent)}
+  button.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+  input[type=text]{font:inherit;flex:1;min-width:180px;padding:6px 10px;border-radius:8px;
+         border:1px solid var(--line);background:var(--bg);color:var(--fg)}
+  input[type=range]{width:110px}
+  .small{font-size:12px;color:var(--muted)}
+  code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Meeting Rooms II: min-heap of room end times</h1>
+  <p class="sub">Each heap entry is a room, holding the time it becomes free. The top (index 0) is the room that frees up soonest.</p>
+
+  <div class="panel">
+    <div class="label">Timeline (sorted by start)</div>
+    <svg id="timeline"></svg>
+  </div>
+
+  <div class="panel">
+    <div class="label">Heap (array order, top on the left)</div>
+    <div class="heap" id="heap"></div>
+  </div>
+
+  <div class="panel">
+    <div class="msg" id="msg"></div>
+    <div class="stats">
+      <span>Step <strong id="stepNo">0</strong> / <strong id="stepTot">0</strong></span>
+      <span>Rooms opened: <strong id="rooms">0</strong></span>
+    </div>
+  </div>
+
+  <div class="panel controls">
+    <button id="reset">⟲ Reset</button>
+    <button id="prev">◀ Prev</button>
+    <button id="play" class="primary">▶ Play</button>
+    <button id="next">Next ▶</button>
+    <span class="small">Speed</span>
+    <input type="range" id="speed" min="300" max="2500" step="100" value="1300">
+  </div>
+
+  <div class="panel controls">
+    <input type="text" id="input" value="[(1, 5), (2, 6), (3, 7), (4, 8), (5, 9)]">
+    <button id="load">Load</button>
+    <button id="ex2">Example 2</button>
+  </div>
+  <p class="small">Enter intervals as pairs of numbers in any format, e.g. <code>[(0,30),(5,10),(15,20)]</code> or <code>0 30 5 10 15 20</code>.</p>
+</div>
+
+<script>
+(function(){
+  const COLORS = ["#2563eb","#db2777","#059669","#d97706","#7c3aed","#0891b2","#dc2626","#65a30d","#c2410c","#4f46e5"];
+  const color = r => COLORS[r % COLORS.length];
+
+  // ---- tiny min-heap on [end, roomId] ----
+  const less = (a,b) => a[0] < b[0] || (a[0] === b[0] && a[1] < b[1]);
+  function push(h, x){
+    h.push(x); let i = h.length - 1;
+    while(i > 0){ const p = (i-1) >> 1; if(less(h[i], h[p])){ [h[i],h[p]]=[h[p],h[i]]; i=p; } else break; }
+  }
+  function pop(h){
+    const top = h[0], last = h.pop();
+    if(h.length){
+      h[0] = last; let i = 0;
+      for(;;){
+        const l = 2*i+1, r = l+1; let m = i;
+        if(l < h.length && less(h[l], h[m])) m = l;
+        if(r < h.length && less(h[r], h[m])) m = r;
+        if(m === i) break; [h[i],h[m]]=[h[m],h[i]]; i = m;
+      }
+    }
+    return top;
+  }
+
+  // ---- precompute every step of the algorithm ----
+  let meetings = [], steps = [], cur = 0, timer = null;
+
+  function parse(str){
+    const nums = (str.match(/-?\d+(\.\d+)?/g) || []).map(Number);
+    const out = [];
+    for(let i = 0; i + 1 < nums.length; i += 2){
+      if(nums[i+1] > nums[i]) out.push([nums[i], nums[i+1]]);
+    }
+    return out;
+  }
+
+  function build(intervals){
+    meetings = intervals.map(([s,e]) => ({s,e})).sort((a,b) => a.s - b.s || a.e - b.e);
+    steps = [];
+    const heap = [], assign = {};
+    let rooms = 0;
+    const snap = (i, phase, msg, extra={}) => steps.push({
+      i, phase, msg, heap: heap.map(x => x.slice()), assign: {...assign}, rooms, ...extra
+    });
+
+    snap(-1, "start", "Meetings are sorted by start time. The heap is empty: no rooms opened yet. Press <b>Next</b> or <b>Play</b>.");
+
+    meetings.forEach((m, i) => {
+      const tag = `Meeting (${m.s}, ${m.e})`;
+      if(heap.length){
+        const [end, r] = heap[0];
+        const free = end <= m.s;
+        snap(i, "compare",
+          `${tag} starts at <b>${m.s}</b>. Soonest-free room is <b>Room ${r+1}</b>, free at <b>${end}</b>. ` +
+          `Is ${end} ≤ ${m.s}? ` + (free ? `<b class="ok">Yes</b>, it's free.` : `<b class="bad">No</b>, so every room is still busy.`),
+          {cmp: true});
+      } else {
+        snap(i, "compare", `${tag} starts at <b>${m.s}</b>. The heap is empty, so there is no room to reuse.`, {cmp: true});
+      }
+
+      let r, msg;
+      if(heap.length && heap[0][0] <= m.s){
+        const old = pop(heap); r = old[1];
+        push(heap, [m.e, r]);
+        msg = `<b class="ok">Reuse Room ${r+1}</b>: pop its old end time ${old[0]}, push the new end time ${m.e}. Heap size unchanged.`;
+      } else {
+        r = rooms++;
+        push(heap, [m.e, r]);
+        msg = `<b class="bad">Open Room ${r+1}</b>: push end time ${m.e}. Heap size grows to ${heap.length}.`;
+      }
+      assign[i] = r;
+      snap(i, "act", msg, {changed: r});
+    });
+
+    snap(meetings.length, "done",
+      `Done. The heap has <b>${heap.length}</b> entries, one per room ever opened, so the answer is <b>${heap.length}</b>.`);
+    cur = 0;
+    render();
+  }
+
+  // ---- rendering ----
+  const $ = id => document.getElementById(id);
+  const css = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+
+  function renderTimeline(st){
+    const svg = $("timeline");
+    const n = meetings.length;
+    if(!n){ svg.setAttribute("viewBox","0 0 600 40"); svg.innerHTML = ""; return; }
+    const W = 600, padL = 70, padR = 16, rowH = 26, top = 10;
+    const H = top + n*rowH + 28;
+    const minT = Math.min(...meetings.map(m => m.s));
+    const maxT = Math.max(...meetings.map(m => m.e));
+    const lo = Math.min(0, minT), span = Math.max(1, maxT - lo);
+    const x = t => padL + (t - lo) / span * (W - padL - padR);
+    const fg = css("--fg"), muted = css("--muted"), line = css("--line"), pending = css("--pending");
+    let s = "";
+
+    // grid + ticks
+    const stepT = Math.max(1, Math.ceil(span / 15));
+    for(let t = Math.ceil(lo/stepT)*stepT; t <= maxT; t += stepT){
+      s += `<line x1="${x(t)}" x2="${x(t)}" y1="${top-4}" y2="${top+n*rowH}" stroke="${line}" stroke-width="1"/>`;
+      s += `<text x="${x(t)}" y="${top+n*rowH+16}" font-size="11" fill="${muted}" text-anchor="middle">${t}</text>`;
+    }
+
+    meetings.forEach((m, i) => {
+      const y = top + i*rowH;
+      const r = st.assign[i];
+      const isCur = i === st.i && (st.phase === "compare" || st.phase === "act");
+      const fill = r === undefined ? "none" : color(r);
+      const stroke = r === undefined ? pending : color(r);
+      s += `<text x="${padL-8}" y="${y+16}" font-size="12" fill="${isCur ? fg : muted}" text-anchor="end" font-weight="${isCur?700:400}">(${m.s}, ${m.e})</text>`;
+      s += `<rect x="${x(m.s)}" y="${y+4}" width="${Math.max(2, x(m.e)-x(m.s))}" height="${rowH-8}" rx="4"
+              fill="${fill}" stroke="${isCur ? fg : stroke}" stroke-width="${isCur ? 2.5 : 1.5}"
+              stroke-dasharray="${r === undefined && !isCur ? "4 3" : ""}"/>`;
+      if(r !== undefined){
+        s += `<text x="${(x(m.s)+x(m.e))/2}" y="${y+16.5}" font-size="11" fill="#fff" text-anchor="middle" font-weight="600">Room ${r+1}</text>`;
+      }
+    });
+
+    // "now" line at the current meeting's start
+    if(st.i >= 0 && st.i < n){
+      const t = meetings[st.i].s;
+      s += `<line x1="${x(t)}" x2="${x(t)}" y1="${top-6}" y2="${top+n*rowH+2}" stroke="${fg}" stroke-width="2" stroke-dasharray="5 4"/>`;
+      // mark when the heap-top room frees up
+      if(st.phase === "compare" && st.heap.length){
+        const [end, r] = st.heap[0];
+        s += `<line x1="${x(end)}" x2="${x(end)}" y1="${top-6}" y2="${top+n*rowH+2}" stroke="${color(r)}" stroke-width="2"/>`;
+      }
+    }
+    svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+    svg.innerHTML = s;
+  }
+
+  function renderHeap(st){
+    const box = $("heap");
+    if(!st.heap.length){ box.innerHTML = `<span class="empty">empty: no rooms yet</span>`; return; }
+    box.innerHTML = st.heap.map(([end, r], k) => {
+      const cls = ["slot"];
+      if(k === 0 && st.cmp) cls.push("top");
+      if(st.changed === r) cls.push("changed");
+      return `<div class="${cls.join(" ")}" style="background:${color(r)}">
+                <div class="idx">${k === 0 ? "top · [0]" : "[" + k + "]"}</div>
+                <div class="end">${end}</div>
+                <div class="room">Room ${r+1} free at</div>
+              </div>`;
+    }).join("");
+  }
+
+  function render(){
+    const st = steps[cur];
+    renderTimeline(st);
+    renderHeap(st);
+    $("msg").innerHTML = st.msg;
+    $("stepNo").textContent = cur;
+    $("stepTot").textContent = steps.length - 1;
+    const opened = new Set(Object.values(st.assign)).size;
+    $("rooms").textContent = opened;
+    $("prev").disabled = cur === 0;
+    $("next").disabled = cur === steps.length - 1;
+  }
+
+  // ---- controls ----
+  function stop(){ clearInterval(timer); timer = null; $("play").textContent = "▶ Play"; }
+  function play(){
+    if(cur === steps.length - 1) cur = 0, render();
+    $("play").textContent = "❚❚ Pause";
+    timer = setInterval(() => {
+      if(cur < steps.length - 1){ cur++; render(); } else stop();
+    }, +$("speed").value);
+  }
+  $("play").onclick = () => timer ? stop() : play();
+  $("next").onclick = () => { stop(); if(cur < steps.length - 1){ cur++; render(); } };
+  $("prev").onclick = () => { stop(); if(cur > 0){ cur--; render(); } };
+  $("reset").onclick = () => { stop(); cur = 0; render(); };
+  $("speed").oninput = () => { if(timer){ stop(); play(); } };
+  $("load").onclick = () => { stop(); build(parse($("input").value)); };
+  $("input").onkeydown = e => { if(e.key === "Enter") $("load").click(); };
+  $("ex2").onclick = () => {
+    $("input").value = "[(0, 30), (5, 10), (15, 20), (10, 15), (25, 35), (31, 40)]";
+    $("load").click();
+  };
+  document.addEventListener("keydown", e => {
+    if(e.target.tagName === "INPUT") return;
+    if(e.key === "ArrowRight") $("next").click();
+    if(e.key === "ArrowLeft") $("prev").click();
+    if(e.key === " "){ e.preventDefault(); $("play").click(); }
+  });
+  matchMedia("(prefers-color-scheme: dark)").addEventListener?.("change", render);
+
+  build(parse($("input").value));
+})();
+</script>
+</body>
+</html>
