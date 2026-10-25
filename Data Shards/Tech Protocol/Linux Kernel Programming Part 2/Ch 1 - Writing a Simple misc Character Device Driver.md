@@ -940,7 +940,7 @@ static int __init mymisc_init(void){
 		return -ENOMEM;
 	}
 	ctx->dev = dev;
-	pr_info ("hello: loaded MACOCO \n");
+	p_info ("hello: loaded MACOCO \n");
 	return ret;
 };
 
