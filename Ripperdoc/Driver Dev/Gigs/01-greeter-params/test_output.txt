@@ -1,0 +1,55 @@
+run: 2026-10-25 06:01:12  kernel: 7.0.0-38-generic  host: ubuntu
+greeter.c sha256: 56fd94a6b033c69d31efedaef54c297609ec8951b8fd1990236ba3cd15987899
+== build
+warning: the compiler differs from the one used to build the kernel
+  The kernel was built by: x86_64-linux-gnu-gcc (Ubuntu 15.2.0-16ubuntu1) 15.2.0
+  You are using:           gcc (Ubuntu 15.2.0-16ubuntu1) 15.2.0
+warning: pahole version differs from the one used to build the kernel
+  The kernel was built with: 131
+  You are using:             0
+Skipping BTF generation for greeter.ko due to unavailability of vmlinux
+== modinfo
+PASS: all 3 params have descriptions
+PASS: MODULE_LICENSE set
+PASS: MODULE_AUTHOR set
+PASS: MODULE_DESCRIPTION set
+== defaults
+PASS: greets world once
+PASS: quiet by default
+PASS: sysfs name=world
+PASS: sysfs count=1
+PASS: name is 0444
+PASS: count is 0644
+== change count via sysfs, then unload
+PASS: goodbye uses updated count
+== custom params + verbose
+PASS: greets Linus 4 times
+PASS: verbose line printed
+== invalid count must fail the load
+PASS: count=0 rejected
+PASS: count=0: error logged
+PASS: count=11 rejected
+PASS: count=11: error logged
+PASS: count=-5 rejected
+PASS: count=-5: error logged
+
+== kernel log for this run
+greeter-test: 5420.1792908072 t1
+greeter: Hello, world
+greeter-test: 5420.1792908072 t2
+greeter: Goodbye, world (count=3)
+greeter-test: 5420.1792908072 t3
+greeter: name=Linus count=4
+greeter: Hello, Linus
+greeter: Hello, Linus
+greeter: Hello, Linus
+greeter: Hello, Linus
+greeter: Goodbye, Linus (count=4)
+greeter-test: 5420.1792908072 t40
+greeter: FAIL count is outside 1..10, count was: 0
+greeter-test: 5420.1792908072 t411
+greeter: FAIL count is outside 1..10, count was: 11
+greeter-test: 5420.1792908072 t4-5
+greeter: FAIL count is outside 1..10, count was: -5
+
+Passed: 19  Failed: 0

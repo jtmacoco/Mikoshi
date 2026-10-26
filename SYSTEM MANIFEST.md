@@ -24,14 +24,19 @@
 ├──  Flatlined            # Archived / dead projects
 │   └── [[Flatlined]]
 │
-├──  ICEbreaker           # Interview Prep
+├──  ICEbreaker           # Interview prep
 │   └── [[ICEbreaker]]
-|
+│
 ├──  Inbox                # Dump zone, sort later
 │   └── [[Inbox]]
 │
 ├──  Netrunner            # Coding & tech
 │   └── [[Netrunner]]
+│
+├──  Ripperdoc            # Guided curricula: lessons, quizzes, gigs
+│   ├── [[Ripperdoc]]
+│   └──  Driver Dev
+│       └── [[Driver Dev]]
 │
 └──  Templates            # Note templates
 ```

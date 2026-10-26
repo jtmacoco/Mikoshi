@@ -66,20 +66,30 @@ last_updated: 2026-10-25
 	- This would break user programs as they start reading it and depending on the exact format, So the kernel can never change or remove it without breaking those programs
 	- Quick hack became bad
 - Version 2.6 provides the `/sys` for driver info and `/debugfs` is for debugging purposes, `/proc` is for process and core kernel info only, a separation of concerns
-
+- Choices to export interfaces
+	- `sysfs`
+	- `debugfs`
+	- `netlinksocket`
+	- `ioctl1`
+- Don't use `proc` for non-core stuff such as drivers
+**Code**: [[#2026-10- 24 Code]]
 **Summary**: 
 
 ---
 
 ## Code / Commands / Snippets
 
-```c
-// paste and annotate notable code as you go
+### 2026-10- 24 Code
+```c title=mkdir_under_proc
+struct proc_dir_entry *proc_mkdir(const char *name,  
+                         struct proc_dir_entry *parent);
 ```
 
 **What it does:**
+- Creates a directory under the `/proc` directory
 
 **Notes On Code Above:**
+- `struct proc_dir_entry` is a directory within the proc directory, if NULL parent directory is just `/proc`
 
 ---
 

@@ -27,3 +27,39 @@ desktop.ini
 *.swp
 *.swo
 *~
+
+# Linux kernel module build artifacts
+# Keeps: *.c, *.h, *.ko, Makefile, Kbuild
+
+# Object files
+*.o
+*.o.d
+*.a
+
+# Generated module files (note: *.mod.c is generated, not source)
+*.mod
+*.mod.c
+*.mod.o
+
+# Kbuild command/dependency files
+.*.cmd
+.*.d
+.tmp_versions/
+.cache.mk
+
+# Symbol and module lists
+Module.symvers
+Module.markers
+modules.order
+modules.builtin*
+
+# Misc build output
+*.symtypes
+*.lst
+*.dwo
+*.su
+*.ll
+.tmp*
+built-in.a
+
+
