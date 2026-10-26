@@ -72,8 +72,12 @@ last_updated: 2026-10-25
 	- `netlinksocket`
 	- `ioctl1`
 - Don't use `proc` for non-core stuff such as drivers
-**Code**: [[#2026-10- 24 Code]]
+**Code**: 
+[[#2026-10- 24 Code]]
+
 **Summary**: 
+Went over the `proc` directory and the prupose of `proc`. Found that it is dynamically generated meaning each open the kernel dynamically generates the file. To update the system use the `/sys` so systemctl. Basically it changed in version 2.6 making it easier to work with instead of being a big dump directory.
+
 
 ---
 

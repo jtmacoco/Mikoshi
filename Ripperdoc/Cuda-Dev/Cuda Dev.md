@@ -16,7 +16,7 @@ Learning GPU programming by writing, profiling, and optimizing CUDA kernels.
 
 ```dataview
 LIST
-FROM "Mikoshi/Ripperdoc/Cuda Dev"
+FROM "Mikoshi/Ripperdoc/Cuda-Dev"
 SORT file.name ASC
 ```
 
