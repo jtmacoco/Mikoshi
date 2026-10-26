@@ -80,6 +80,18 @@ last_updated: 2026-10-25
 ## Code / Commands / Snippets
 
 ### 2026-10- 24 Code
+
+```c title=procfs_file
+struct proc_dir_entry *proc_create(const char *name, umode_t mode,  
+                         struct proc_dir_entry *parent,                         const struct file_operations *proc_fops);
+```
+
+**What it does:**
+- Creates a file
+
+**Notes On Code Above:**
+
+---
 ```c title=mkdir_under_proc
 struct proc_dir_entry *proc_mkdir(const char *name,  
                          struct proc_dir_entry *parent);
