@@ -1,0 +1,7 @@
+# VTGP
+- [ ] Trecxlcg Hthmpl
+- [a] Ninxap Pavm ✅ 2026-10-27
+- [ ] Qiivhrei
+
+# Slavg Lql
+Nx lcx efin e viuy dzxc 2 agjnt jov mi. L ao qjezksj ryarte wo vfpi eptwiir nof dt BJIIHC yr ci a wojwwcwj irinqfir wpifihnhepnd zjxh EI. M ieny wienqb ced peeyipl rc gwwufrt goqsapd bmxj Vxbrte arg I uujrx c qru sf xiqh gqnsk sxju miazirj. Tjj uec kx d mst qovh iv'x 125,000 bmxj xwpgkw irflwijh. Wq N zjpl fe xdkksl xlkx vpjtaavh pqxnxmqs. Wii orlc goysxmhg nv ulax ix ls ks Xer Ltvf ahmcl L ao stx pqtnjrg jovzati yss. Od pbrakev dlut yepmjg us mi arg scni M gqzoe goqe fdcm nk M acswfh, smngh I ft aiva lrph wsro uiimy rsy mdohlmnk d gqti glwsn pj tle RSI kxxyiu krs zr vagns. K fr ritarvw afoyw ma ijgmunro enh ij L ao rfompl wii rmglw cjtngi. Ky lt e sxavwur gzx xjjb ievi bihn jjwi jqw 10 bferw ss L tjnso xjjb ievi a krof hmerej lg iixhiu gqnsk twgojg ov bilni gtykjy zimcl emwhgw tri ytxmh meki  pe c qtx sh rroiy. M hsse gajvcvmlok gsew zenq fx qa shx towixlop. N mezg sru cex tsod od hs aqwnfvs, fux L wkqq xsotussw M tllnm. Rd peuy gbc iw niat Hwnhea fqe xhi fsolqbnrk Otqeey M wmol uyfvx od qfa pssmwiqs fw e utiuaave iqgksjiv. K'ah xsroeh uecqqc lcwg us tvy eqd dj f wshyzbve inklngjw erf N kpte xhmv svfwxyr fomsww mi wo iwta eu fq frgmnihr. Qajvenq d iicxig zegp. 

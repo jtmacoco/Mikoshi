@@ -1,7 +1,5 @@
 # TODO
-- [ ] Apply To Jobs
-- [ ] Practice C
-- [ ] Practice CUDA
+- [ ] Practice Coding
 - [ ] Mental Math
 - [ ] Leetcode
 
