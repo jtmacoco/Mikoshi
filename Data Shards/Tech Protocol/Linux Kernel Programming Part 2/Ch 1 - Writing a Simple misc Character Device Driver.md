@@ -372,8 +372,7 @@ static void __exit miscdrv_rdwr_exit(void)
 ---
 
 ```c title=write_method
-static ssize_t  
-**write_miscdrv_rdwr**(struct file *filp, const char __user *ubuf, size_t count, loff_t *off)  
+static ssize_t  write_miscdrv_rdwr(struct file *filp, const char __user *ubuf, size_t count, loff_t *off)  
 {  
     int ret = count;  
     void *kbuf = NULL;  
