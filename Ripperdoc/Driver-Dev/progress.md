@@ -7,7 +7,7 @@
 - Goals: contribute to the Linux kernel, specifically NVIDIA GPU drivers (nouveau/nova); long term, firmware for robots or rockets
 
 ## Current level
-Level 2: Character device. Level 1 done (01-greeter-params); 02-kbuf-chardev started, `kbuf.c` has only includes and module metadata so far.
+Level 2: Character device. Level 1 done (01-greeter-params); 02-kbuf-chardev still in progress and not yet reviewed. `kbuf.c` has the ctx struct, size param, fops table and a partial `kbuf_init`; `read`/`write`/`open` are stubs that I want to finish without help.
 
 ## Weak spots
 - Kernel coding style: left 01 with 15 checkpatch errors (spacing, brace placement). 02 requires a clean checkpatch run.
@@ -48,3 +48,8 @@ Specific mistakes and misconceptions. Mark `[x]` when resolved (two correct quiz
 - Struggled with: exact string matching, valid MODULE_LICENSE values, kernel brace/spacing style; never answered README questions 2-3 (sysfs write bypasses validation; why charp is 0444)
 - Review findings: not recorded (checkpatch: 15 errors)
 - Next: 02-kbuf-chardev (alloc_chrdev_region, cdev, class/device, read/write with copy_*_user, goto unwind)
+
+### 2026-10-30: 02-kbuf-chardev
+- Status: in progress; no exercise work or review this session
+- Highest help level: none
+- Next: continue 02-kbuf-chardev on the weekend of 2026-10-31

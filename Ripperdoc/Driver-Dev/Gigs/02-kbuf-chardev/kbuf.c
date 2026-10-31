@@ -52,7 +52,6 @@ static const struct file_operations kbuf_fops = {
 };
 
 static int __init kbuf_init(void){
-
 	if (size <= 0 || size > 65536){
 		pr_err("range is 1-4096, size:%d\n",size);
 		return -EINVAL;
@@ -62,7 +61,10 @@ static int __init kbuf_init(void){
 	kbuf = class_create("kbuf");
 
 	cdev_init(&my_ctx.my_cdev, &kbuf_fops);
-	alloc_chrdev_region(&my_ctx.dev, 10, COUNT, DEVICE_NAME);
+	if (alloc_chrdev_region(&my_ctx.dev, 10, COUNT, DEVICE_NAME)){
+		
+	}
+	pr_info("registered %d:%d (size=%d)",10,COUNT,size);
 	
 	return 0;
 }
