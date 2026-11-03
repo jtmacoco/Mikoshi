@@ -11,7 +11,7 @@ tags:
   - kernel
   - c
 date_started: 2026-10-17
-last_updated: 2026-10-25
+last_updated: 2026-11-02
 ---
 
 ## TL;DR
