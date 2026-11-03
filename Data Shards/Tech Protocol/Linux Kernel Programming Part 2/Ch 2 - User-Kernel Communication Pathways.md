@@ -51,7 +51,7 @@ last_updated: 2026-10-25
 [[#2026-11- 02 Code]]
 
 **Summary**: 
-Continuing from where I left off. Currently diving more into the code and will see how to write a simple proc driver
+Continuing from where I left off. Currently diving more into the code and will see how to write a simple proc driver. A lot of **today's reading was in the code section**. When over some of the functions used to actually create things in the `procs` directory.  I stopped at this line `The open method of fops points to a function we must define:`. Use it for next time to find where I left off
 
 ---
 ### 2026-10- 24
@@ -93,6 +93,26 @@ Went over the `proc` directory and the prupose of `proc`. Found that it is dynam
 ## Code / Commands / Snippets
 
 ### 2026-11- 02 Code
+```c
+static const struct file_operations fops_rdwr_dbg_level = {  
+    .owner = THIS_MODULE,  
+    .open = myproc_open_dbg_level,  
+    .read = seq_read,  
+    .write = myproc_write_debug_level,  
+    .llseek = seq_lseek,  
+    .release = single_release,  
+};
+```
+
+**What it does:**
+- Defines the file operations
+
+**Notes On Code Above:**
+- has a `.owner` which is different from before
+- `.owner` tells the kernel which module these functions be long to
+- `THIS_MODULE` is a macro pointing to it's own `struct module`
+
+---
 
 ```c
 // ch2/procfs_simple_intf/procfs_simple_intf.c[...]  
@@ -114,8 +134,11 @@ static int __init procfs_simple_intf_init(void)
 ```
 
 **What it does:**
+- creates the `procfs` file that controls projects debug level
 
 **Notes On Code Above:**
+- `PROC_FILE1` is a macro in we define
+- `PROC_FILE1_PERMS` are default permission bits `0644` we define in the code
 
 ---
 
