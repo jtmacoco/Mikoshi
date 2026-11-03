@@ -44,7 +44,16 @@ last_updated: 2026-10-25
 
 ## Session Log
 <!-- Running, dated notes — the actual "as I read it" capture. Newest entry on top. -->
+### 2026-11- 02
+- By default all `procfs` files have their `owner:group` attributes as `root:root`
 
+**Code**: 
+[[#2026-11- 02 Code]]
+
+**Summary**: 
+Continuing from where I left off. Currently diving more into the code and will see how to write a simple proc driver
+
+---
 ### 2026-10- 24
 - Chapter will go over communication/interfacing with user space C apps 
 - Only way to access kernel from user space is through system calls
@@ -83,6 +92,88 @@ Went over the `proc` directory and the prupose of `proc`. Found that it is dynam
 
 ## Code / Commands / Snippets
 
+### 2026-11- 02 Code
+
+```c
+// ch2/procfs_simple_intf/procfs_simple_intf.c[...]  
+#define PROC_FILE1           "llkdproc_debug_level"  
+#define PROC_FILE1_PERMS     0644  
+[...]  
+static int __init procfs_simple_intf_init(void)  
+{  
+    int stat = 0;  
+    [...]  
+    /* 1. Create the PROC_FILE1 proc entry under the parent dir OURMODNAME;  
+     * this will serve as the 'dynamically view/modify debug_level'  
+     * (pseudo) file */  
+    if (!proc_create(PROC_FILE1, PROC_FILE1_PERMS, gprocdir,  
+                     **&fops_rdwr_dbg_level)) {  
+    [...]  
+    pr_debug("proc file 1 (/proc/%s/%s) created\n", OURMODNAME, PROC_FILE1);  
+    [...]
+```
+
+**What it does:**
+
+**Notes On Code Above:**
+
+---
+
+```c
+static struct proc_dir_entry *gprocdir;  
+[...]  
+gprocdir = proc_mkdir(OURMODNAME, NULL);
+```
+
+**What it does:**
+- Creates procfs directory
+
+**Notes On Code Above:**
+- `OURMODNAME` is a linux macro grabbing the name of the module
+
+---
+
+```c title=profcfs_drv_ctx
+// ch2/procfs_simple_intf/procfs_simple_intf.c  
+[ ... ]  
+/* Borrowed from ch1; the 'driver context' data structure;  
+ * all relevant 'state info' reg the driver and (fictional) 'device'  
+ * is maintained here.  
+ */  
+**struct drv_ctx** {  
+    int tx, rx, err, myword, power;  
+    u32 config1; /* treated as equivalent to 'debug level' of our driver */  
+    u32 config2;  
+    u64 config3;  
+#define MAXBYTES   128  
+    char oursecret[MAXBYTES];  
+};  
+static struct drv_ctx *gdrvctx;  
+static int debug_level;    /* 'off' (0) by default ... */
+```
+
+**What it does:**
+- Just a normal struct to hold our data similar to previous chapter
+
+**Notes On Code Above:**
+- `debug_level` provides dynamic control over the debug verbosity (more or less text in output)
+- Will assign between a range of `[0-2]`
+	- $0$ implies no debug messages
+	- $1$ is medium debug verbosity
+	- $2$ implies high debug verbosity
+- will be able to query and set the debug level from user space via `procfs`
+---
+```c title=remove_proc
+void remove_proc_entry(const char *name, struct proc_dir_entry *parent)
+```
+
+**What it does:**
+- Removes proc and frees it if not in use
+
+**Notes On Code Above:**
+- Nothing fancy does as it says
+
+---
 ### 2026-10- 24 Code
 
 ```c title=procfs_file
@@ -94,6 +185,7 @@ struct proc_dir_entry *proc_create(const char *name, umode_t mode,
 - Creates a file
 
 **Notes On Code Above:**
+- Expected to populate with methods (notice `fops`)
 
 ---
 ```c title=mkdir_under_proc
