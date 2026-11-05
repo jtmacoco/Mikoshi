@@ -33,6 +33,12 @@ static struct ctx my_ctx;
 
 static ssize_t kbuf_read(struct file *flip, char __user *ubuf, size_t count, loff_t *off){
 	//TODO will complete later no help
+	int data_len = my_ctx.data_len;
+	if (*off >= data_len){
+		return 0;
+	}
+	//no loop needed
+
 	return count;
 }
 static ssize_t kbuf_write(struct file *flip, const char __user *ubuf, size_t count, loff_t *off){
