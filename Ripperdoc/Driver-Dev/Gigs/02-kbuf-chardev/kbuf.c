@@ -33,12 +33,16 @@ static struct ctx my_ctx;
 
 static ssize_t kbuf_read(struct file *flip, char __user *ubuf, size_t count, loff_t *off){
 	//TODO will complete later no help
-	int data_len = my_ctx.data_len;
+	size_t data_len = my_ctx.data_len;
 	if (*off >= data_len){
 		return 0;
 	}
 	//no loop needed
-
+	if (copy_to_user(my_ctx.buffer, ubuf, count)){
+		pr_err("failed to copy from user\n");
+	}
+	//For next time need to track count bytes, if count is 4096 and only 5 bytes are valid what to do
+	off++;//change this to move the buffer over rather than that offset
 	return count;
 }
 static ssize_t kbuf_write(struct file *flip, const char __user *ubuf, size_t count, loff_t *off){
