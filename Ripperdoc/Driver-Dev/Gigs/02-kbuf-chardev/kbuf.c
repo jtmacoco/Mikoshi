@@ -21,7 +21,6 @@ module_param(size, int, 0444);
 MODULE_PARM_DESC(size, "buffer size in bytes");
 
 static struct class *kbuf; 
-
 struct ctx{
 	dev_t dev;
 	struct cdev my_cdev;
@@ -38,12 +37,15 @@ static ssize_t kbuf_read(struct file *flip, char __user *ubuf, size_t count, lof
 		return 0;
 	}
 	//no loop needed
-	if (copy_to_user(my_ctx.buffer, ubuf, count)){
+	
+	if (my_ctx.buffer-count < 0){
+		return 0;
+	}
+	if (copy_to_user(my_ctx.buffer, ubuf, my_ctx.buffer-count)){
 		pr_err("failed to copy from user\n");
 	}
-	//For next time need to track count bytes, if count is 4096 and only 5 bytes are valid what to do
-	off++;//change this to move the buffer over rather than that offset
-	return count;
+	my_ctx.buffer+=count;//change this to move the buffer over rather than that offset
+	return my_ctx.buffer-count;
 }
 static ssize_t kbuf_write(struct file *flip, const char __user *ubuf, size_t count, loff_t *off){
 	//TODO will complete later no help
