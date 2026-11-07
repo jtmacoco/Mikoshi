@@ -41,7 +41,7 @@ static ssize_t kbuf_read(struct file *flip, char __user *ubuf, size_t count, lof
 	if (my_ctx.buffer-count < 0){
 		return 0;
 	}
-	if (copy_to_user(my_ctx.buffer, ubuf, my_ctx.buffer-count)){
+	if (copy_to_user(my_ctx.buffer, ubuf, count)){
 		pr_err("failed to copy from user\n");
 	}
 	my_ctx.buffer+=count;//change this to move the buffer over rather than that offset

@@ -76,6 +76,6 @@ const chapters = {
 };
 
 // ====== CHANGE ONLY THIS LINE TO SWITCH CHAPTERS ======
-const config = chapters[3];
+const config = chapters[1];
 ```
 
