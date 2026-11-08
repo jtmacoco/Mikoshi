@@ -37,8 +37,7 @@ static ssize_t kbuf_read(struct file *flip, char __user *ubuf, size_t count, lof
 		return 0;
 	}
 	//no loop needed
-	
-	if (copy_to_user(my_ctx.buffer, ubuf, count)){
+	if (copy_to_user(ubuf,my_ctx.buffer, count)){
 		pr_err("failed to copy from user\n");
 	}
 	my_ctx.buffer+=count;//change this to move the buffer over rather than that offset
@@ -104,7 +103,7 @@ static int __init kbuf_init(void){
 	}
 	unsigned int major_num = MAJOR(my_ctx.dev);
 	unsigned int minor_num = MINOR(my_ctx.dev);
-	pr_info("registered %d:%d (size=%d)\n", major_num, minor_num,size);
+	pr_info("registered %u:%u (size=%d)\n", major_num, minor_num,size);
 	return ret;
 
 dest_class:
