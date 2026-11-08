@@ -1,7 +1,7 @@
 ---
 type: datashard
 category: book-chapter
-book: "[[Linux Kernel Programming]]"
+book: "[[Linux Kernel Programming Part 2]]"
 author: Kaiwan N. Billimoria
 chapter: 2
 chapter_title: "User-Kernel Communication Pathways "
@@ -44,6 +44,21 @@ last_updated: 2026-11-02
 
 ## Session Log
 <!-- Running, dated notes — the actual "as I read it" capture. Newest entry on top. -->
+### 2026-11- 02
+- Use `single_open()` and `seq_read`, `seq_lseek`, and `seq_release` (built in kernel functions) are the correct approach to using procfs
+- Most devices use RESTful APIs which is pared in JSON (typically)
+- Designing and implementing kernel to user (and vice versa) communication in easily parsable formats like JSON
+
+**Code**: 
+[[#2026-11- 07 Code]]
+
+**Summary**:
+Continuing to go over the procfs creation code. Again mostly done in the code section this session. 
+
+**Stopped here**:
+A few misc procfs APIs
+
+---
 ### 2026-11- 02
 - By default all `procfs` files have their `owner:group` attributes as `root:root`
 
@@ -92,7 +107,99 @@ Went over the `proc` directory and the prupose of `proc`. Found that it is dynam
 
 ## Code / Commands / Snippets
 
+### 2026-11- 07 Code
+
+```c
+#define DEBUG_LEVEL_MIN     0
+#define DEBUG_LEVEL_MAX     2
+[...]
+/* proc file 1 : modify the driver's debug_level global variable as per what user space writes */
+static ssize_t myproc_write_debug_level(struct file *filp, 
+                const char __user *ubuf, size_t count, loff_t *off)
+{
+   char buf[12];
+   int ret = count, prev_dbglevel;
+   [...]
+   prev_dbglevel = debug_level;
+   // < ... validity checks (not shown here) ... >
+   /* Get the user mode buffer content into the kernel (into 'buf') */
+   if (copy_from_user(buf, ubuf, count)) {
+        ret = -EFAULT;
+        goto out;
+   }
+   [...]
+   ret = kstrtoint(buf, 0, &debug_level); /* update it! */
+   if (ret)
+        goto out;
+  if (debug_level < DEBUG_LEVEL_MIN || debug_level > DEBUG_LEVEL_MAX) {
+            [...]
+            debug_level = prev_dbglevel;
+            ret = -EFAULT; goto out;
+   }
+   /* just for fun, let's say that our drv ctx 'config1'
+      represents the debug level */
+   gdrvctx->config1 = debug_level;
+   ret = count;
+out:
+   mutex_unlock(&mtx);
+   return ret;
+}
+```
+
+**What it does:**
+- Write callback function
+**Notes On Code Above:**
+- Perform checking on the copied data the user space process wrote to use
+- `kstrtoint` converts the input buffer into a an int, then store it in the `debug_level` variable
+	- The 0 is the base so base is decimal
+---
+```c
+/* Our proc file 1: displays the current value of debug_level */  
+static int proc_show_debug_level(struct seq_file *seq, void *v)  
+{  
+    if (mutex_lock_interruptible(&mtx))  
+        return -ERESTARTSYS;  
+    seq_printf(seq, "debug_level:%d\n", debug_level);
+    mutex_unlock(&mtx);  
+    return 0;  
+}
+```
+
+**What it does:**
+- Displays the current value of debug_level
+**Notes On Code Above:**
+- Uses a mutex lock to avoid race conditions
+- `seq_printf()` is similar to `sprintf()`
+	- It writes formatted data into the `seq_file` object’s internal kernel buffer
+	- It does not touch user space itself
+	- `seq_read()` later copies the buffered data to the user-space process with `copy_to_user()`
+- Analogy  [[#`struct seq_file`|struct_seq_file]] 
+	- The text we read from a procfs file has to come from somewhere
+	- procfs files aren't stored on disk, so the text is generated on demand every time the file is read
+	- When we read the file, the kernel calls our module's `show` function
+	- `show` writes the text onto a scratch pad (the `seq_file` buffer) using `seq_printf()`
+	- `seq_read()` then copies the scratch pad's contents to the user-space program
+	- Restaurant analogy: reading = ordering, `show` = the kitchen cooking, `seq_read()` = the waiter bringing the food
+
+
+---
+
+```c
+static int myproc_open_dbg_level(struct inode *inode, struct file *file)  
+{  
+    return single_open(file, proc_show_debug_level, NULL);  
+}
+```
+
+**What it does:**
+- Opens a proc file
+**Notes On Code Above:**
+- `single_open` is an API, the proc filesystem will call back the `proc_show_debug_level` routine
+- 
+
+---
 ### 2026-11- 02 Code
+
 ```c
 static const struct file_operations fops_rdwr_dbg_level = {  
     .owner = THIS_MODULE,  
@@ -242,7 +349,14 @@ struct proc_dir_entry *proc_mkdir(const char *name,
 ---
 
 ## Personal Analogies 
--
+### `struct seq_file`
+
+- ou’re a writer and `seq_read()` is the mail carrier.
+- The `seq_file` is a notepad the carrier hands you.
+- Your `show` function writes on the notepad (`seq_printf`).
+- The carrier delivers the notepad’s contents to the user, in as many trips as they need, and keeps track of what has been delivered.
+
+You never talk to the user directly. You just write on the notepad.
 
 ---
 ## Practical Exercises / Labs

@@ -1,7 +1,7 @@
 ---
 type: datashard
 category: book-chapter
-book: "[[Linux Kernel Programming]]"
+book: "[[Linux Kernel Programming Part 2]]"
 author: Kaiwan N. Billimoria
 chapter: 1
 chapter_title: Writing a Simple misc Character Device Driver

@@ -38,14 +38,11 @@ static ssize_t kbuf_read(struct file *flip, char __user *ubuf, size_t count, lof
 	}
 	//no loop needed
 	
-	if (my_ctx.buffer-count < 0){
-		return 0;
-	}
 	if (copy_to_user(my_ctx.buffer, ubuf, count)){
 		pr_err("failed to copy from user\n");
 	}
 	my_ctx.buffer+=count;//change this to move the buffer over rather than that offset
-	return my_ctx.buffer-count;
+	return count;
 }
 static ssize_t kbuf_write(struct file *flip, const char __user *ubuf, size_t count, loff_t *off){
 	//TODO will complete later no help
