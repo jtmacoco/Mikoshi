@@ -34,7 +34,12 @@ RUN=$$.$(date +%s)
 mark() { echo "$MOD-test: $RUN $1" | sudo tee /dev/kmsg >/dev/null; }
 log_since() { sudo dmesg | sed -n "/$MOD-test: $RUN $1\$/,\$p"; }
 # What the module logged since a marker, minus timestamps and test markers.
-mod_log() { log_since "$1" | grep -v "$MOD-test: " | sed 's/^\[[^]]*\] //'; }
+# The kernel's one-time taint notices (unsigned out-of-tree module) also carry
+# the "kbuf: " prefix, so drop them too.
+mod_log() {
+	log_since "$1" | grep -v -e "$MOD-test: " -e "taints kernel" \
+		-e "module verification failed" | sed 's/^\[[^]]*\] //'
+}
 
 loaded() { lsmod | grep -q "^$MOD "; }
 major() { awk -v m=$MOD '$2 == m { print $1 }' /proc/devices; }
@@ -130,10 +135,13 @@ unload >/dev/null
 echo "== small buffer (size=16)"
 mark t4
 out=$(load size=16) || bad "insmod size=16" "insmod succeeds" "$out"
-out=$(printf '%020d' 0 | sudo dd of=$DEV bs=20 count=1 status=none 2>&1) &&
-	bad "writing 20 bytes into a 16-byte buffer fails" "dd: ... No space left on device" "dd succeeded" ||
+# bash's printf retries the short write, so the second write() sees ENOSPC.
+# (Not dd: some dd builds, e.g. uutils, seek the output and fail on a
+# non-seekable device before writing anything.)
+out=$(sudo bash -c 'printf "%020d" 0 > "$1"' bash $DEV 2>&1) &&
+	bad "writing 20 bytes into a 16-byte buffer fails" "printf: write error: No space left on device" "write succeeded" ||
 	{ grep -q 'No space left' <<<"$out" && ok "writing past the end gives ENOSPC" ||
-		bad "writing past the end gives ENOSPC" "dd: ... No space left on device" "$out"; }
+		bad "writing past the end gives ENOSPC" "printf: write error: No space left on device" "$out"; }
 check "buffer holds the first 16 bytes" "$(printf '%016d' 0)" "$(get)"
 unload >/dev/null
 

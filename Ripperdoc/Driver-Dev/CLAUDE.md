@@ -99,7 +99,8 @@ When I type `/explain <concept>` (or say "explain <concept>"), teach it and save
 2. Explain the concept at my current level: what it is, why it exists, how it's used in a driver, and the common mistakes. If `progress.md` shows I've made a mistake related to it, connect the explanation to that mistake.
 3. Use a short code snippet only to illustrate the API (a few lines, not a working driver), and never solve my current exercise for me.
 4. Point out where the API differs from older material (e.g. LDD3) if relevant.
-5. End with **one** check question. Grade it like a quiz answer and update the concept's rating and "Last tested" in `progress.md`.
+5. Provide a simple analogy of the topic
+6. End with **one** check question. Grade it like a quiz answer and update the concept's rating and "Last tested" in `progress.md`.
 
 **The note:** write (or update) `notes/<concept-slug>.md`, e.g. `notes/copy-to-user.md`. Lowercase, hyphen-separated file names. Keep it short: a summary I can reread in under two minutes, not a copy of the chat. If `notes/` doesn't exist, create it.
 

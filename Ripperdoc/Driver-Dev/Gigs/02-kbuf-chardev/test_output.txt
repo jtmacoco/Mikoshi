@@ -1,0 +1,75 @@
+run: 2026-11-09 03:26:43  kernel: 7.0.0-38-generic  host: ubuntu
+kbuf.c sha256: acbcd0013f99220769fd9e2a835c40cd8e1392a72ce09b0438f99bca9f983273
+== build
+warning: the compiler differs from the one used to build the kernel
+  The kernel was built by: x86_64-linux-gnu-gcc (Ubuntu 15.2.0-16ubuntu1) 15.2.0
+  You are using:           gcc (Ubuntu 15.2.0-16ubuntu1) 15.2.0
+warning: pahole version differs from the one used to build the kernel
+  The kernel was built with: 131
+  You are using:             0
+== modinfo
+PASS: size param has a description
+PASS: MODULE_LICENSE set
+== load (default size)
+PASS: kbuf listed in /proc/devices (major 239)
+PASS: load message
+PASS: /dev/kbuf is a character device
+PASS: /dev/kbuf major:minor matches /proc/devices
+PASS: /sys/class/kbuf/kbuf/dev
+PASS: sysfs size param
+== read and write
+PASS: fresh device reads empty
+PASS: read back 'hello'
+PASS: shorter write with '>' replaces data (O_TRUNC)
+PASS: second write on same fd continues at *ppos
+PASS: 1-byte reads (dd bs=1) return everything
+PASS: a second read of the same data still works
+== unload refused while open
+PASS: module refcount rises while /dev/kbuf is open (refcnt 1)
+PASS: rmmod refused while open
+== unload
+PASS: unload message
+PASS: after unload: no /dev/kbuf
+PASS: after unload: no kbuf in /proc/devices
+PASS: after unload: no /sys/class/kbuf
+== reload (did unload clean up?)
+PASS: reloaded device reads empty
+== small buffer (size=16)
+PASS: writing past the end gives ENOSPC
+PASS: buffer holds the first 16 bytes
+== invalid size must fail the load and leave nothing behind
+PASS: insmod size=0 fails
+PASS: size=0: error logged
+PASS: size=0: no /dev/kbuf
+PASS: size=0: no kbuf in /proc/devices
+PASS: size=0: no /sys/class/kbuf
+PASS: insmod size=65537 fails
+PASS: size=65537: error logged
+PASS: size=65537: no /dev/kbuf
+PASS: size=65537: no kbuf in /proc/devices
+PASS: size=65537: no /sys/class/kbuf
+PASS: insmod size=-1 fails
+PASS: size=-1: error logged
+PASS: size=-1: no /dev/kbuf
+PASS: size=-1: no kbuf in /proc/devices
+PASS: size=-1: no /sys/class/kbuf
+
+== kernel log for this run
+kbuf-test: 3389.1794194803 t1
+kbuf: registered 239:0 (size=4096)
+kbuf-test: 3389.1794194803 t2
+kbuf: unregistered
+kbuf-test: 3389.1794194803 t3
+kbuf: registered 239:0 (size=4096)
+kbuf: unregistered
+kbuf-test: 3389.1794194803 t4
+kbuf: registered 239:0 (size=16)
+kbuf: unregistered
+kbuf-test: 3389.1794194803 t50
+kbuf: range is 1-65536, size:0
+kbuf-test: 3389.1794194803 t565537
+kbuf: range is 1-65536, size:65537
+kbuf-test: 3389.1794194803 t5-1
+kbuf: range is 1-65536, size:4294967295
+
+Passed: 38  Failed: 0
