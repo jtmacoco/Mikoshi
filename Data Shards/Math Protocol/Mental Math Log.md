@@ -82,3 +82,4 @@ Track my quiz progress
 | 2026-11-07 | Chapter 1 - Addition & Subtraction | 21/25 | 261.3 | 84% |
 | 2026-11-08 | Chapter 1 - Addition & Subtraction | 15/25 | 219.5 | 60% |
 | 2026-11-11 | Chapter 1 - Addition & Subtraction | 24/25 | 242.2 | 96% |
+| 2026-11-12 | Chapter 1 - Addition & Subtraction | 20/25 | 244.5 | 80% |
