@@ -19,14 +19,14 @@ const chapters = {
     ]
   },
   1: {
-    chapter: "Chapter 1 - Addition & Subtraction",
-    sections: [
-      { op: "add", digitsA: 2, digitsB: 2, count: 8 },
-      { op: "add", digitsA: 3, digitsB: 3, count: 6 },
-      { op: "sub", digitsA: 2, digitsB: 2, count: 6 },
-      { op: "sub", digitsA: 3, digitsB: 3, count: 5 },
-    ]
-  },
+  chapter: "Chapter 1 - Addition & Subtraction",
+  sections: [
+    { op: "add", digitsA: 2, digitsB: 2, count: 4 },
+    { op: "add", digitsA: 3, digitsB: 3, count: 5 },
+    { op: "sub", digitsA: 2, digitsB: 2, count: 7 },
+    { op: "sub", digitsA: 3, digitsB: 3, count: 9 },
+  ]
+},
   2: {
     chapter: "Chapter 2 - Basic Multiplication",
     sections: [

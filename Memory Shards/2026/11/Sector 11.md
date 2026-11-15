@@ -15,3 +15,4 @@ Description: Keeps track of daily entries
 - [[encoded_2026-11-11_notes]]
 - [[encoded_2026-11-12_notes]]
 - [[encoded_2026-11-13_notes]]
+- [[encoded_2026-11-14_notes]]
