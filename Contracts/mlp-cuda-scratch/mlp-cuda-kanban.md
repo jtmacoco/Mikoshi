@@ -15,8 +15,8 @@ kanban-plugin: board
 
 ## To Do
 
-- [ ] Training loop
 - [ ] Write unit tests for Linear layer
+- [ ] Cuda Implementation
 
 
 ## Blocked
@@ -25,7 +25,6 @@ kanban-plugin: board
 
 ## In Progress
 
-- [ ] Data Loader (shuffle, batch size, etc)
 
 
 ## Testing
@@ -35,6 +34,8 @@ kanban-plugin: board
 ## Done
 
 **Complete**
+- [x] Training loop ✅ 2026-11-15
+- [x] Data Loader (shuffle, batch size, etc) ✅ 2026-11-15
 - [x] Gradient Decent ✅ 2026-10-05
 - [x] Optimizer ✅ 2026-09-13
 - [x] Gradient checking ✅ 2026-10-05

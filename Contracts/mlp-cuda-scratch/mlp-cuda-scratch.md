@@ -36,6 +36,10 @@ Develop from scratch MLP for MNIST dataset, then profile and use cuda to speed u
 - 2026-09-12: Finished AdamW function need to check
 - 2026-09-12: Fix training loop so far
 - 2026-09-13: Adamw and gradient descent pass implemented
+- 2026-11-15: Fixed the backward math since I forgot to take power wtr to `t`
+	- Currently still working on the dataloader
+	- Kinda messed up the naming but it's fine for this project in future be more careful
+	- Working on the dataloader rn
 
 
 ## Notes
