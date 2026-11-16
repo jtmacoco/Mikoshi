@@ -10,11 +10,11 @@
 Level 2: Character device (second exercise). 02-kbuf-chardev works (38/38 tests), no critical findings, but I moved on before it formally passed (checkpatch 17E/5W, race comment incomplete, README questions unanswered). Because `read`/`write`/`open` took many rounds of help and the goto unwind was never done without help, Level 2 is being repeated with 03-kbank-multi before moving to Level 3.
 
 ## Weak spots
-- `off` vs `*off` (pointer vs pointee): got it wrong three times in `kbuf_read` (`off +=`, `flip +=`, `buffer + off`).
+- `off` vs `*off` (pointer vs pointee): got it wrong three times in `kbuf_read`; in quiz 11-15 still framed it as local vs global and wrote `off >= room`.
 - Bounds and unsigned arithmetic: `data_len - count < 0` on `size_t`, `size - count` (heap overflow), `sizeof(pointer)` as the allocation size, wrong limit in `write`.
 - Kernel coding style: the brace rule is still not clear (put braces on their own line for `if` and `struct`, which applies only to functions); 02 left at 17E/5W.
 - Concurrency reasoning: couldn't identify the check-then-set lost update on `data_len`; thought `data_len` was per-process and `ubuf` was shared.
-- Error unwinding / teardown order / ERR_PTR: correct in 02 now, but only after heavy help on 11-01; never tested without help.
+- Error unwinding / teardown order / ERR_PTR: correct in 02 only after heavy help; quiz 11-15 found only 1 of 3 unwind bugs (missed the first-step goto and an unset `ret`).
 
 ## Concept tracker
 Rating: 1 = can't do it without help, 2 = shaky, 3 = OK with docs, 4 = solid, 5 = could teach it.
@@ -118,3 +118,12 @@ Specific mistakes and misconceptions. Mark `[x]` when resolved (two correct quiz
 - Struggled with: `off` vs `*off`, unsigned arithmetic and bounds, open-flag bit logic, write limit and data_len rule, copy direction/arg order, brace rule, identifying the race (see "Mistakes to revisit")
 - Review findings: critical 0, major 2 (checkpatch not 0/0; race comment incomplete), minor 3 (`%u` for signed size, now fixed; `pr_err` on user-triggerable -EFAULT; `unlikely()` in init), style 1 (naming: class global `kbuf`, `flip`, literal "kbuf" vs DEVICE_NAME)
 - Next: 03-kbank-multi (Level 2 repeat): several devices from one driver, per-bank buffers through `filp->private_data`, `O_APPEND`, and a `fail_at` param that forces every init failure so each unwind path is tested, including partially completed loops. Re-tests `*ppos`, bounds, the data_len rule (`<>` overwrite test), copy direction, ERR_PTR, teardown order, checkpatch 0/0, and the race comment. Quiz Level 2 concepts soon. (A Level 3 exercise, 03-kring-misc, was drafted and then removed at my request.)
+
+### 2026-11-15: quiz only (03-kbank-multi not started)
+- Status: no exercise work; `03-kbank-multi/kbank.c` still empty. Took `/quiz quick`: 0/3, all partial ([[2026-11-15-quick-1]]).
+- Highest help level: none (quiz only)
+- Got comfortable with: `size_t` can't go negative; kzalloc failure after a region is allocated must unwind; label order (reverse of setup) was correct
+- Struggled with: called `off` vs `*off` "local vs global"; reused a bare `off` in a bounds check; mispredicted the overflow's result; missed the first-step `goto` and an unset `ret` in an unwind
+- Review findings: none (no code reviewed)
+- Other: CLAUDE.md now saves every quiz to `Quizzes/YYYY-MM-DD-<variant>-<n>.md`
+- Next: **start the session with another quiz** (I said I'd want one). Target goto unwind (set `ret`, first-step return), `*off`, and compare-before-subtract; rotate in other weak spots (O_ACCMODE, copy direction, races) for variety. Then start 03-kbank-multi with `kbank_init` and its unwind, written without help.
