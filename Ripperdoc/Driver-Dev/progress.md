@@ -30,17 +30,17 @@ Rating: 1 = can't do it without help, 2 = shaky, 3 = OK with docs, 4 = solid, 5 
 | MODULE_LICENSE strings | 1 | 2 | 2026-10-24 | – | Confused with SPDX id ("GPL-2.0") |
 | Kernel coding style / checkpatch | 1 | 1 | 2026-11-08 | – | 02: 33E/9W → 17E/5W; put braces on their own line for every block |
 | Reading build errors | 1 | 2 | 2026-11-08 | – | Couldn't read `gcc: not found` / Error 127 in the VM |
-| Error unwinding with goto | 2 | 2 | 2026-11-01 | – | Correct in 02 only after many rounds of line-level help; retest without help |
+| Error unwinding with goto | 2 | 2 | 2026-11-01 | 2026-11-15 | Correct in 02 only after many rounds of line-level help; quiz 11-15: found 1/3 bugs (missed first-step goto, unset `ret`) |
 | Teardown order (reverse of init) | 2 | 2 | 2026-11-01 | – | `kbuf_exit` order needed repeated correction in 02 |
-| ERR_PTR / IS_ERR / PTR_ERR | 2 | 2 | 2026-11-01 | – | Used `!ptr` first in 02; fixed after a pointer to `err.h` |
+| ERR_PTR / IS_ERR / PTR_ERR | 2 | 2 | 2026-11-01 | 2026-11-15 | Used `!ptr` first in 02; fixed after a pointer to `err.h` |
 | cdev_init / cdev_add / cdev_del | 2 | 2 | 2026-11-01 | – | Forgot `cdev_add()` at first; assigned `cdev_init()`'s void result to `ret` |
 | class_create / device_create and destroy | 2 | 2 | 2026-11-01 | – | Used correctly after pointers; wrong device name and order at first |
 | alloc_chrdev_region / MAJOR / MINOR | 2 | 3 | 2026-11-01 | – | Misread the base minor as `10` at first, then fixed it |
 | kzalloc / kfree | 2 | 2 | 2026-11-08 | – | Wrong `kfree()` args in 11-01; used `sizeof(pointer)` as the allocation size in 11-08 |
 | file_operations .owner | 2 | 2 | 2026-11-08 | – | Refcount test passes; README question 3 not answered yet |
 | copy_to_user / copy_from_user | 2 | 2 | 2026-11-08 | – | Return value OK after a hint; used `copy_to_user` in `write`, then swapped `copy_from_user` args |
-| File position `loff_t *ppos` | 2 | 2 | 2026-11-08 | – | `off` vs `*off` confusion three times; read/write correct in the end |
-| Read/write bounds clamping | 2 | 2 | 2026-11-08 | – | Unsigned underflow checks, `size - count` heap overflow, data_len vs size limit |
+| File position `loff_t *ppos` | 2 | 2 | 2026-11-08 | 2026-11-15 | `off` vs `*off` confusion three times; quiz 11-15: fixes right but framed it as local vs global; used bare `off` again in Q2 |
+| Read/write bounds clamping | 2 | 2 | 2026-11-08 | 2026-11-15 | Quiz 11-15: knew `size_t` can't go negative, but proposed `off >= room` and mispredicted the overflow |
 | open() flags: O_ACCMODE, O_TRUNC, f_flags/f_mode | 2 | 2 | 2026-11-08 | – | Used `inode->i_mode`, `== O_TRUNC`, `& (A\|B)` as AND; got there with O_ACCMODE |
 | nonseekable_open / NULL .llseek | 3 | 2 | 2026-11-08 | – | Knew the LDD3 rule; modern kernels: NULL llseek → -ESPIPE |
 | Races on shared driver state | 5 | 1 | 2026-11-08 | – | Missed the `data_len` check-then-set lost update in 02 |
@@ -79,10 +79,16 @@ Specific mistakes and misconceptions. Mark `[x]` when resolved (two correct quiz
 - [ ] 2026-11-08, 02-kbuf-chardev: printed signed `size` with `%u` → `%d` for int; `%u` for unsigned values like MAJOR()/MINOR()
 - [ ] 2026-11-08, 02-kbuf-chardev: race comment said `data_len` "could differ per process" and that reading `ubuf` races → there is one shared `data_len`; the race is the check-then-set on it (lost update); `ubuf` is each process's own memory
 - [ ] 2026-11-08, 02-kbuf-chardev: couldn't read `gcc: not found` / `Error 127` → find the first line saying *what* failed; 127 = command not found (a missing tool, not your code)
+- [ ] 2026-11-15, quiz: described `off` vs `*off` as "local vs global" → it's pointer vs pointee; `*off` is the `f_pos` of this open file (one per `struct file`, not global)
+- [ ] 2026-11-15, quiz: didn't know the symptom of a position that never advances → `cat` loops forever (never gets EOF/0)
+- [ ] 2026-11-15, quiz: proposed `if (off >= room)` as a write bounds check → bare pointer again, and compares position with room; correct: `if (*off >= size) return -ENOSPC;` then `count = min_t(size_t, count, size - *off)`
+- [ ] 2026-11-15, quiz: predicted the unchecked write "keeps writing / returns garbage" → copies exactly `count` bytes past the end (heap overflow) and returns `count` as if it succeeded
+- [ ] 2026-11-15, quiz: missed `goto err_region` on `alloc_chrdev_region()` failure and an unset `ret` on `class_create()` failure (both repeats of 11-01 items; `ret = 0` → init "succeeds", rmmod double-frees); also forgot `ret = -ENOMEM` before the kzalloc goto
 
 ## Quiz log
 | Date | Topic | Score | Missed concepts |
 |---|---|---|---|
+| 2026-11-15 | [[2026-11-15-quick-1]] (quick) | 0/3 (3 partial) | loff_t *ppos, bounds/unsigned math, goto unwind (first-step return, set `ret` before goto) |
 
 ## Session log
 ### 2026-10-24: 01-greeter-params

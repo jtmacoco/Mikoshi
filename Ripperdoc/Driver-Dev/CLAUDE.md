@@ -87,6 +87,44 @@ When I type `/quiz` (or say "quiz me"), run a quiz. Variants:
 - If I say "skip", mark it wrong and move on.
 - At the end, show a summary: score, each concept tested with its result, and the one or two things most worth reviewing.
 - Then **update `progress.md` immediately** (quiz log and concept tracker); don't wait for "wrap up".
+- Also **save the full quiz result** to `Quizzes/` (create it if missing). See "Saving quiz results".
+
+**Saving quiz results:** one file per quiz, never overwritten.
+- File name: `Quizzes/YYYY-MM-DD-<variant>-<n>.md`, where `<variant>` is `quiz`, `quick`, or the topic slug (lowercase, hyphenated, e.g. `locking`), and `<n>` is 1, 2, 3… Use the lowest `<n>` that doesn't already exist for that date and variant, so several quizzes in one day each get their own file. Check the directory before writing.
+- In the `progress.md` quiz log, link the file from the Topic column, e.g. `[[2026-11-15-quick-1]]`.
+- Use this template:
+
+```markdown
+---
+title: Quiz <YYYY-MM-DD> #<n> (<variant>)
+date: <YYYY-MM-DD>
+variant: <quiz | quick | topic name>
+score: <correct>/<total> (<k> partial)
+tags: [linux-kernel, drivers, quiz]
+concepts: [<concept>, <concept>]
+---
+
+# Quiz <YYYY-MM-DD> #<n>
+
+## Summary
+| Q | Concept | Format | Result | Hinted |
+|---|---|---|---|---|
+
+Most worth reviewing: one or two bullets.
+
+## Questions
+### Q1: <format>, <concept>
+<the question, including any code snippet>
+
+**My answer:** <my answer, close to verbatim>
+
+**Grade:** correct / partial / wrong. <the explanation and key idea, short>
+
+(repeat for each question, including follow-ups)
+
+## Rating changes
+- <concept>: <old> → <new> (or "no change")
+```
 
 **Updating ratings after a quiz:** correct with no hint → raise the concept's rating by 1 (max 5). Partial or hinted → no change. Wrong → lower by 1 (min 1). Update "Last tested". If a "Mistakes to revisit" item was answered correctly twice in separate quizzes, mark it resolved.
 
@@ -225,6 +263,7 @@ Specific mistakes and misconceptions. Mark `[x]` when resolved (two correct quiz
 ## Quiz log
 | Date | Topic | Score | Missed concepts |
 |---|---|---|---|
+| 2026-11-15 | [[2026-11-15-quick-1]] | 0/3 (3 partial) | loff_t *ppos, goto unwind |
 
 ## Session log
 ### YYYY-MM-DD: <exercise folder>
