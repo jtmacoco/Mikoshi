@@ -40,6 +40,9 @@ Develop from scratch MLP for MNIST dataset, then profile and use cuda to speed u
 	- Currently still working on the dataloader
 	- Kinda messed up the naming but it's fine for this project in future be more careful
 	- Working on the dataloader rn
+- 2026-11-15: Finished CPU version
+- 2026-11-16: Working on the CUDA version
+	- I want to just set it up with Cmake today
 
 
 ## Notes

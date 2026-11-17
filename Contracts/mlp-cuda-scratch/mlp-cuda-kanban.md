@@ -17,6 +17,7 @@ kanban-plugin: board
 
 - [ ] Write unit tests for Linear layer
 - [ ] Cuda Implementation
+- [ ] Trivial kernel test
 
 
 ## Blocked
