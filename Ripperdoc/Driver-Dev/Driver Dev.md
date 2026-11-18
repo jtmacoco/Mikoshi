@@ -3,6 +3,8 @@ title: Driver Dev
 source: "[[Ripperdoc]]"
 tags:
   - moc
+  - ripper
+  - ripperdoc
 created: 2026-10-25
 ---
 

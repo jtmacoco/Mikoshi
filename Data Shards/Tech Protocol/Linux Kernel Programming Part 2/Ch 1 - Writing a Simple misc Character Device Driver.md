@@ -761,7 +761,7 @@ Basic setup for a misc device
 **Notes On Code Above**:
 - `.name`: On successful registration kernel will automatically create a device node using this form `/dev/<name>`
 	- Device name in the /dev/ directory uses this field
-- permissions: see [[Linux#Permissions]] 
+- permissions: see [[Mikoshi/Netrunner/Quick Hacks/Linux#Permissions]] 
 - `misc_register` takes in a pointer to a `struct miscdevice` and returns an `int` and anything negative is bad 
 
 ---
