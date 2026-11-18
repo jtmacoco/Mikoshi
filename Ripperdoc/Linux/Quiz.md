@@ -21,12 +21,12 @@ Two tracks, leveled independently.
 | Field | Main Track | Kernel Track |
 |---|---|---|
 | Current level | 1 — Street Kid | K1 — Ripper |
-| Sessions at this level | 0 | 0 |
+| Sessions at this level | 1 | 0 |
 | Streak (≥80%) | 0 | 0 |
 | Streak (<50%) | 0 | 0 |
 | ⚡ Preview hits at level | 0 | 0 |
-| Total sessions | 0 | 0 |
-| Last session | — | — |
+| Total sessions | 1 | 0 |
+| Last session | 2026-11-17 (67%) | — |
 
 | Say | Runs |
 |---|---|
@@ -43,7 +43,11 @@ Commands/concepts I missed. An item clears after 2 ✅ in separate sessions.
 
 | Command / Concept | Track | Level | Times missed | ✅ since | Last seen |
 |---|---|---|---|---|---|
-| — | — | — | — | — | — |
+| `cd -` (previous dir) | Main | 1 | 1 | 0 | 2026-11-17 |
+| `tail -n N` (last N lines) | Main | 1 | 1 | 0 | 2026-11-17 |
+| `type` (alias/builtin/binary) | Main | 1 | 1 | 0 | 2026-11-17 |
+| `Ctrl+L` clear / `Ctrl+Z` suspends, not kills | Main | 1 | 1 | 0 | 2026-11-17 |
+| `>>` append vs `>` overwrite | Main | 2 | 1 | 0 | 2026-11-17 |
 
 ---
 
@@ -188,4 +192,4 @@ Newest first. Full details live in [[Results MOC]].
 
 | Date | Track | Level | Score | Change | Note |
 |---|---|---|---|---|---|
-| — | — | — | — | — | — |
+| 2026-11-17 | Main | 1 — Street Kid | 6 / 9 (67%) | none | [[2026-11-17 Linux Quiz]] |

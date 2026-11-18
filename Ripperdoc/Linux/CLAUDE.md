@@ -84,6 +84,14 @@ Lower levels lean on types 1–3. Higher levels lean on 4–8.
   - 1–2 lines on *why*, plus one related flag or trick worth knowing
 - Accept any answer that works. There's usually more than one right command. Mention the common or idiomatic version if mine differs.
 
+### Grading explanations
+
+- Grade explanations (Read it, Flag check, "why" questions) on the key idea, not wording.
+- Shorthand is enough: "`$<` = first prereq", "`:=` expands once, right away". Full sentences are never required.
+- ✅ if the core idea is right. 🟡 if it's partly right or misses the main point. ❌ only if the idea is wrong.
+- If an answer is vague but probably right, ask one quick follow-up before grading.
+- Commands are still graded by "would this run and do the job?" — explanations get the loose grading, commands don't.
+
 ### Grading
 
 | Mark | Meaning | Points |
