@@ -20,13 +20,13 @@ Two tracks, leveled independently.
 
 | Field | Main Track | Kernel Track |
 |---|---|---|
-| Current level | 1 — Street Kid | K1 — Ripper |
-| Sessions at this level | 1 | 0 |
+| Current level | 2 — Punk | K1 — Ripper |
+| Sessions at this level | 0 | 0 |
 | Streak (≥80%) | 0 | 0 |
 | Streak (<50%) | 0 | 0 |
 | ⚡ Preview hits at level | 0 | 0 |
-| Total sessions | 1 | 0 |
-| Last session | 2026-11-17 (67%) | — |
+| Total sessions | 4 | 0 |
+| Last session | 2026-11-18 #3 (83%) | — |
 
 | Say | Runs |
 |---|---|
@@ -43,11 +43,15 @@ Commands/concepts I missed. An item clears after 2 ✅ in separate sessions.
 
 | Command / Concept | Track | Level | Times missed | ✅ since | Last seen |
 |---|---|---|---|---|---|
-| `cd -` (previous dir) | Main | 1 | 1 | 0 | 2026-11-17 |
-| `tail -n N` (last N lines) | Main | 1 | 1 | 0 | 2026-11-17 |
-| `type` (alias/builtin/binary) | Main | 1 | 1 | 0 | 2026-11-17 |
-| `Ctrl+L` clear / `Ctrl+Z` suspends, not kills | Main | 1 | 1 | 0 | 2026-11-17 |
-| `>>` append vs `>` overwrite | Main | 2 | 1 | 0 | 2026-11-17 |
+| `cd -` (previous dir) | Main | 1 | 2 | 1 | 2026-11-18 |
+| `type` (alias/builtin/binary) | Main | 1 | 3 | 1 | 2026-11-18 |
+| `Ctrl+L` clear / `Ctrl+Z` suspends → `fg` to resume | Main | 1 | 2 | 0 | 2026-11-18 |
+| `>>` append vs `>` overwrite | Main | 2 | 1 | 1 | 2026-11-18 |
+| `rm -i` (prompt before delete) | Main | 1 | 1 | 1 | 2026-11-18 |
+| `whatis` (one-line description) | Main | 1 | 1 | 1 | 2026-11-18 |
+| `touch` existing file (timestamp only) | Main | 1 | 1 | 1 | 2026-11-18 |
+| `ls -A` (hidden, minus `.` `..`) | Main | 1 | 1 | 1 | 2026-11-18 |
+| `cmd --help \| grep` / `man` `/word` to find a flag (`ls -S`) | Main | 1 | 1 | 0 | 2026-11-18 |
 
 ---
 
@@ -192,4 +196,7 @@ Newest first. Full details live in [[Results MOC]].
 
 | Date | Track | Level | Score | Change | Note |
 |---|---|---|---|---|---|
+| 2026-11-18 | Main | 1 — Street Kid | 7.5 / 9 (83%) | ⬆️ early up to 2 (3/3 previews) | [[2026-11-18 Linux Quiz 3]] |
+| 2026-11-18 | Main | 1 — Street Kid | 7 / 9 (78%) | none | [[2026-11-18 Linux Quiz 2]] |
+| 2026-11-18 | Main | 1 — Street Kid | 5 / 9 (56%) | none | [[2026-11-18 Linux Quiz]] |
 | 2026-11-17 | Main | 1 — Street Kid | 6 / 9 (67%) | none | [[2026-11-17 Linux Quiz]] |

@@ -40,6 +40,19 @@ created: 2026-08-15
 
 ---
 
+## Getting Help
+| Command | Action |
+|---|---|
+| `type name` | Is it an alias, builtin, function or file? |
+| `type -a name` | Every match (alias + `/usr/bin/...`) |
+| `type -t name` | Category only, good for scripts |
+| `whatis name` | One-line description from man page |
+| `apropos word` | Find commands related to a word |
+
+> `cd` is a **builtin**, not a program: a child process can't change your shell's directory.
+
+---
+
 ## Search & Filter
 | Command | Action |
 |---|---|

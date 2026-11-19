@@ -20,3 +20,6 @@ SORT file.name ASC
 
 ## Sessions
 - [[2026-11-17 Linux Quiz]]
+- [[2026-11-18 Linux Quiz]]
+- [[2026-11-18 Linux Quiz 2]]
+- [[2026-11-18 Linux Quiz 3]]
