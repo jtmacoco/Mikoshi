@@ -62,7 +62,7 @@ class Solution:
 ```
 
 ```html-embed
-Mikoshi/ICEbreaker/Leetcode/Leetcode_Assets/meeting_rooms_2.html
+Mikoshi/ICEbreaker/Leetcode/Assets/meeting_rooms_2.html
 800
 ```
 

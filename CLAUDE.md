@@ -17,7 +17,7 @@ This is my Obsidian vault, called Mikoshi. It's a personal knowledge system name
 |---|---|---|
 | `SYSTEM MANIFEST.md` | Root of the vault; top-level MOC | — |
 | `HUD.md` | Dashboard: Dataview queries, heatmap, inbox, fast travel | `#jacked-in` |
-| `Inbox.md` | Raw capture. One file, not a folder | — |
+| `Inbox/Inbox.md` | Raw capture. One file inside the Inbox folder | — |
 | `Directives/` | Tasks: `On-Contract/` (active), `Backlog/` (queued), `Completed/` | — |
 | `Contracts/` | Projects and builds; `Ideas/` for fleshed-out project ideas | `#contract` |
 | `Netrunner/` | Distilled coding and tech knowledge | `#netrunner` |
@@ -45,14 +45,15 @@ You may add a new folder if it clearly makes things more organized. When you do,
 ## Capture
 
 - Inbox first, sort later. When I'm capturing, don't organize.
-- Raw ideas go straight into `Inbox.md` as a line, not as a new file.
+- Raw ideas go straight into `Inbox/Inbox.md` as a line, not as a new file.
 - New project idea: Inbox first, then `Contracts/Ideas/` once it's fleshed out.
 - When I ask you to process the inbox, propose where each item goes, then move it once I agree.
 
 ## Notes
 
 - Every note starts from the Netrunner or general template in `Templates/`. No blank files.
-- Source and Tags are required on every note. No exceptions.
+- `source` and `tags` are required on every note. No exceptions.
+- Frontmatter keys are lowercase (`source`, `tags`, `created`, `status`).
 - Frontmatter fields are plain text. Never bold them.
 - Only add links I'd actually click. No linking for its own sake.
 - Split a note into several files only when it genuinely earns it.
@@ -61,9 +62,10 @@ Frontmatter shape:
 
 ```yaml
 ---
-Source: "[[Parent MOC]]"
-Tags: [netrunner, jacked-in]
-Created: YYYY-MM-DD
+title: Note Name
+source: "[[Parent MOC]]"
+tags: [netrunner, jacked-in]
+created: YYYY-MM-DD
 ---
 ```
 

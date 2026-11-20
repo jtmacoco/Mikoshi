@@ -1099,5 +1099,5 @@ This chapter introduced the basics of writing device drivers specifically `misc`
 - `inode`: [[inode]]
 - `kzalloc`: [[kzalloc]]
 - static: [[Static]]
-- printk levels: [[printk_Levels]]
+- printk levels: [[printk Levels]]
 - struct device: [[struct device]]

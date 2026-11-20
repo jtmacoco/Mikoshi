@@ -190,15 +190,15 @@ Rather than recomputing the _entire_ chain from scratch for every single weight 
 ## Backprop walkthrough weights
 
 ```html-embed
-Mikoshi/Netrunner/ML Codebase/02 - MLP Core/02 - MLP Core_Assets/backprop.html
+Mikoshi/Netrunner/ML Codebase/02 - MLP Core/Assets/backprop.html
 650
 ```
 
 ```html-embed
-Mikoshi/Netrunner/ML Codebase/02 - MLP Core/02 - MLP Core_Assets/backprop-viz.html
+Mikoshi/Netrunner/ML Codebase/02 - MLP Core/Assets/backprop-viz.html
 700
 ```
 ```html-embed
-Mikoshi/Netrunner/ML Codebase/02 - MLP Core/02 - MLP Core_Assets/mlp_example.html
+Mikoshi/Netrunner/ML Codebase/02 - MLP Core/Assets/mlp_example.html
 1200
 ```

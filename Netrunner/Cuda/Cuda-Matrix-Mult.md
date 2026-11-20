@@ -21,7 +21,7 @@ Matrix multiplication with cuda using tiles
 ![[Cuda-Matrix-Mult-20260824220402943.svg]]
 
 ```html-embed
-Mikoshi/Netrunner/Cuda/Cuda_Assets/matmul_tile_animation.html
+Mikoshi/Netrunner/Cuda/Assets/matmul_tile_animation.html
 800
 
 ```

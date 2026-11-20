@@ -49,6 +49,6 @@ Forward propagation is purely computational, no learning happens here. Weights a
 ## Forward propagation walkthrough
 
 ```html-embed
-Mikoshi/Netrunner/ML Codebase/02 - MLP Core/02 - MLP Core_Assets/forward_prop.html
+Mikoshi/Netrunner/ML Codebase/02 - MLP Core/Assets/forward_prop.html
 650
 ```

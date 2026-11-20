@@ -43,7 +43,7 @@ You could in theory take the raw gradient and apply the simplest possible update
 ## Gradient Descent Visual
 
 ```html-embed
-Mikoshi/Netrunner/ML Codebase/02 - MLP Core/02 - MLP Core_Assets/gradient_descent.html
+Mikoshi/Netrunner/ML Codebase/02 - MLP Core/Assets/gradient_descent.html
 600
 ```
 

@@ -1,9 +1,9 @@
 ---
-Source: "[[SYSTEM MANIFEST]]"
-Tags:
+source: "[[SYSTEM MANIFEST]]"
+tags:
   - jacked-in
   - hud
-Created: 2026-11-19
+created: 2026-11-19
 cssclasses:
   - hud
 ---

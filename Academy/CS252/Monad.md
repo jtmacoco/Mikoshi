@@ -1,5 +1,12 @@
-**Source**:[[CS252]]
-**Tags:** #haskell #monads #monad 
+---
+title: Monad
+source: "[[CS252]]"
+tags:
+  - haskell
+  - monads
+  - monad
+created: 2026-06-14
+---
 
 >[!important] Mondad
 >A way to chain computations that carry extra context

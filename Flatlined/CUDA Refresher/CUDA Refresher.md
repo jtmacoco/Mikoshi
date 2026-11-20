@@ -1,10 +1,11 @@
 ---
 title: CUDA Refresher
-source: "[[SYSTEM MANIFEST]]"
+source: "[[Flatlined]]"
 tags:
   - moc
   - completed
 created: 2026-07-20
+status: completed
 ---
 
 ## Overview
@@ -82,7 +83,7 @@ _(This week also includes a small standalone mini-project — a GEMV-based power
 
 ```dataview
 LIST
-FROM "Mikoshi/Contracts/CUDA Refresher"
+FROM "Mikoshi/Flatlined/CUDA Refresher"
 SORT file.name ASC
 ```
 

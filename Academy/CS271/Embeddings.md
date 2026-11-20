@@ -1,4 +1,10 @@
-**Source**: [[CS271]]
+---
+title: Embeddings
+source: "[[CS271]]"
+tags:
+  - academic
+created: 2026-06-14
+---
 
 >[!important] Embedding 
 > An embedding is a learned numerical representation of something (like text, images, or code) that places similar things close together in high-dimensional space

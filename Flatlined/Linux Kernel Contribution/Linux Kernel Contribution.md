@@ -1,6 +1,14 @@
-**Source**: [[Contracts]]
-**Tags**: #linux  #completed 
-**Description**: Plan to make contribution to Linux Kernel
+---
+title: Linux Kernel Contribution
+source: "[[Flatlined]]"
+tags:
+  - linux
+  - completed
+created: 2026-06-14
+description: "Plan to make contribution to Linux Kernel"
+status: completed
+---
+
 # C → Linux Kernel Contribution: 16-Week Daily Schedule
 
 **Format:** ~30 min on weekdays. Saturday is a flexible "lab day" (45–60 min if you have it) for the bigger multi-session items. Sunday is rest or catch-up — falling behind is normal; just shift days, never skip a week's theme.

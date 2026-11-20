@@ -1,6 +1,11 @@
-**Source**: [[SYSTEM MANIFEST]]
-**Tags**: #active 
-**Description**: Template Tracker
+---
+title: Templates
+source: "[[SYSTEM MANIFEST]]"
+tags:
+  - active
+created: 2026-06-14
+description: "Template Tracker"
+---
 
 ## All Templates
 ```dataview
@@ -11,8 +16,8 @@ LIST FROM "Mikoshi/Templates"
 
 - [[Daily-Notes]]
 - [[DailySetup]]
-- [[Tempalte-Netrunner-Reference]]
-- [[Tempalte-Netrunner]]
+- [[Template-Netrunner-Reference]]
+- [[Template-Netrunner]]
 - [[Template-Academy]]
 - [[Template-Contract]]
 - [[Template-Daily-Math]]
@@ -26,5 +31,5 @@ LIST FROM "Mikoshi/Templates"
 - [[Template-Leetcode]]
 - [[Template-MOC]]
 - [[Template-Notes]]
-- [[Template-Sub_MOC]]
+- [[Template-Sub-MOC]]
 - [[Template-System-Design]]

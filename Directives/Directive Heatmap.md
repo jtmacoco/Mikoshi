@@ -1,8 +1,8 @@
 ---
-Source: "[[Directives]]"
-Tags: [directives]
-Created: 2026-11-19
-Description: Heatmaps of completed directives from Memory Shards, overall and per directive
+source: "[[Directives]]"
+tags: [directives]
+created: 2026-11-19
+description: Heatmaps of completed directives from Memory Shards, overall and per directive
 ---
 
 ```dataviewjs

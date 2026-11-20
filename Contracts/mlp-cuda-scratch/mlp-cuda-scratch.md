@@ -69,7 +69,7 @@ The `|` (bitwise OR) then combines all four into one `uint32_t`. This is the sta
 	- i.e. column major loop
 
 ```html-embed
-Mikoshi/Contracts/mlp-cuda-scratch/mlp-cuda-scratch-assets/linear_backprop_walkthough.html
+Mikoshi/Contracts/mlp-cuda-scratch/Assets/linear_backprop_walkthough.html
 600
 ```
 

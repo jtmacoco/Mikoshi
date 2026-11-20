@@ -1,53 +1,34 @@
-# Mikoshi
-
-**Tags**: #academic #netrunner #contract #shards #active #backlog #completed #personal #book #on-contract 
-**Description**: Personal notes
-
 ---
+title: SYSTEM MANIFEST
+source: "[[SYSTEM MANIFEST]]"
+tags:
+  - moc
+created: 2026-06-14
+description: "Root of Mikoshi. Top-level MOC"
+---
+
 ## Structure
 
-```
- Mikoshi (root)
-│
-├──  HUD                  # Homepage dashboard
-│   └── [[HUD]]
-│
-├──  Academy              # School notes & courses
-│   └── [[Academy]]
-│
-├──  Contracts            # Projects (active, on hold, completed)
-│   └── [[Contracts]]
-│
-├──  Data Shards          # Book notes (fiction & non-fiction)
-│   └── [[Data Shards]]
-│
-├──  Directives           # TODOs & tasks
-│   └── [[Directives]]
-│
-├──  Flatlined            # Archived / dead projects
-│   └── [[Flatlined]]
-│
-├──  ICEbreaker           # Interview prep
-│   └── [[ICEbreaker]]
-│
-├──  Inbox                # Dump zone, sort later
-│   └── [[Inbox]]
-│
-├──  Netrunner            # Coding & tech
-│   └── [[Netrunner]]
-│
-├──  Ripperdoc            # Guided curricula: lessons, quizzes, gigs
-│   ├── [[Ripperdoc]]
-│   └──  Driver Dev
-│       └── [[Driver Dev]]
-│
-└──  Templates            # Note templates
-```
+- [[HUD]]: homepage dashboard
+- [[Academy]]: school notes and courses (graduated, archive)
+- [[Contracts]]: projects and builds
+- [[Data Shards]]: book notes
+- [[Directives]]: tasks
+- [[Flatlined]]: archived and dead projects
+- [[ICEbreaker]]: interview prep
+- [[Inbox]]: dump zone, sort later
+- [[Memory Shards]]: daily journal
+- [[Netrunner]]: coding and tech
+- [[Ripperdoc]]: guided curricula (lessons, quizzes, gigs)
+    - [[Driver Dev]]
+- [[Templates]]: note templates
+
 ---
 
 ## Rules
-- MOC (Map of Content): The index note that links to everything inside a folder or topic
+
+- MOC (Map of Content): the index note that links to everything inside a folder or topic
 - Inbox first, sort later
 - Every folder has a MOC linking up and down
 - Archive to Flatlined when done
-- Link Source back to [[SYSTEM MANIFEST]] in every MOC
+- Link source back to [[SYSTEM MANIFEST]] in every MOC
