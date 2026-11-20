@@ -1,7 +1,7 @@
 ---
 title: Ripperdoc
 source: "[[SYSTEM MANIFEST]]"
-tags: [moc, ripperdoc, ripper]
+tags: [moc, ripperdoc]
 created: 2026-10-25
 ---
 

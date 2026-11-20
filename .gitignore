@@ -63,3 +63,9 @@ modules.builtin*
 built-in.a
 
 
+
+# Kernel module build output (Ripperdoc gigs)
+*.ko
+*.o
+*.mod
+*.mod.*

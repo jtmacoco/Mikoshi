@@ -1,6 +1,6 @@
 ---
 title: Blocks
-source: "[[Cuda]]"
+source: "[[CUDA Programming]]"
 tags:
   - "#parallel"
   - "#cuda"

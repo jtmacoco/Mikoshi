@@ -1,6 +1,6 @@
 ---
 title: Profiling
-source: "[[Cuda]]"
+source: "[[CUDA Programming]]"
 tags:
   - cuda
 type: reference

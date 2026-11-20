@@ -12,7 +12,7 @@ const encodedNotesName= `encoded_${day}_notes`;
 const notesPath = `${dayPath}/${notesName}.md`;
 const encodedNotesPath = `${dayPath}/${encodedNotesName}.md`;
 
-const sectorName = `Sector ${month}`;
+const sectorName = `Sector ${year}-${month}`;
 const sectorPath = `${monthPath}/${sectorName}.md`;
 const uplinkName = `Uplink ${year}`;
 const uplinkPath = `${yearPath}/${uplinkName}.md`;

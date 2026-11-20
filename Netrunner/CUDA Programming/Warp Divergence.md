@@ -1,6 +1,6 @@
 ---
 title: Warp Divergence
-source: "[[Cuda]]"
+source: "[[CUDA Programming]]"
 tags:
   - "#cuda"
   - "#warp"

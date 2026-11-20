@@ -1,6 +1,8 @@
 ---
 description: Guided profiling walkthrough of my current kernel with ncu/nsys
 argument-hint: "[exercise folder]"
+source: "[[Cuda Dev]]"
+tags: [ripperdoc, command]
 ---
 
 Run a profiling walkthrough following the "Profiling walkthroughs" section of CLAUDE.md.

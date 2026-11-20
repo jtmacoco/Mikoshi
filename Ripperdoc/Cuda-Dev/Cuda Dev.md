@@ -1,7 +1,7 @@
 ---
 title: Cuda Dev
 source: "[[Ripperdoc]]"
-tags: [moc, ripperdoc, ripper]
+tags: [moc, ripperdoc]
 created: 2026-10-25
 ---
 

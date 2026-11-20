@@ -148,6 +148,7 @@ Use this template:
 ```markdown
 ---
 title: <Concept name>
+source: "[[Driver Dev Notes]]"
 aliases: [<other names, API names>]
 tags: [linux-kernel, drivers, level-<N>, <topic>]
 level: <curriculum level number>

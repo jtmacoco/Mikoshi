@@ -9,6 +9,7 @@
 #include <linux/slab.h>
 #include <linux/uaccess.h>
 
+#define DEVICE_NAME "kbank"
 
 MODULE_LICENSE("GPL v2");
 MODULE_AUTHOR("Jonathan");
@@ -16,25 +17,25 @@ MODULE_DESCRIPTION("Kbank driver");
 
 static int size    = 4096;
 static int nbanks  = 4;
-static int fail_at = 0;
+static int fail_at;
 
 module_param(nbanks, int, 0444);
 module_param(size, int, 0444);
 module_param(fail_at, int, 0444);
 
 MODULE_PARM_DESC(nbanks, "number of devices (1..8)");
-MODULE_PARM_DESC(size , "buffer size per bank in bytes (1..65536)");
+MODULE_PARM_DESC(size, "buffer size per bank in bytes (1..65536)");
 MODULE_PARM_DESC(fail_at, "test hook: force an init step to fail (0..5)");
 
 static struct class *kbank;
 
-struct kbank_ctx{
+struct kbank_ctx {
 	dev_t kbank_dev;
 	struct kbank_bank *banks;
 	struct cdev my_cdev;
 };
 
-struct kbank_bank{
+struct kbank_bank {
 	size_t data_len;
 	char *buffer;
 };
@@ -44,23 +45,25 @@ static struct kbank_ctx ctx;
 static int __init kbank_init(void)
 {
 	int ret = 0;
-	if (size > 65536)
-	{
+
+	if (size > 65536 || size <= 0) {
 		pr_err("range is 1-65536, size:%d\n", size);
 		return -EINVAL;
 	}
-	if (nbanks > 8)
-	{
+	if (nbanks > 8 || nbanks <= 0) {
 		pr_err("range is 1-8, nbanks:%d\n", nbanks);
 		return -EINVAL;
 	}
-	if (fail_at > 5)
-	{
-		pr_err("range is 1-5, fail_at:%d\n", fail_at);
+	if (fail_at > 5 || fail_at < 0) {
+		pr_err("range is 0-5, fail_at:%d\n", fail_at);
 		return -EINVAL;
 	}
 
-	ret = alloc_chrdev_region(&kbank_ctx.kbank_dev, 0, nbanks, DEVICE_NAME);
+	ret = alloc_chrdev_region(&ctx.kbank_dev, 0, nbanks, DEVICE_NAME);
+	if (ret) {
+		pr_err("Failed to allocate device numbers\n");
+		return ret;
+	}
 
 	return ret;
 }

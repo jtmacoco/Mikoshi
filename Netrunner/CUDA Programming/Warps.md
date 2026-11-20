@@ -1,6 +1,6 @@
 ---
 title: Warps
-source: "[[Cuda]]"
+source: "[[CUDA Programming]]"
 tags:
   - cuda
   - warp

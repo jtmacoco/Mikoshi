@@ -1,6 +1,8 @@
 ---
 description: Quiz me on driver concepts, weighted toward my weak spots in progress.md
 argument-hint: "[topic | quick | number of questions]"
+source: "[[Driver Dev]]"
+tags: [ripperdoc, command]
 ---
 
 Run a quiz following the "Quizzes" section of CLAUDE.md.

@@ -1,7 +1,7 @@
 ---
 title: Linux
 source: "[[Ripperdoc]]"
-tags: [moc, ripperdoc, ripper]
+tags: [moc, ripperdoc]
 created: 2026-11-17
 ---
 

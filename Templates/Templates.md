@@ -10,6 +10,19 @@ description: "Template Tracker"
 
 Every note template in the vault
 
+## Template Index
+
+| Area | Templates |
+|---|---|
+| MOCs | [[Template-MOC]] · [[Template-Sub-MOC]] |
+| General | [[Template-General]] · [[Template-Notes]] · [[Template-Kanban]] |
+| Daily | [[DailySetup]] · [[Daily-Notes]] · [[Template-Daily-Math]] |
+| Directives & Contracts | [[Template-Directive]] · [[Template-Contract]] |
+| Netrunner | [[Template-Netrunner]] · [[Template-Netrunner-Reference]] |
+| Data Shards | [[Template-Data-shard]] · [[Template-Data-shard-reference]] · [[Template-Data-shard-technical]] |
+| ICEbreaker | [[Template-Icebreaker]] · [[Template-Leetcode]] · [[Template-System-Design]] |
+| Academy | [[Template-Academy]] |
+
 ## All Notes
 
 ```datacorejsx

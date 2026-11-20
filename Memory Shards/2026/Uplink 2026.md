@@ -12,12 +12,12 @@ Keeps Track of monthly notes
 
 ## All Notes
 
-- [[Sector 06]]
-- [[Sector 07]]
-- [[Sector 08]]
-- [[Sector 09]]
-- [[Sector 10]]
-- [[Sector 11]]
+- [[Sector 2026-06]]
+- [[Sector 2026-07]]
+- [[Sector 2026-08]]
+- [[Sector 2026-09]]
+- [[Sector 2026-10]]
+- [[Sector 2026-11]]
 
 ## Links
 

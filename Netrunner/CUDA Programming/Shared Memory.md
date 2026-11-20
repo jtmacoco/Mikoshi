@@ -1,6 +1,6 @@
 ---
 title: Shared Memory
-source: "[[Mikoshi/Netrunner/Cuda/Cuda|Cuda]]"
+source: "[[CUDA Programming]]"
 tags:
   - cuda
   - memory

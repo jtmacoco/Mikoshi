@@ -12,6 +12,7 @@ tags:
   - c
 date_started: 2026-10-17
 last_updated: 2026-11-02
+source: "[[Linux Kernel Programming Part 2]]"
 ---
 
 ## TL;DR

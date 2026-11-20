@@ -1,6 +1,6 @@
 ---
 title: Streaming Multiprocessor (SM)
-source: "[[Cuda]]"
+source: "[[CUDA Programming]]"
 tags:
   - "#sm"
   - cuda

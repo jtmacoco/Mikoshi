@@ -1,5 +1,5 @@
 ---
-title: Cuda
+title: CUDA Programming
 source: "[[Netrunner]]"
 tags: [moc, netrunner]
 created: 2026-07-06
@@ -22,8 +22,8 @@ const COLUMNS = [
   { id: "modified", title: "Last Touched", value: p => p.$mtime.toFormat("MMM dd") },
 ];
 return function View() {
-  const pages = dc.useQuery('@page and path("Mikoshi/Netrunner/Cuda")');
-  const rows = [...pages].filter(p => p.$path.startsWith("Mikoshi/Netrunner/Cuda/")).sort((a, b) => a.$name.localeCompare(b.$name));
+  const pages = dc.useQuery('@page and path("Mikoshi/Netrunner/CUDA Programming")');
+  const rows = [...pages].filter(p => p.$path.startsWith("Mikoshi/Netrunner/CUDA Programming/")).sort((a, b) => a.$name.localeCompare(b.$name));
   return <dc.Table columns={COLUMNS} rows={rows} paging={15} />;
 };
 ```

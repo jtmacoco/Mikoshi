@@ -1,6 +1,8 @@
 ---
 description: Explain a CUDA/HPC concept at my level and save an Obsidian note to notes/
 argument-hint: "<concept>"
+source: "[[Cuda Dev]]"
+tags: [ripperdoc, command]
 ---
 
 Explain the concept "$ARGUMENTS" following the "Explaining concepts" section of CLAUDE.md.

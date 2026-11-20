@@ -99,4 +99,4 @@ return function View() {
 ## Links
 
 - ⬆ [[SYSTEM MANIFEST]]
-- ⬇ [[C]] · [[C++]] · [[Mikoshi/Netrunner/Cuda/Cuda|Cuda]] · [[Docker]] · [[Linux Kernel]] · [[ML Codebase]] · [[Parallel]] · [[Quick Hacks]]
+- ⬇ [[C]] · [[C++]] · [[CUDA Programming]] · [[Docker]] · [[Linux Kernel]] · [[ML Codebase]] · [[Parallel]] · [[Quick Hacks]]

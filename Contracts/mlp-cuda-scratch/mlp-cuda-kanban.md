@@ -1,7 +1,8 @@
 ---
 
 kanban-plugin: board
-
+source: "[[mlp-cuda-scratch]]"
+tags: [contract]
 ---
 
 ## Backlog

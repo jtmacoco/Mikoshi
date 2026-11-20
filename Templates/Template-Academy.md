@@ -10,7 +10,7 @@ let status = await tp.system.suggester(
 -%>
 ---
 title: <% title %>
-source: "[[Template-Academy]]"
+source: "[[<% course %>]]"
 tags: [academic]
 created: <% tp.date.now("YYYY-MM-DD") %>
 course: <% course %>

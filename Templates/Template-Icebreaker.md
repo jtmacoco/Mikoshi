@@ -10,7 +10,7 @@ let date = await tp.system.prompt("Interview date (YYYY-MM-DD, or blank):");
 -%>
 ---
 title: <% title %>
-source: "[[Template-Icebreaker]]"
+source: "[[ICEbreaker]]"
 tags: [interview]
 created: <% tp.date.now("YYYY-MM-DD") %>
 stage: <% stage %>

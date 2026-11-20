@@ -1,6 +1,6 @@
 ---
 title: Cuda Directives
-source: "[[Cuda]]"
+source: "[[CUDA Programming]]"
 tags:
   - cuda
   - cheatsheat

@@ -1,7 +1,7 @@
 ---
 title: struct class
 aliases: [class_create, class_destroy, class_register, device_create, device_destroy, /sys/class]
-source: "[[Driver Dev]]"
+source: "[[Driver Dev Notes]]"
 tags: [linux-kernel, drivers, level-2, device-model, ripperdoc]
 level: 2
 status: learning

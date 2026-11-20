@@ -1,6 +1,8 @@
 ---
 description: Quiz me on CUDA/HPC concepts, weighted toward my weak spots in progress.md
 argument-hint: "[topic | quick | number of questions]"
+source: "[[Cuda Dev]]"
+tags: [ripperdoc, command]
 ---
 
 Run a quiz following the "Quizzes" section of CLAUDE.md.

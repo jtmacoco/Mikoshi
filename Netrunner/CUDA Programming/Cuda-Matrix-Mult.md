@@ -1,6 +1,6 @@
 ---
 title: Cuda-Matrix-Mult
-source: "[[cuda]]"
+source: "[[CUDA Programming]]"
 tags:
   - cuda
   - matrix-multiplication
@@ -21,7 +21,7 @@ Matrix multiplication with cuda using tiles
 ![[Cuda-Matrix-Mult-20260824220402943.svg]]
 
 ```html-embed
-Mikoshi/Netrunner/Cuda/Assets/matmul_tile_animation.html
+Mikoshi/Netrunner/CUDA Programming/Assets/matmul_tile_animation.html
 800
 
 ```

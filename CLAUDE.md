@@ -110,6 +110,7 @@ created: YYYY-MM-DD
 | `#book` | Book notes |
 | `#icebreaker` | Interview prep |
 | `#ripperdoc` | Guided curricula |
+| `#personal` | Personal tasks (Directives area tag) |
 | `#jacked-in` | Currently active |
 | `#backlog` | Queued, not started |
 | `#completed` | Done |

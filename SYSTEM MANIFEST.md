@@ -31,14 +31,14 @@ description: "Root of Mikoshi. Top-level MOC"
 │   └──  Tech Concepts
 ├──  Inbox                # Dump zone, sort later
 ├──  Memory Shards        # Daily journal
-│   └──  Uplink 2026        # Sector MM → one folder per day
+│   └──  Uplink 2026        # Sector YYYY-MM → one folder per day
 ├──  Netrunner            # Coding & tech
 │   ├──  C
 │   │   └──  Bit Manipulation
 │   ├──  C++
 │   │   ├──  Matrix Multiplication
 │   │   └──  Types
-│   ├──  Cuda
+│   ├──  CUDA Programming
 │   ├──  Docker
 │   ├──  Linux Kernel
 │   ├──  ML Codebase         # 00 Foundations → 06 NLP
@@ -67,7 +67,9 @@ description: "Root of Mikoshi. Top-level MOC"
 - [[Memory Shards]]: daily journal
 - [[Netrunner]]: coding and tech
 - [[Ripperdoc]]: guided curricula (lessons, quizzes, gigs)
+    - [[Cuda Dev]]
     - [[Driver Dev]]
+    - [[Mikoshi/Ripperdoc/Linux/Linux|Linux]]
 - [[Templates]]: note templates
 
 ---
