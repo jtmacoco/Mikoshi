@@ -3,7 +3,7 @@ title: CUDA Refresher
 source: "[[SYSTEM MANIFEST]]"
 tags:
   - moc
-  - "#on-contract"
+  - completed
 created: 2026-07-20
 ---
 

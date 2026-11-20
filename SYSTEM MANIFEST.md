@@ -9,6 +9,9 @@
 ```
  Mikoshi (root)
 │
+├──  HUD                  # Homepage dashboard
+│   └── [[HUD]]
+│
 ├──  Academy              # School notes & courses
 │   └── [[Academy]]
 │

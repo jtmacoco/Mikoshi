@@ -9,7 +9,7 @@ Created: 2026-11-17
 
 # Linux Quiz
 
-Adaptive command-line practice. Claude follows [[CLAUDE]] to run sessions and updates this note after each one.
+Adaptive command-line practice. Claude follows [[Mikoshi/CLAUDE]] to run sessions and updates this note after each one.
 Say **"jack in"** to start.
 
 ---

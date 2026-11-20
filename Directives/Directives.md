@@ -17,6 +17,7 @@ Task hub — active jobs, queued ops, and completed contracts
 - [[On-Contract]]  — Currently running
 - [[Backlog]]  — Queued, not yet started
 - [[Completed]]  — Flatlined and done
+- [[Directive Heatmap]]  — Daily TODO completion heatmap
 
 ---
 
