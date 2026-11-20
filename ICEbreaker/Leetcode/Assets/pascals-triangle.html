@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pascal's Triangle — Animated</title>
+<style>
+  :root {
+    --bg: #ffffff;
+    --fg: #1f2328;
+    --muted: #6e7781;
+    --cell: #f3f4f6;
+    --cell-border: #d0d7de;
+    --edge: #dbeafe;
+    --edge-border: #3b82f6;
+    --parent: #fef3c7;
+    --parent-border: #f59e0b;
+    --child: #dcfce7;
+    --child-border: #16a34a;
+    --btn: #f6f8fa;
+    --btn-border: #d0d7de;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1e1e1e;
+      --fg: #e6e6e6;
+      --muted: #9aa0a6;
+      --cell: #2b2b2b;
+      --cell-border: #444;
+      --edge: #1e3a5f;
+      --edge-border: #60a5fa;
+      --parent: #4a3a12;
+      --parent-border: #fbbf24;
+      --child: #173d26;
+      --child-border: #4ade80;
+      --btn: #2b2b2b;
+      --btn-border: #444;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 16px;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+  h2 { margin: 0 0 4px; font-size: 18px; }
+  .sub { color: var(--muted); font-size: 13px; margin-bottom: 12px; }
+  .controls {
+    display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+    margin-bottom: 12px;
+  }
+  button {
+    background: var(--btn); color: var(--fg);
+    border: 1px solid var(--btn-border); border-radius: 6px;
+    padding: 6px 12px; font-size: 13px; cursor: pointer;
+  }
+  button:hover { filter: brightness(0.95); }
+  label { font-size: 13px; color: var(--muted); display: flex; align-items: center; gap: 6px; }
+  input[type=range] { width: 100px; }
+  .status {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 14px;
+    min-height: 44px;
+    padding: 8px 10px;
+    border-radius: 6px;
+    background: var(--cell);
+    border: 1px solid var(--cell-border);
+    margin-bottom: 16px;
+    line-height: 1.5;
+  }
+  .triangle { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+  .row { display: flex; gap: 6px; align-items: center; }
+  .row-label {
+    font-family: ui-monospace, Menlo, monospace;
+    font-size: 11px; color: var(--muted);
+    width: 44px; text-align: right; margin-right: 6px;
+  }
+  .cell {
+    width: 44px; height: 36px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 6px;
+    border: 2px solid var(--cell-border);
+    background: var(--cell);
+    font-family: ui-monospace, Menlo, monospace;
+    font-size: 14px; font-weight: 600;
+    transition: background 0.25s, border-color 0.25s, transform 0.25s, opacity 0.25s;
+    opacity: 0; transform: scale(0.6);
+  }
+  .cell.shown { opacity: 1; transform: scale(1); }
+  .cell.edge { background: var(--edge); border-color: var(--edge-border); }
+  .cell.parent { background: var(--parent); border-color: var(--parent-border); transform: scale(1.08); }
+  .cell.child { background: var(--child); border-color: var(--child-border); transform: scale(1.12); }
+  .legend { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 16px; font-size: 12px; color: var(--muted); }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .swatch { width: 14px; height: 14px; border-radius: 3px; border: 2px solid; display: inline-block; }
+</style>
+</head>
+<body>
+  <h2>Pascal's Triangle</h2>
+  <div class="sub">Each row starts and ends with 1. Every middle value = <code>prev[j-1] + prev[j]</code>.</div>
+
+  <div class="controls">
+    <button id="play">▶ Play</button>
+    <button id="step">Step</button>
+    <button id="reset">Reset</button>
+    <label>Rows <input id="rows" type="range" min="2" max="10" value="6"><span id="rowsVal">6</span></label>
+    <label>Speed <input id="speed" type="range" min="1" max="10" value="5"></label>
+  </div>
+
+  <div class="status" id="status">Press Play or Step to start.</div>
+  <div class="triangle" id="triangle"></div>
+
+  <div class="legend">
+    <span><i class="swatch" style="background:var(--edge);border-color:var(--edge-border)"></i>edge (always 1)</span>
+    <span><i class="swatch" style="background:var(--parent);border-color:var(--parent-border)"></i>prev[j-1], prev[j]</span>
+    <span><i class="swatch" style="background:var(--child);border-color:var(--child-border)"></i>new value</span>
+  </div>
+
+<script>
+(function () {
+  const triEl = document.getElementById('triangle');
+  const statusEl = document.getElementById('status');
+  const playBtn = document.getElementById('play');
+  const stepBtn = document.getElementById('step');
+  const resetBtn = document.getElementById('reset');
+  const rowsIn = document.getElementById('rows');
+  const rowsVal = document.getElementById('rowsVal');
+  const speedIn = document.getElementById('speed');
+
+  let numRows = +rowsIn.value;
+  let tri = [];        // full computed triangle
+  let cells = [];      // DOM cells [i][j]
+  let steps = [];      // animation steps
+  let pos = 0;
+  let timer = null;
+
+  function build() {
+    tri = [[1]];
+    for (let i = 1; i < numRows; i++) {
+      const prev = tri[i - 1];
+      const row = [1];
+      for (let j = 1; j < i; j++) row.push(prev[j - 1] + prev[j]);
+      row.push(1);
+      tri.push(row);
+    }
+
+    // Build DOM
+    triEl.innerHTML = '';
+    cells = [];
+    tri.forEach((row, i) => {
+      const r = document.createElement('div');
+      r.className = 'row';
+      const lab = document.createElement('div');
+      lab.className = 'row-label';
+      lab.textContent = 'row ' + i;
+      r.appendChild(lab);
+      cells[i] = [];
+      row.forEach((v, j) => {
+        const c = document.createElement('div');
+        c.className = 'cell';
+        c.textContent = v;
+        r.appendChild(c);
+        cells[i][j] = c;
+      });
+      // spacer to keep rows centered despite the label
+      const sp = document.createElement('div');
+      sp.style.width = '50px';
+      r.appendChild(sp);
+      triEl.appendChild(r);
+    });
+
+    // Build steps
+    steps = [];
+    steps.push({ type: 'edge', i: 0, j: 0, msg: 'res = [[1]]  — row 0 is just [1]' });
+    for (let i = 1; i < numRows; i++) {
+      steps.push({ type: 'edge', i, j: 0, msg: `row ${i}: start with 1  →  [1]` });
+      for (let j = 1; j < i; j++) {
+        const a = tri[i - 1][j - 1], b = tri[i - 1][j];
+        steps.push({
+          type: 'sum', i, j,
+          msg: `row ${i}, j = ${j}:  prev[${j - 1}] + prev[${j}] = ${a} + ${b} = ${a + b}`
+        });
+      }
+      steps.push({ type: 'edge', i, j: i, msg: `row ${i}: end with 1  →  [${tri[i].join(', ')}]` });
+    }
+    pos = 0;
+    statusEl.textContent = 'Press Play or Step to start.';
+  }
+
+  function clearHighlights() {
+    triEl.querySelectorAll('.parent, .child').forEach(el => el.classList.remove('parent', 'child'));
+  }
+
+  function doStep() {
+    if (pos >= steps.length) {
+      stop();
+      statusEl.textContent = `Done! return res  →  ${numRows} rows built.`;
+      clearHighlights();
+      return false;
+    }
+    clearHighlights();
+    const s = steps[pos++];
+    const c = cells[s.i][s.j];
+    c.classList.add('shown');
+    if (s.type === 'edge') {
+      c.classList.add('edge');
+    } else {
+      cells[s.i - 1][s.j - 1].classList.add('parent');
+      cells[s.i - 1][s.j].classList.add('parent');
+      c.classList.add('child');
+    }
+    statusEl.textContent = s.msg;
+    return true;
+  }
+
+  function delay() { return 1400 - speedIn.value * 120; }
+
+  function tick() {
+    if (doStep()) timer = setTimeout(tick, delay());
+  }
+
+  function play() {
+    if (timer) { stop(); return; }
+    if (pos >= steps.length) build();
+    playBtn.textContent = '⏸ Pause';
+    tick();
+  }
+
+  function stop() {
+    clearTimeout(timer);
+    timer = null;
+    playBtn.textContent = '▶ Play';
+  }
+
+  playBtn.onclick = play;
+  stepBtn.onclick = () => { stop(); if (pos >= steps.length) build(); doStep(); };
+  resetBtn.onclick = () => { stop(); build(); };
+  rowsIn.oninput = () => { rowsVal.textContent = rowsIn.value; numRows = +rowsIn.value; stop(); build(); };
+
+  build();
+})();
+</script>
+</body>
+</html>
