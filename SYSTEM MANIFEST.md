@@ -16,6 +16,7 @@ description: "Root of Mikoshi. Top-level MOC"
 ├──  Academy              # School notes & courses (graduated, legacy)
 │   └──  CS134 · CS156 · CS252 · CS259 · CS271 · CS272
 ├──  Contracts            # Active projects & builds
+│   ├──  Ideas               # Fleshed-out project ideas
 │   └──  mlp-cuda-scratch
 ├──  Data Shards          # Book notes (fiction & non-fiction)
 │   ├──  Checkmate Protocol  # Chess

@@ -19,7 +19,7 @@ This is my Obsidian vault, called Mikoshi. It's a personal knowledge system name
 | `SYSTEM MANIFEST.md` | Root of the vault; top-level MOC | — |
 | `HUD.md` | Dashboard: Dataview queries, heatmap, inbox, fast travel | `#jacked-in` |
 | `Inbox/Inbox.md` | Raw capture. One file inside the Inbox folder | — |
-| `Directives/` | Tasks: `On-Contract/` (active), `Backlog/` (queued), `Completed/` | — |
+| `Directives/` | Tasks: `On-Contract` (active), `Backlog` (queued), `Completed` notes | — |
 | `Contracts/` | Projects and builds; `Ideas/` for fleshed-out project ideas | `#contract` |
 | `Netrunner/` | Distilled coding and tech knowledge | `#netrunner` |
 | `Quick Hacks/` | Anything I've Googled twice | `#netrunner` |
@@ -75,8 +75,8 @@ created: YYYY-MM-DD
 
 - Tasks live in Directives. Projects live in Contracts.
 - Every task links back to its source project.
-- `On-Contract/` holds active tasks only. Completed tasks move to `Completed/` right away. Don't let them pile up.
-- `Backlog/` is for queued but not started. It's not a dumping ground.
+- `On-Contract.md` holds active tasks only. Completed tasks move to `Completed.md` right away. Don't let them pile up.
+- `Backlog.md` is for queued but not started. It's not a dumping ground.
 - Priority tags: `#critical` = do now, `#high` = this week, `#low` = whenever. The HUD's Dataview queries depend on these, so spell them exactly.
 
 ## Knowledge

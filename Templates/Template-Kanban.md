@@ -1,5 +1,7 @@
 ---
 kanban-plugin: basic
+source: "[[<% tp.file.folder() %>]]"
+tags: [contract]
 ---
 
 ## Backlog

@@ -1,6 +1,6 @@
 ---
 title: Mental Math Config
-source: "[[Secretes of mental math]]"
+source: "[[Secrets of Mental Math]]"
 tags:
   - mental-math
 created: 2026-07-14

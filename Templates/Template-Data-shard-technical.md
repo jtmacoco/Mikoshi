@@ -12,6 +12,8 @@ const fileName = `Ch ${chapterNum} - ${chapterTitle}`;
 await tp.file.rename(fileName);
 tR += "";
 %>---
+title: <% fileName %>
+source: "[[<% bookTitle %>]]"
 type: datashard
 category: book-chapter
 book: "[[<% bookTitle %>]]"

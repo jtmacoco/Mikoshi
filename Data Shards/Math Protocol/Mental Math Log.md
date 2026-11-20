@@ -1,6 +1,6 @@
 ---
 title: Mental Math Log
-source: "[[Secretes of mental math]]"
+source: "[[Secrets of Mental Math]]"
 tags:
   - mental-math
   - math
