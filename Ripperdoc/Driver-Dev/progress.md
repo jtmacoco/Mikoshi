@@ -35,7 +35,7 @@ Rating: 1 = can't do it without help, 2 = shaky, 3 = OK with docs, 4 = solid, 5 
 | Teardown order (reverse of init) | 2 | 2 | 2026-11-01 | – | `kbuf_exit` order needed repeated correction in 02 |
 | ERR_PTR / IS_ERR / PTR_ERR | 2 | 2 | 2026-11-01 | 2026-11-15 | Used `!ptr` first in 02; fixed after a pointer to `err.h` |
 | cdev_init / cdev_add / cdev_del | 2 | 2 | 2026-11-01 | – | Forgot `cdev_add()` at first; assigned `cdev_init()`'s void result to `ret` |
-| class_create / device_create and destroy | 2 | 2 | 2026-11-01 | – | Used correctly after pointers; wrong device name and order at first |
+| class_create / device_create and destroy | 2 | 2 | 2026-11-01 | 2026-11-19 | Used correctly after pointers; wrong device name and order at first. /explain 11-19: partial (knew mknod workaround, didn't say /sys/class is empty too) [[struct-class]] |
 | alloc_chrdev_region / MAJOR / MINOR | 2 | 3 | 2026-11-01 | – | Misread the base minor as `10` at first, then fixed it |
 | kzalloc / kfree | 2 | 2 | 2026-11-08 | – | Wrong `kfree()` args in 11-01; used `sizeof(pointer)` as the allocation size in 11-08 |
 | file_operations .owner | 2 | 2 | 2026-11-08 | – | Refcount test passes; README question 3 not answered yet |
