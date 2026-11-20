@@ -1,10 +1,11 @@
 ---
-Source: "[[Results]]"
-Tags: [ripperdoc, linux, completed]
-Date: 2026-11-17
-Track: Main
-Level: 1 — Street Kid
-Score: 6 / 9 (67%)
+title: 2026-11-17 Linux Quiz
+source: "[[Results]]"
+tags: [ripperdoc, linux, completed]
+created: 2026-11-17
+track: Main
+level: 1 — Street Kid
+score: 6 / 9 (67%)
 ---
 
 # Linux Quiz — 2026-11-17

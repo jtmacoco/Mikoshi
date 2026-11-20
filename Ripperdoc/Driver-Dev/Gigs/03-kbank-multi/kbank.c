@@ -44,6 +44,24 @@ static struct kbank_ctx ctx;
 static int __init kbank_init(void)
 {
 	int ret = 0;
+	if (size > 65536)
+	{
+		pr_err("range is 1-65536, size:%d\n", size);
+		return -EINVAL;
+	}
+	if (nbanks > 8)
+	{
+		pr_err("range is 1-8, nbanks:%d\n", nbanks);
+		return -EINVAL;
+	}
+	if (fail_at > 5)
+	{
+		pr_err("range is 1-5, fail_at:%d\n", fail_at);
+		return -EINVAL;
+	}
+
+	ret = alloc_chrdev_region(&kbank_ctx.kbank_dev, 0, nbanks, DEVICE_NAME);
+
 	return ret;
 }
 

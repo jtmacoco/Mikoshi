@@ -1,8 +1,17 @@
-**Source**: [[Uplink 2026]]
-Tags: #sector
-Description: Keeps track of daily entries
+---
+title: Sector 09
+source: "[[Uplink 2026]]"
+tags: [moc, shards, sector]
+created: 2026-09-01
+description: Keeps track of daily entries
+---
 
-## Entries
+## Overview
+
+Keeps track of daily entries
+
+## All Notes
+
 - [[encoded_2026-09-01_notes]]
 - [[encoded_2026-09-02_notes]]
 - [[encoded_2026-09-03_notes]]
@@ -27,3 +36,7 @@ Description: Keeps track of daily entries
 - [[encoded_2026-09-28_notes]]
 - [[encoded_2026-09-29_notes]]
 - [[encoded_2026-09-30_notes]]
+
+## Links
+
+- ⬆ [[Uplink 2026]]

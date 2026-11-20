@@ -25,35 +25,28 @@ for (const path of [yearPath, monthPath, dayPath]) {
     }
 }
 
-// Create Shards.md if missing and add year link
-if (!await app.vault.adapter.exists(shardsPath)) {
-    await app.vault.create(shardsPath, `**Source**: SYSTEM MANIFEST\nTags: #shards\nDescription: Daily notes\n\n## Years\n- [[${uplinkName}]]`);
-} else {
-    const shards = await app.vault.adapter.read(shardsPath);
-    if (!shards.includes(`[[${uplinkName}]]`)) {
-        await app.vault.adapter.write(shardsPath, shards + `\n- [[${uplinkName}]]`);
+// Journal MOCs follow the standard MOC shape. Links go at the end of "## All Notes", above "## Links".
+const today = moment().format("YYYY-MM-DD");
+const mocText = (title, source, tag, overview, link) =>
+    `---\ntitle: ${title}\nsource: "[[${source}]]"\ntags: [moc, shards, ${tag}]\ncreated: ${today}\n---\n\n` +
+    `## Overview\n\n${overview}\n\n## All Notes\n\n- [[${link}]]\n\n## Links\n\n- ⬆ [[${source}]]\n`;
+const ensureMoc = async (path, link, makeText) => {
+    if (!await app.vault.adapter.exists(path)) {
+        await app.vault.create(path, makeText());
+        return;
     }
-}
+    const text = await app.vault.adapter.read(path);
+    if (text.includes(`[[${link}]]`)) return;
+    const i = text.indexOf("\n## Links");
+    const out = i === -1
+        ? text.trimEnd() + `\n- [[${link}]]\n`
+        : text.slice(0, i).trimEnd() + `\n- [[${link}]]\n` + text.slice(i);
+    await app.vault.adapter.write(path, out);
+};
 
-// Create Uplink YYYY.md if missing and add month link
-if (!await app.vault.adapter.exists(uplinkPath)) {
-    await app.vault.create(uplinkPath, `**Source**: [[Shards]]\nTags: #uplink\nDescription: Keeps Track of monthly notes\n\n## Month\n- [[${sectorName}]]`);
-} else {
-    const uplink = await app.vault.adapter.read(uplinkPath);
-    if (!uplink.includes(`[[${sectorName}]]`)) {
-        await app.vault.adapter.write(uplinkPath, uplink + `\n- [[${sectorName}]]`);
-    }
-}
-
-// Create Sector MM.md if missing and add day link
-if (!await app.vault.adapter.exists(sectorPath)) {
-    await app.vault.create(sectorPath, `**Source**: [[${uplinkName}]]\nTags: #sector\nDescription: Keeps track of daily entries\n\n## Entries\n- [[${notesName}]]`);
-} else {
-    const sector = await app.vault.adapter.read(sectorPath);
-    if (!sector.includes(`[[${notesName}]]`) && !sector.includes(`[[${encodedNotesName}]]`)) {
-        await app.vault.adapter.write(sectorPath, sector + `\n- [[${notesName}]]`);
-    }
-}
+await ensureMoc(shardsPath, uplinkName, () => mocText("Memory Shards", "SYSTEM MANIFEST", "engrams", "Daily journal, one folder per day", uplinkName));
+await ensureMoc(uplinkPath, sectorName, () => mocText(uplinkName, "Memory Shards", "uplink", "Keeps track of monthly notes", sectorName));
+await ensureMoc(sectorPath, notesName, () => mocText(sectorName, uplinkName, "sector", "Keeps track of daily entries", notesName));
 
 // Create today's notes file
 if (!await app.vault.adapter.exists(notesPath) && !await app.vault.adapter.exists(encodedNotesPath)) {

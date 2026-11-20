@@ -1,10 +1,10 @@
 ---
 title: System Design
 source: "[[ICEbreaker]]"
-tags:
-  - moc
+tags: [moc, icebreaker]
 created: 2026-07-04
 ---
+
 ## Overview
 
 Solutions & notes to System Design problems
@@ -20,10 +20,19 @@ SORT file.mtime DESC
 
 ## All Notes
 
-```dataview
-LIST
-FROM "Mikoshi/ICEbreaker/System Design"
-SORT file.name ASC
+```datacorejsx
+const COLUMNS = [
+  { id: "note", title: "Note", value: p => p.$link },
+  { id: "status", title: "Status", value: p => p.value("status") ?? "" },
+  { id: "modified", title: "Last Touched", value: p => p.$mtime.toFormat("MMM dd") },
+];
+return function View() {
+  const pages = dc.useQuery('@page and path("Mikoshi/ICEbreaker/System Design")');
+  const rows = [...pages].filter(p => p.$path.startsWith("Mikoshi/ICEbreaker/System Design/")).sort((a, b) => a.$name.localeCompare(b.$name));
+  return <dc.Table columns={COLUMNS} rows={rows} paging={15} />;
+};
 ```
 
+## Links
 
+- ⬆ [[ICEbreaker]]

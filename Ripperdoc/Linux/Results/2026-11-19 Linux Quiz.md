@@ -1,10 +1,11 @@
 ---
-Source: "[[Results]]"
-Tags: [ripperdoc, linux, completed]
-Date: 2026-11-19
-Track: Main
-Level: 2 — Punk
-Score: 5 / 9 (56%)
+title: 2026-11-19 Linux Quiz
+source: "[[Results]]"
+tags: [ripperdoc, linux, completed]
+created: 2026-11-19
+track: Main
+level: 2 — Punk
+score: 5 / 9 (56%)
 ---
 
 # Linux Quiz — 2026-11-19

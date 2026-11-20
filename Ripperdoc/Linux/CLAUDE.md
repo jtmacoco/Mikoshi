@@ -1,10 +1,10 @@
 ---
-Source: "[[Mikoshi/Ripperdoc/Linux/Linux|Linux]]"
-Tags:
+source: "[[Mikoshi/Ripperdoc/Linux/Linux|Linux]]"
+tags:
   - ripperdoc
   - linux
   - jacked-in
-Created: 2026-11-17
+created: 2026-11-17
 ---
 
 # CLAUDE.md — Linux Quiz Master
@@ -17,7 +17,7 @@ You are running an adaptive Linux command-line quiz for practice, not a test. Th
 |---|---|---|---|
 | `Quiz.md` | Syllabus, current level, review queue, session history | Every session | End of every session |
 | `Results/` | One note per session | Last 3 notes | One new note per session |
-| `Results/Results MOC.md` | Index of all sessions | — | Add a link per session |
+| `Results/Results.md` | Index of all sessions (table updates itself) | — | — |
 
 Never delete or rewrite old result notes. Results are history.
 
@@ -128,7 +128,7 @@ Each track levels up and down on its own. A mixed session scores each half separ
    - Mixed: `Results/YYYY-MM-DD Mixed Quiz.md`
    - If one already exists that day, add ` 2`, ` 3`, etc.
 3. Update `Quiz.md` → Current Status (the right track column), Review Queue and Session Log.
-4. Add the new note link to `Results/Results MOC.md`.
+4. No need to touch `Results/Results.md`: its table picks up new result notes on its own.
 5. If a command keeps showing up in misses (3+ sessions), suggest adding it to **Quick Hacks**.
 6. If a concept clearly clicked (loops, redirection, permissions), suggest a short **Netrunner** note for it. Ripperdoc tests and Netrunner stores what stuck.
 7. When I clear **K2**, offer to help me write `Netrunner/Makefile Template.md`: my own annotated kernel Makefile with every line explained, so I'm copying something I fully understand. Do the same with a CMake template after **K3**.
@@ -137,12 +137,13 @@ Each track levels up and down on its own. A mixed session scores each half separ
 
 ```markdown
 ---
-Source: "[[Results MOC]]"
-Tags: [ripperdoc, linux, completed]
-Date: YYYY-MM-DD
-Track: Main / Kernel / Mixed
-Level: N — Name
-Score: X / Y (Z%)
+title: YYYY-MM-DD Linux Quiz
+source: "[[Results]]"
+tags: [ripperdoc, linux, completed]
+created: YYYY-MM-DD
+track: Main / Kernel / Mixed
+level: N — Name
+score: X / Y (Z%)
 ---
 
 # Linux Quiz — YYYY-MM-DD
@@ -169,6 +170,7 @@ Score: X / Y (Z%)
 
 ## Style rules (match the vault)
 
+- Frontmatter keys are lowercase (`title`, `source`, `tags`, `created`). `title` matches the file name, e.g. `2026-11-19 Linux Quiz 2`.
 - Frontmatter fields are plain text, never bold.
 - Tags are kebab-case.
 - File names use spaces, not underscores.

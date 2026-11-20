@@ -97,6 +97,7 @@ When I type `/quiz` (or say "quiz me"), run a quiz. Variants:
 ```markdown
 ---
 title: Quiz <YYYY-MM-DD> #<n> (<variant>)
+source: "[[Driver Dev Quizzes]]"
 date: <YYYY-MM-DD>
 variant: <quiz | quick | topic name>
 score: <correct>/<total> (<k> partial)

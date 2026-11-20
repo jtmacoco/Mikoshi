@@ -13,17 +13,44 @@ description: "Root of Mikoshi. Top-level MOC"
  Mikoshi (root)
 │
 ├──  HUD                  # Homepage dashboard
-├──  Academy              # School notes & courses (graduated)
+├──  Academy              # School notes & courses (graduated, legacy)
+│   └──  CS134 · CS156 · CS252 · CS259 · CS271 · CS272
 ├──  Contracts            # Active projects & builds
+│   └──  mlp-cuda-scratch
 ├──  Data Shards          # Book notes (fiction & non-fiction)
+│   ├──  Checkmate Protocol  # Chess
+│   ├──  Math Protocol       # Mental math + Daily Quiz
+│   └──  Tech Protocol       # Linux Kernel Programming Part 1 & 2
 ├──  Directives           # TODOs & tasks
 ├──  Flatlined            # Archived / dead projects
+│   ├──  CUDA Refresher
+│   └──  Linux Kernel Contribution
 ├──  ICEbreaker           # Interview prep
+│   ├──  Leetcode
+│   ├──  System Design
+│   └──  Tech Concepts
 ├──  Inbox                # Dump zone, sort later
 ├──  Memory Shards        # Daily journal
+│   └──  Uplink 2026        # Sector MM → one folder per day
 ├──  Netrunner            # Coding & tech
+│   ├──  C
+│   │   └──  Bit Manipulation
+│   ├──  C++
+│   │   ├──  Matrix Multiplication
+│   │   └──  Types
+│   ├──  Cuda
+│   ├──  Docker
+│   ├──  Linux Kernel
+│   ├──  ML Codebase         # 00 Foundations → 06 NLP
+│   ├──  Parallel
+│   └──  Quick Hacks         # Anything Googled twice
 ├──  Ripperdoc            # Guided curricula: lessons, quizzes, gigs
-│   └──  Driver Dev
+│   ├──  Cuda Dev
+│   ├──  Driver Dev
+│   │   ├──  Driver Dev Quizzes
+│   │   └──  Driver Dev Notes
+│   └──  Linux
+│       └──  Results
 └──  Templates            # Note templates
 ```
 

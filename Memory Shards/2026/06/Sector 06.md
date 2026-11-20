@@ -1,7 +1,17 @@
-**Source**: [[Uplink 2026]]
-**Tags**: #sector
-**Description**: Keeps track of daily entries
-# Entries
+---
+title: Sector 06
+source: "[[Uplink 2026]]"
+tags: [moc, shards, sector]
+created: 2026-06-14
+description: Keeps track of daily entries
+---
+
+## Overview
+
+Keeps track of daily entries
+
+## All Notes
+
 - [[encoded_20260601_notes]]
 - [[encoded_20260602_notes]]
 - [[encoded_2026-06-03_notes]]
@@ -32,3 +42,7 @@
 - [[encoded_2026-06-28_notes]]
 - [[encoded_2026-06-29_notes]]
 - [[encoded_2026-06-30_notes]]
+
+## Links
+
+- ⬆ [[Uplink 2026]]

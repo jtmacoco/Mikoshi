@@ -1,10 +1,10 @@
 ---
-Source: "[[Mikoshi/Ripperdoc/Linux/Linux|Linux]]"
-Tags:
+source: "[[Mikoshi/Ripperdoc/Linux/Linux|Linux]]"
+tags:
   - ripperdoc
   - linux
   - jacked-in
-Created: 2026-11-17
+created: 2026-11-17
 ---
 
 # Linux Quiz
@@ -196,7 +196,7 @@ Build systems, binaries and kernel tooling. Main track Level 4 (loops & scriptin
 
 ## Session Log
 
-Newest first. Full details live in [[Results MOC]].
+Newest first. Full details live in [[Results]].
 
 | Date | Track | Level | Score | Change | Note |
 |---|---|---|---|---|---|

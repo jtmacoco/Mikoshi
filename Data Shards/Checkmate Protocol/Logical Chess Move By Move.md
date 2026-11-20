@@ -1,6 +1,6 @@
 ---
 title: Logical Chess Move By Move
-source: "[[Data Shards]]"
+source: "[[Checkmate Protocol]]"
 tags:
   - book
   - reference

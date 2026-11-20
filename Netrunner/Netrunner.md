@@ -1,7 +1,7 @@
 ---
 title: Netrunner
 source: "[[SYSTEM MANIFEST]]"
-tags: [moc]
+tags: [moc, netrunner]
 created: 2026-07-04
 ---
 
@@ -9,17 +9,8 @@ created: 2026-07-04
 
 Knowledge arsenal — references, snippets, and tech notes to pull from on any job
 
-## MOC Files
-
-```datacorejsx
-return function NetrunnerMocs() {
-  const mocs = [...dc.useQuery('@page and path("Mikoshi/Netrunner") and #moc')]
-    .filter(p => p.$name !== "Netrunner").sort((a, b) => a.$name.localeCompare(b.$name));
-  return <p>{mocs.map((p, i) => <span>{i > 0 && " · "}<dc.Literal value={p.$link} /></span>)}</p>;
-};
-```
-
 ## Concept
+
 ```datacorejsx
 const ROOT = "Mikoshi/Netrunner";
 const folderOf = p => {
@@ -41,6 +32,7 @@ return function View() {
 ```
 
 ## References
+
 ```datacorejsx
 const ROOT = "Mikoshi/Netrunner";
 const folderOf = p => {
@@ -62,6 +54,7 @@ return function View() {
 ```
 
 ## Cheat Sheets
+
 ```datacorejsx
 const ROOT = "Mikoshi/Netrunner";
 const folderOf = p => {
@@ -102,3 +95,8 @@ return function View() {
   return <dc.Table columns={COLUMNS} rows={rows} paging={15} />;
 };
 ```
+
+## Links
+
+- ⬆ [[SYSTEM MANIFEST]]
+- ⬇ [[C]] · [[C++]] · [[Mikoshi/Netrunner/Cuda/Cuda|Cuda]] · [[Docker]] · [[Linux Kernel]] · [[ML Codebase]] · [[Parallel]] · [[Quick Hacks]]

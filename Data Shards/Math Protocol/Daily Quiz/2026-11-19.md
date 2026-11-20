@@ -1,6 +1,6 @@
 ---
 title: Mental Math Quiz
-source: "[[Secretes of mental math]]"
+source: "[[Daily Quiz]]"
 tags:
   - mental-math
   - math

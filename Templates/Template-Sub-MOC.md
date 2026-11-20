@@ -36,4 +36,7 @@ return function View() {
 };
 ```
 
+## Links
 
+- ⬆ [[<% parent %>]]
+- ⬇ 

@@ -71,4 +71,7 @@ return function View() {
 };
 ```
 
+## Links
 
+- ⬆ [[SYSTEM MANIFEST]]
+- ⬇ 

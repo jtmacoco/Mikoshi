@@ -1,9 +1,7 @@
 ---
 title: CUDA Refresher
 source: "[[Flatlined]]"
-tags:
-  - moc
-  - completed
+tags: [moc, completed]
 created: 2026-07-20
 status: completed
 ---
@@ -20,7 +18,6 @@ Review CUDA programming
 
 **Rule for this refresher specifically:** write every kernel from memory first, only look things up when you get stuck. The goal is reactivating recall, not re-reading tutorials.
 
----
 
 ### Week 1 — Core kernels, from memory
 
@@ -36,7 +33,6 @@ Review CUDA programming
 
 **Reference if stuck:** _Programming Massively Parallel Processors_ (Hwu, Kirk, El Hajj, 4th ed.) — Ch. 4 (compute architecture & scheduling) and Ch. 5 (memory architecture & data locality) are the fastest way back into _why_ tiling and coalescing work, if the mechanics come back but the reasoning feels fuzzy.
 
----
 
 ### Week 2 — Concurrency & the patterns your projects already use
 
@@ -54,7 +50,6 @@ _(This week also includes a small standalone mini-project — a GEMV-based power
 
 **Reference if stuck:** _Professional CUDA C Programming_ (Cheng, Grossman, McKercher) — the streams/concurrency chapter and the profiling/performance-tuning chapter are the most practical treatment of exactly this week's material, more implementation-focused than PMPP.
 
----
 
 ### Week 3 — Into `ggml-cuda`
 
@@ -70,8 +65,6 @@ _(This week also includes a small standalone mini-project — a GEMV-based power
 
 **Reference if stuck:** _CUDA C++ Best Practices Guide_ (NVIDIA, free, [docs.nvidia.com](https://docs.nvidia.com/cuda/cuda-c-best-practices-guide/)) — a practical checklist-style doc, good for a fast sanity check on a kernel you're about to submit upstream, faster to scan than a book chapter when you're mid-PR.
 
----
-
 ## Book quick-reference (skim relevant sections only, don't read cover to cover)
 
 - **Programming Massively Parallel Processors**, Hwu/Kirk/El Hajj, 4th ed. — Ch. 4–6 for the architecture/memory/performance-considerations core; later application chapters (reduction, convolution, parallel patterns) are useful as pattern lookups, not required reading given your background.
@@ -81,10 +74,19 @@ _(This week also includes a small standalone mini-project — a GEMV-based power
 
 ## All Notes
 
-```dataview
-LIST
-FROM "Mikoshi/Flatlined/CUDA Refresher"
-SORT file.name ASC
+```datacorejsx
+const COLUMNS = [
+  { id: "note", title: "Note", value: p => p.$link },
+  { id: "status", title: "Status", value: p => p.value("status") ?? "" },
+  { id: "modified", title: "Last Touched", value: p => p.$mtime.toFormat("MMM dd") },
+];
+return function View() {
+  const pages = dc.useQuery('@page and path("Mikoshi/Flatlined/CUDA Refresher")');
+  const rows = [...pages].filter(p => p.$path.startsWith("Mikoshi/Flatlined/CUDA Refresher/")).sort((a, b) => a.$name.localeCompare(b.$name));
+  return <dc.Table columns={COLUMNS} rows={rows} paging={15} />;
+};
 ```
 
+## Links
 
+- ⬆ [[Flatlined]]

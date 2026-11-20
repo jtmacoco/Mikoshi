@@ -1,18 +1,13 @@
 ---
 title: Ripperdoc
 source: "[[SYSTEM MANIFEST]]"
-tags:
-  - moc
-  - ripperdoc
-  - ripper
+tags: [moc, ripperdoc, ripper]
 created: 2026-10-25
 ---
 
 ## Overview
 
 Structured skill upgrades: Claude-guided curricula with lessons, quizzes, and hands-on gigs. Concepts I've mastered graduate to [[Netrunner]]; real builds graduate to [[Contracts]].
-
----
 
 ## All Notes
 
@@ -53,4 +48,7 @@ return function RipperdocNotes() {
 };
 ```
 
+## Links
 
+- ⬆ [[SYSTEM MANIFEST]]
+- ⬇ [[Cuda Dev]] · [[Driver Dev]] · [[Mikoshi/Ripperdoc/Linux/Linux|Linux]]

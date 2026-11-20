@@ -9,6 +9,7 @@ This is my Obsidian vault, called Mikoshi. It's a personal knowledge system name
 - Don't reorganize things I didn't ask about. If you spot a problem somewhere else, tell me and don't fix it.
 - For bulk changes (more than ~5 files, renames, moves), show me the plan first and wait for a yes.
 - Renaming or moving a note: update every link to it, or tell me which links will break.
+- Don't touch `Academy/`. It's legacy notes from my old vault. Leave them as they are, even when they break the rules below.
 - If a folder has its own `CLAUDE.md` (for example `Ripperdoc/Linux/CLAUDE.md`), follow it for work inside that folder. It wins over this file where they conflict.
 
 ## Folder map
@@ -38,6 +39,7 @@ You may add a new folder if it clearly makes things more organized. When you do,
 - Every MOC's Source points to [[SYSTEM MANIFEST]] or its parent MOC.
 - No orphan notes. Every note lives in a folder and links to that folder's MOC.
 - Don't nest more than 3 levels deep unless it's truly needed.
+- Memory Shards keeps one folder per day (`YYYY/MM/YYYY-MM-DD/`), even with a single note inside. This is on purpose: each day's shard can be decoded later without making a mess. Don't flatten it.
 - Number prefixes on folders are optional. Let the names speak for themselves.
 - Attachments go in an `Assets/` folder inside the relevant subfolder.
 - Every MOC uses the same template structure. No exceptions.

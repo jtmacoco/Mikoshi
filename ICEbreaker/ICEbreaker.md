@@ -1,23 +1,13 @@
 ---
 title: ICEbreaker
 source: "[[SYSTEM MANIFEST]]"
-tags: [moc]
+tags: [moc, icebreaker]
 created: 2026-07-04
 ---
 
 ## Overview
 
 Practice for interview questions
-
-# MOC
-
-```datacorejsx
-return function IcebreakerMocs() {
-  const mocs = [...dc.useQuery('@page and path("Mikoshi/ICEbreaker") and #moc')]
-    .filter(p => p.$name !== "ICEbreaker").sort((a, b) => a.$name.localeCompare(b.$name));
-  return <p>{mocs.map((p, i) => <span>{i > 0 && " · "}<dc.Literal value={p.$link} /></span>)}</p>;
-};
-```
 
 ## Unsolved
 
@@ -39,7 +29,6 @@ return function View() {
   return <dc.Table columns={COLUMNS} rows={rows} paging={10} />;
 };
 ```
-
 
 ## Solved
 
@@ -111,3 +100,8 @@ return function IcebreakerNotes() {
   );
 };
 ```
+
+## Links
+
+- ⬆ [[SYSTEM MANIFEST]]
+- ⬇ [[Leetcode]] · [[System Design]] · [[Tech Concepts]]

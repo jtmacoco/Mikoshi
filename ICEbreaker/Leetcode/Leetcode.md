@@ -1,16 +1,16 @@
 ---
 title: Leetcode
 source: "[[ICEbreaker]]"
-tags:
-  - moc
-  - leetcode
+tags: [moc, icebreaker, leetcode]
 created: 2026-07-04
 ---
+
 ## Overview
 
 Leetcode problems solutions
 
-# Problems Solved
+## Problems Solved
+
 ```datacorejsx
 return function LeetcodeStats() {
   const pages = dc.useQuery('@page and path("Mikoshi/ICEbreaker/Leetcode")').filter(p => p.value("status"));
@@ -24,7 +24,7 @@ return function LeetcodeStats() {
 };
 ```
 
-# Last Solved
+## Last Solved
 
 ```datacorejsx
 return function LastSolved() {
@@ -59,7 +59,8 @@ return function LeetcodeIndex() {
   return <dc.Table columns={COLUMNS} rows={rows} paging={10} />;
 };
 ```
-## Incomplete 
+
+## Incomplete
 
 ```datacorejsx
 const COLUMNS = [
@@ -74,7 +75,6 @@ return function LeetcodeIncomplete() {
   return <dc.Table columns={COLUMNS} rows={rows} paging={10} />;
 };
 ```
-
 
 ## Completed
 
@@ -122,3 +122,22 @@ return function LeetcodeSolved() {
   );
 };
 ```
+
+## All Notes
+
+```datacorejsx
+const COLUMNS = [
+  { id: "note", title: "Note", value: p => p.$link },
+  { id: "status", title: "Status", value: p => p.value("status") ?? "" },
+  { id: "modified", title: "Last Touched", value: p => p.$mtime.toFormat("MMM dd") },
+];
+return function View() {
+  const pages = dc.useQuery('@page and path("Mikoshi/ICEbreaker/Leetcode")');
+  const rows = [...pages].filter(p => p.$path.startsWith("Mikoshi/ICEbreaker/Leetcode/")).sort((a, b) => a.$name.localeCompare(b.$name));
+  return <dc.Table columns={COLUMNS} rows={rows} paging={15} />;
+};
+```
+
+## Links
+
+- ⬆ [[ICEbreaker]]

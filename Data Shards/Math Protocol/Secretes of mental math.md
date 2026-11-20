@@ -1,6 +1,6 @@
 ---
 title: Secrets of Mental Math
-source: "[[Data Shards]]"
+source: "[[Math Protocol]]"
 tags:
   - book
   - reference
