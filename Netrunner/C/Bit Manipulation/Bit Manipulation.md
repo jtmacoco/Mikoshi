@@ -1,6 +1,6 @@
 ---
 title: Bit Manipulation
-source: "[[SYSTEM MANIFEST]]"
+source: "[[C]]"
 tags: [moc]
 created: 2026-07-05
 ---

@@ -9,6 +9,26 @@ description: "Root of Mikoshi. Top-level MOC"
 
 ## Structure
 
+```
+ Mikoshi (root)
+│
+├──  HUD                  # Homepage dashboard
+├──  Academy              # School notes & courses (graduated)
+├──  Contracts            # Active projects & builds
+├──  Data Shards          # Book notes (fiction & non-fiction)
+├──  Directives           # TODOs & tasks
+├──  Flatlined            # Archived / dead projects
+├──  ICEbreaker           # Interview prep
+├──  Inbox                # Dump zone, sort later
+├──  Memory Shards        # Daily journal
+├──  Netrunner            # Coding & tech
+├──  Ripperdoc            # Guided curricula: lessons, quizzes, gigs
+│   └──  Driver Dev
+└──  Templates            # Note templates
+```
+
+## Fast Travel
+
 - [[HUD]]: homepage dashboard
 - [[Academy]]: school notes and courses (graduated, archive)
 - [[Contracts]]: projects and builds

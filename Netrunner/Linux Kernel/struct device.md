@@ -1,6 +1,6 @@
 ---
 title: struct device
-source: "[[kernel]]"
+source: "[[Linux Kernel]]"
 tags:
   - kernel
   - device

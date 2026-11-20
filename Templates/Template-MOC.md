@@ -16,37 +16,59 @@ created: <% tp.date.now("YYYY-MM-DD") %>
 
 ## Active
 
-```dataview
-LIST
-FROM "<% path %>"
-WHERE status = "active" OR status = "on-contract" OR status = "reading"
-SORT file.mtime DESC
+```datacorejsx
+const COLUMNS = [
+  { id: "note", title: "Note", value: p => p.$link },
+  { id: "modified", title: "Last Touched", value: p => p.$mtime.toFormat("MMM dd") },
+];
+return function View() {
+  const pages = dc.useQuery('@page and path("<% path %>")');
+  const rows = [...pages].filter(p => ["active", "on-contract", "reading"].includes(p.value("status"))).sort((a, b) => b.$mtime - a.$mtime);
+  return <dc.Table columns={COLUMNS} rows={rows} paging={10} />;
+};
 ```
 
 ## Backlog
 
-```dataview
-LIST
-FROM "<% path %>"
-WHERE status = "backlog"
-SORT file.mtime DESC
+```datacorejsx
+const COLUMNS = [
+  { id: "note", title: "Note", value: p => p.$link },
+  { id: "modified", title: "Last Touched", value: p => p.$mtime.toFormat("MMM dd") },
+];
+return function View() {
+  const pages = dc.useQuery('@page and path("<% path %>")');
+  const rows = [...pages].filter(p => ["backlog"].includes(p.value("status"))).sort((a, b) => b.$mtime - a.$mtime);
+  return <dc.Table columns={COLUMNS} rows={rows} paging={10} />;
+};
 ```
 
 ## Completed
 
-```dataview
-LIST
-FROM "<% path %>"
-WHERE status = "completed"
-SORT file.mtime DESC
+```datacorejsx
+const COLUMNS = [
+  { id: "note", title: "Note", value: p => p.$link },
+  { id: "modified", title: "Last Touched", value: p => p.$mtime.toFormat("MMM dd") },
+];
+return function View() {
+  const pages = dc.useQuery('@page and path("<% path %>")');
+  const rows = [...pages].filter(p => ["completed"].includes(p.value("status"))).sort((a, b) => b.$mtime - a.$mtime);
+  return <dc.Table columns={COLUMNS} rows={rows} paging={10} />;
+};
 ```
 
 ## All Notes
 
-```dataview
-LIST
-FROM "<% path %>"
-SORT file.name ASC
+```datacorejsx
+const COLUMNS = [
+  { id: "note", title: "Note", value: p => p.$link },
+  { id: "status", title: "Status", value: p => p.value("status") ?? "" },
+  { id: "modified", title: "Last Touched", value: p => p.$mtime.toFormat("MMM dd") },
+];
+return function View() {
+  const pages = dc.useQuery('@page and path("<% path %>")');
+  const rows = [...pages].sort((a, b) => a.$name.localeCompare(b.$name));
+  return <dc.Table columns={COLUMNS} rows={rows} paging={15} />;
+};
 ```
 
 

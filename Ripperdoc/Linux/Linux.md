@@ -1,6 +1,6 @@
 ---
 title: Linux
-source: "[[SYSTEM MANIFEST]]"
+source: "[[Ripperdoc]]"
 tags:
   - moc
   - ripper

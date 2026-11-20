@@ -1,6 +1,6 @@
 ---
 title: inode
-source: "[[kernel]]"
+source: "[[Linux Kernel]]"
 tags:
   - kernel
   - drivers

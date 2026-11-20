@@ -1,6 +1,6 @@
 ---
 title: unlikely
-source: "[[kernel]]"
+source: "[[Linux Kernel]]"
 tags:
   - linux
   - kernel

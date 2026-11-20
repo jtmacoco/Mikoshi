@@ -10,16 +10,16 @@ cssclasses:
 
 # ⌬ HUD
 
-> [!quote] Wake up, samurai. We have a city to burn.
+> [!quote] Another tale for the next dreamer
 
 ## Fast Travel
 
-| Grind | Knowledge | Archive |
-|---|---|---|
-| [[Directives]] | [[Netrunner]] | [[Data Shards]] |
-| [[Contracts]] | [[Ripperdoc]] | [[Memory Shards]] |
-| [[Academy]] | [[ICEbreaker]] | [[Flatlined]] |
-| [[Inbox]] | [[SYSTEM MANIFEST]] | [[Templates]] |
+| Grind          | Knowledge           | Archive           |
+| -------------- | ------------------- | ----------------- |
+| [[Directives]] | [[Netrunner]]       | [[Data Shards]]   |
+| [[Contracts]]  | [[Ripperdoc]]       | [[Memory Shards]] |
+| [[Academy]]    | [[ICEbreaker]]      | [[Flatlined]]     |
+| [[Inbox]]      | [[SYSTEM MANIFEST]] | [[Templates]]     |
 
 ---
 

@@ -1,6 +1,6 @@
 ---
 title: kzalloc
-source: "[[kernel]]"
+source: "[[Linux Kernel]]"
 tags:
   - linux
   - kernel
