@@ -35,3 +35,4 @@ return function QuizResults() {
 - [[2026-11-18 Linux Quiz]]
 - [[2026-11-18 Linux Quiz 2]]
 - [[2026-11-18 Linux Quiz 3]]
+- [[2026-11-19 Linux Quiz]]

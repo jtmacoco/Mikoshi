@@ -1,7 +1,7 @@
 # TODO
 - [ ] Practice Coding
-- [ ] Mental Math
+- [x] Mental Math
 - [ ] Leetcode
-- [ ] Linux Quiz
+- [x] Linux Quiz
 
 # Shard Log
