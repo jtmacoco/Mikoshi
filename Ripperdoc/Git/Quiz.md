@@ -10,7 +10,7 @@ created: 2026-11-20
 # Git Quiz
 
 Adaptive git practice. Claude follows [[Mikoshi/Ripperdoc/Git/CLAUDE|CLAUDE.md]] to run sessions and updates this note after each one.
-Say **"jack in git"** to start.
+Say **"jack in git"** to start. Review [[Git Debrief]] first.
 
 ---
 
@@ -19,12 +19,12 @@ Say **"jack in git"** to start.
 | Field | Value |
 |---|---|
 | Current level | 1 — Street Kid |
-| Sessions at this level | 1 |
+| Sessions at this level | 2 |
 | Streak (≥80%) | 0 |
-| Streak (<50%) | 1 |
+| Streak (<50%) | 0 |
 | ⚡ Preview hits at level | 1 |
-| Total sessions | 1 |
-| Last session | 2026-11-20 — 39% |
+| Total sessions | 2 |
+| Last session | 2026-11-21 — 50% |
 
 | Say | Runs |
 |---|---|
@@ -39,13 +39,18 @@ Commands/concepts I missed. An item clears after 2 ✅ in separate sessions.
 
 | Command / Concept | Level | Times missed | ✅ since | Last seen |
 |---|---|---|---|---|
-| `git diff --staged` | 1 | 1 | 0 | 2026-11-20 |
-| `git diff HEAD` | 1 | 1 | 0 | 2026-11-20 |
-| `git rm --cached` (untrack, keep on disk) | 1 | 1 | 0 | 2026-11-20 |
-| `.gitignore` doesn't affect tracked files | 1 | 1 | 0 | 2026-11-20 |
-| `git status -s` columns | 1 | 1 | 0 | 2026-11-20 |
+| `git status -s` columns | 1 | 2 | 0 | 2026-11-21 |
+| `git rm --cached` (untrack, keep on disk; `-r` for dirs) | 1 | 2 | 0 | 2026-11-21 |
+| `git diff` vs `--staged` (which pair each compares) | 1 | 1 | 0 | 2026-11-21 |
+| `git add .` vs `git add -A` (scope) | 1 | 1 | 0 | 2026-11-21 |
+| `git mv` | 1 | 1 | 0 | 2026-11-21 |
+| `git <cmd> -h` (quick help) | 1 | 1 | 0 | 2026-11-21 |
+| `git branch -d` vs `-D` | 2 | 1 | 0 | 2026-11-21 |
+| `git diff HEAD` | 1 | 1 | 0 | 2026-11-21 |
 | `git log --oneline` | 1 | 1 | 0 | 2026-11-20 |
-| `git config --list` | 1 | 1 | 0 | 2026-11-20 |
+| `git diff --staged` | 1 | 1 | 1 | 2026-11-21 |
+| `.gitignore` doesn't affect tracked files | 1 | 1 | 1 | 2026-11-21 |
+| `git config --list` | 1 | 1 | 1 | 2026-11-21 |
 
 ---
 
@@ -128,4 +133,5 @@ Newest first. Full details live in [[Git Results]].
 
 | Date | Level | Score | Change | Note |
 |---|---|---|---|---|
+| [[2026-11-21 Git Quiz\|2026-11-21]] | 1 — Street Kid | 4.5 / 9 (50%) | none | Up from 39%; staging commands weakest |
 | [[2026-11-20 Git Quiz\|2026-11-20]] | 1 — Street Kid | 3.5 / 9 (39%) | none | First session; diffs weakest |

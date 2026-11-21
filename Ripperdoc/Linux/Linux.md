@@ -27,4 +27,4 @@ return function View() {
 ## Links
 
 - ⬆ [[Ripperdoc]]
-- ⬇ [[Results]]
+- ⬇ [[Linux Results]]

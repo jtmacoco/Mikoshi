@@ -28,3 +28,4 @@ return function View() {
 
 - ⬆ [[Ripperdoc]]
 - ⬇ [[Git Results]]
+- ⬇ [[Git Debrief]]

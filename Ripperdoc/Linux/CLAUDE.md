@@ -17,7 +17,8 @@ You are running an adaptive Linux command-line quiz for practice, not a test. Th
 |---|---|---|---|
 | `Quiz.md` | Syllabus, current level, review queue, session history | Every session | End of every session |
 | `Results/` | One note per session | Last 3 notes | One new note per session |
-| `Results/Results.md` | Index of all sessions (table updates itself) | — | — |
+| `Results/Linux Results.md` | Index of all sessions (table updates itself) | — | — |
+| `Linux Debrief.md` | Review notes for everything in the review queue, both tracks | — | End of every session |
 
 Never delete or rewrite old result notes. Results are history.
 
@@ -128,17 +129,24 @@ Each track levels up and down on its own. A mixed session scores each half separ
    - Mixed: `Results/YYYY-MM-DD Mixed Quiz.md`
    - If one already exists that day, add ` 2`, ` 3`, etc.
 3. Update `Quiz.md` → Current Status (the right track column), Review Queue and Session Log.
-4. No need to touch `Results/Results.md`: its table picks up new result notes on its own.
-5. If a command keeps showing up in misses (3+ sessions), suggest adding it to **Quick Hacks**.
-6. If a concept clearly clicked (loops, redirection, permissions), suggest a short **Netrunner** note for it. Ripperdoc tests and Netrunner stores what stuck.
-7. When I clear **K2**, offer to help me write `Netrunner/Makefile Template.md`: my own annotated kernel Makefile with every line explained, so I'm copying something I fully understand. Do the same with a CMake template after **K3**.
+4. No need to touch `Results/Linux Results.md`: its table picks up new result notes on its own.
+5. Update `Linux Debrief.md` to match the review queue (create it from the template below if it doesn't exist):
+   - Add an entry for each new ❌ / 🟡 / skip: the correct command in a code block, 1–2 lines on why, and a collapsed `> [!question]-` self-check with the answer inside.
+   - If I skipped it or clearly had no clue, teach it from zero: what the command is for, the basic syntax, and one small example. Don't assume I know the basics.
+   - Update the "Missed:" history on existing entries (e.g. `Missed: 11-20 ❌ · 11-21 🟡`, and `✅ 11-22 (1 of 2 to clear)` when I get one right).
+   - Move entries that left the queue to a "Cleared" list at the bottom (one line each, don't delete).
+   - Group by track (Main / Kernel), then by topic. Most-missed first.
+   - Update the "Built from:" line with the new result note.
+6. If a command keeps showing up in misses (3+ sessions), suggest adding it to **Quick Hacks**.
+7. If a concept clearly clicked (loops, redirection, permissions), suggest a short **Netrunner** note for it. Ripperdoc tests and Netrunner stores what stuck.
+8. When I clear **K2**, offer to help me write `Netrunner/Makefile Template.md`: my own annotated kernel Makefile with every line explained, so I'm copying something I fully understand. Do the same with a CMake template after **K3**.
 
 ### Result note template
 
 ```markdown
 ---
 title: YYYY-MM-DD Linux Quiz
-source: "[[Results]]"
+source: "[[Linux Results]]"
 tags: [ripperdoc, linux, completed]
 created: YYYY-MM-DD
 track: Main / Kernel / Mixed
@@ -167,6 +175,51 @@ score: X / Y (Z%)
 ## Notes
 - Anything worth remembering
 ```
+
+### Debrief template
+
+Only used the first time `Linux Debrief.md` is created. After that, edit it in place.
+
+~~~markdown
+---
+title: Linux Debrief
+source: "[[Mikoshi/Ripperdoc/Linux/Linux|Linux]]"
+tags: [ripperdoc, linux, jacked-in]
+created: YYYY-MM-DD
+status: active
+---
+
+## Description
+
+Review notes built from the [[Mikoshi/Ripperdoc/Linux/Quiz#Review Queue|Review Queue]]. Read it before jacking in. Most-missed first. Answer each self-check in your head before you peek.
+
+Built from: [[YYYY-MM-DD Linux Quiz]]
+
+## Notes
+
+### Main track
+
+#### `command`: what it does
+Missed: MM-DD ❌
+
+```bash
+command --flag arg    # what this does
+```
+Why it works, in 1–2 lines.
+
+> [!question]- Self-check: a small scenario using it
+> The answer.
+
+### Kernel track
+
+## Cleared
+- `command` — cleared YYYY-MM-DD
+
+## Links
+
+- ⬆ [[Mikoshi/Ripperdoc/Linux/Linux|Linux]]
+- [[Mikoshi/Ripperdoc/Linux/Quiz|Quiz]]: the live Review Queue
+~~~
 
 ## Style rules (match the vault)
 

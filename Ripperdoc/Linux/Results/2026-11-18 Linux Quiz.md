@@ -1,6 +1,6 @@
 ---
 title: 2026-11-18 Linux Quiz
-source: "[[Results]]"
+source: "[[Linux Results]]"
 tags: [ripperdoc, linux, completed]
 created: 2026-11-18
 track: Main

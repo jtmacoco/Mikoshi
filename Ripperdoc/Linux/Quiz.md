@@ -21,12 +21,12 @@ Two tracks, leveled independently.
 | Field | Main Track | Kernel Track |
 |---|---|---|
 | Current level | 2 — Punk | K1 — Ripper |
-| Sessions at this level | 2 | 0 |
+| Sessions at this level | 3 | 0 |
 | Streak (≥80%) | 0 | 0 |
-| Streak (<50%) | 0 | 0 |
-| ⚡ Preview hits at level | 1 | 0 |
-| Total sessions | 6 | 0 |
-| Last session | 2026-11-20 (56%) | — |
+| Streak (<50%) | 1 | 0 |
+| ⚡ Preview hits at level | 2 | 0 |
+| Total sessions | 7 | 0 |
+| Last session | 2026-11-21 (39%) | — |
 
 | Say | Runs |
 |---|---|
@@ -43,21 +43,21 @@ Commands/concepts I missed. An item clears after 2 ✅ in separate sessions.
 
 | Command / Concept | Track | Level | Times missed | ✅ since | Last seen |
 |---|---|---|---|---|---|
+| `2>&1` (stderr → same place as stdout; needed before `\|` to pipe errors) | Main | 2 | 3 | 0 | 2026-11-21 |
+| `find . -type f/d -name` / `-mtime -2` (no `-r`; always recurses) | Main | 2 | 3 | 0 | 2026-11-21 |
+| `sort \| uniq -c \| sort -nr` (counts, most frequent first) | Main | 2 | 3 | 0 | 2026-11-21 |
 | `Ctrl+L` clear / `Ctrl+Z` suspends → `fg` to resume | Main | 1 | 2 | 1 | 2026-11-19 |
-| `>>` append vs `>` overwrite | Main | 2 | 1 | 1 | 2026-11-18 |
-| `rm -i` (prompt before delete) | Main | 1 | 1 | 1 | 2026-11-18 |
-| `whatis` (one-line description) | Main | 1 | 1 | 1 | 2026-11-18 |
-| `touch` existing file (timestamp only) | Main | 1 | 1 | 1 | 2026-11-18 |
-| `ls -A` (hidden, minus `.` `..`) | Main | 1 | 1 | 1 | 2026-11-18 |
-| `cmd --help \| grep` / `man` `/word` to find a flag (`ls -S`) | Main | 1 | 1 | 0 | 2026-11-18 |
+| `cut -d: -f1` (`-f` keeps fields) / awk needs single quotes + `-F:` | Main | 2 | 2 | 0 | 2026-11-21 |
+| `grep -l` (list matching file names only) | Main | 2 | 1 | 0 | 2026-11-21 |
+| `grep -iE 'a\|b'` (`-E` for `\|` = or; one pair of quotes) | Main | 2 | 1 | 0 | 2026-11-21 |
+| `Ctrl+R` (reverse history search) | Main | 2 | 1 | 0 | 2026-11-21 |
+| `tr 'a-z' 'A-Z'` (translate chars one-for-one; `-d` deletes) | Main | 2 | 1 | 1 | 2026-11-21 |
+| `cmd \| tee file` (screen + file; `-a` appends) | Main | 2 | 1 | 1 | 2026-11-21 |
 | `grep -rn` (`-r` recursive, `-n` line numbers) | Main | 2 | 1 | 1 | 2026-11-20 |
-| `sort \| uniq -c \| sort -nr` (counts, most frequent first) | Main | 2 | 2 | 0 | 2026-11-20 |
-| `find . -type f -name` / `-mtime -2` (no `-r`; always recurses) | Main | 2 | 2 | 0 | 2026-11-20 |
-| `2>&1` (stderr → same place as stdout, not discarded) | Main | 2 | 2 | 0 | 2026-11-20 |
-| `cut -d: -f1` / awk needs single quotes + `-F:` | Main | 2 | 1 | 0 | 2026-11-19 |
 | `du -sh * \| sort -h` (biggest item in dir) | Main | 3 | 1 | 0 | 2026-11-19 |
-| `tr 'a-z' 'A-Z'` (translate chars one-for-one; `-d` deletes) | Main | 2 | 1 | 0 | 2026-11-20 |
-| `cmd \| tee file` (screen + file; `-a` appends) | Main | 2 | 1 | 0 | 2026-11-20 |
+| `cmd --help \| grep` / `man` `/word` to find a flag (`ls -S`) | Main | 1 | 1 | 0 | 2026-11-18 |
+| `>>` append vs `>` overwrite | Main | 2 | 1 | 1 | 2026-11-18 |
+| `ls -A` (hidden, minus `.` `..`) | Main | 1 | 1 | 1 | 2026-11-18 |
 
 ---
 
@@ -198,10 +198,11 @@ Build systems, binaries and kernel tooling. Main track Level 4 (loops & scriptin
 
 ## Session Log
 
-Newest first. Full details live in [[Results]].
+Newest first. Full details live in [[Linux Results]].
 
 | Date | Track | Level | Score | Change | Note |
 |---|---|---|---|---|---|
+| 2026-11-21 | Main | 2 — Punk | 3.5 / 9 (39%) | none | [[2026-11-21 Linux Quiz]] |
 | 2026-11-20 | Main | 2 — Punk | 5 / 9 (56%) | none | [[2026-11-20 Linux Quiz]] |
 | 2026-11-19 | Main | 2 — Punk | 5 / 9 (56%) | none | [[2026-11-19 Linux Quiz]] |
 | 2026-11-18 | Main | 1 — Street Kid | 7.5 / 9 (83%) | ⬆️ early up to 2 (3/3 previews) | [[2026-11-18 Linux Quiz 3]] |

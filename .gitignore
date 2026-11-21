@@ -28,18 +28,18 @@ desktop.ini
 *.swo
 *~
 
-# Linux kernel module build artifacts
-# Keeps: *.c, *.h, *.ko, Makefile, Kbuild
+# Build artifacts (Ripperdoc gigs: kernel modules + CUDA)
+# Keeps: *.c, *.h, *.cu, *.cuh, Makefile, Kbuild
 
 # Object files
 *.o
 *.o.d
 *.a
+*.ko
 
-# Generated module files (note: *.mod.c is generated, not source)
+# Generated module files (*.mod.c is generated, not source)
 *.mod
-*.mod.c
-*.mod.o
+*.mod.*
 
 # Kbuild command/dependency files
 .*.cmd
@@ -62,10 +62,5 @@ modules.builtin*
 .tmp*
 built-in.a
 
-
-
-# Kernel module build output (Ripperdoc gigs)
-*.ko
-*.o
-*.mod
-*.mod.*
+# CUDA gig binaries (no extension, so listed by name)
+Ripperdoc/Cuda-Dev/Gigs/*/saxpy

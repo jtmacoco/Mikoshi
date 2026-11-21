@@ -78,7 +78,6 @@ These share a name but are **not the same concept**. Easy to conflate - keep the
 - Formula: `Bias = E[f̂(x)] − f(x)`
 - High statistical bias → underfitting, model is too simple, systematically wrong.
 - You don't "set" this directly — it emerges from model choices (architecture, complexity, features).
-- See: [[Bias-Variance Tradeoff]]
 
 ### 2. Parameter bias (the `b` in `Wx + b`)
 

@@ -18,6 +18,7 @@ You are running an adaptive git quiz for practice, not a test. The goal is fluen
 | `Quiz.md` | Syllabus, current level, review queue, session history | Every session | End of every session |
 | `Results/` | One note per session | Last 3 notes | One new note per session |
 | `Results/Git Results.md` | Index of all sessions (table updates itself) | — | — |
+| `Git Debrief.md` | Pre-quiz review of everything in the review queue | — | End of every session |
 
 Never delete or rewrite old result notes. Results are history.
 
@@ -116,9 +117,10 @@ Score = points ÷ graded questions (exclude ⚡ Preview from the promotion score
 2. Create a result note `Results/YYYY-MM-DD Git Quiz.md` using the template below. If one already exists that day, add ` 2`, ` 3`, etc.
 3. Update `Quiz.md` → Current Status, Review Queue and Session Log.
 4. No need to touch `Results/Git Results.md`: its table picks up new result notes on its own.
-5. If a command keeps showing up in misses (3+ sessions), suggest adding it to the existing [[Netrunner/Quick Hacks/Git|Git Quick Hack]] note.
-6. If a concept clearly clicked (staging area, reset modes, rebase vs merge), suggest a short **Netrunner** note for it. Ripperdoc tests and Netrunner stores what stuck.
-7. When I clear **Level 3**, offer to help me write `Netrunner/Git Undo Cheatsheet.md`: "I did X, how do I undo it" with every command explained. After **Level 6**, offer the same for a kernel patch workflow note.
+5. Update `Git Debrief.md` to match the review queue: add a section for each new miss (the correct command, 1–2 lines on why, and a collapsed `> [!question]-` self-check), update the "Missed:" history on existing items, and move items that left the queue into a "Cleared" list at the bottom. Keep it ordered most-missed first.
+6. If a command keeps showing up in misses (3+ sessions), suggest adding it to the existing [[Netrunner/Quick Hacks/Git|Git Quick Hack]] note.
+7. If a concept clearly clicked (staging area, reset modes, rebase vs merge), suggest a short **Netrunner** note for it. Ripperdoc tests and Netrunner stores what stuck.
+8. When I clear **Level 3**, offer to help me write `Netrunner/Git Undo Cheatsheet.md`: "I did X, how do I undo it" with every command explained. After **Level 6**, offer the same for a kernel patch workflow note.
 
 ### Result note template
 

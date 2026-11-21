@@ -2,6 +2,7 @@
 title: Linux
 source: "[[Quick Hacks]]"
 tags:
+  - netrunner
   - linux
 type: cheatsheet
 created: 2026-08-15
@@ -14,6 +15,11 @@ created: 2026-08-15
 | `ls -lah`            | List all files human readable |
 | `tree -L 2`          | Directory tree 2 levels deep  |
 | `find . -name "*.c"` | Find all .c files recursively |
+| `find . -type d -name build` | Directories only (`-type f` = files only) |
+| `find /var/log -type f -mtime -2` | Files modified in the last 2 days |
+| `find . -size +100M` | Files bigger than 100 MB |
+
+> `find` always recurses, so there's no `-r`. Quote the `-name` pattern.
 
 ---
 
@@ -61,6 +67,23 @@ created: 2026-08-15
 | `awk '{print $1}'` | Print first column |
 | `sed 's/old/new/g'` | Find and replace |
 | `cut -d: -f1` | Cut by delimiter |
+| `sort \| uniq -c \| sort -nr` | Count each line, most frequent first |
+
+> `uniq` only collapses lines that sit next to each other, so always `sort` first.
+
+---
+
+## Redirection
+| Command | Action |
+|---|---|
+| `cmd > file` | stdout to file (overwrite) |
+| `cmd >> file` | stdout to file (append) |
+| `cmd > file 2>&1` | stdout **and** stderr to file |
+| `cmd 2>&1 \| grep err` | Pipe errors too (`\|` only carries stdout) |
+| `cmd \|& grep err` | Bash shortcut for `2>&1 \|` |
+| `cmd 2>/dev/null` | Throw errors away |
+
+> `2>&1` = "send stream 2 (stderr) to the same place as stream 1 (stdout)". Nothing is discarded.
 
 ---
 
@@ -101,12 +124,12 @@ created: 2026-08-15
 ---
 
 ## Permissions
-| Command        | Action                     |        |
-| -------------- | -------------------------- | ------ |
-| `chmod 755`    | rwx r-x r-x                |        |
-| `chmod 644`    | rw- r-- r--                |        |
-| `sudo !!`      | Rerun last command as sudo |        |
-| `chown -R`<br> | Recursive ownership change |        |
+| Command     | Action                     |
+| ----------- | -------------------------- |
+| `chmod 755` | rwx r-x r-x                |
+| `chmod 644` | rw- r-- r--                |
+| `sudo !!`   | Rerun last command as sudo |
+| `chown -R`  | Recursive ownership change |
 
 | Value | Permission | Symbol |
 |:-----:|:-----------|:------:|

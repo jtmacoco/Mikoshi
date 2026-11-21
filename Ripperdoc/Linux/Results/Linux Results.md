@@ -1,5 +1,5 @@
 ---
-title: Results
+title: Linux Results
 source: "[[Mikoshi/Ripperdoc/Linux/Linux|Linux]]"
 tags: [moc, ripperdoc]
 created: 2026-11-17
@@ -23,7 +23,7 @@ const COLUMNS = [
 
 return function QuizResults() {
   const pages = dc.useQuery('@page and path("Mikoshi/Ripperdoc/Linux/Results")');
-  const rows = [...pages].filter(p => p.$name !== "Results").sort((a, b) => b.$name.localeCompare(a.$name));
+  const rows = [...pages].filter(p => p.$name !== "Linux Results").sort((a, b) => b.$name.localeCompare(a.$name));
   return <dc.Table columns={COLUMNS} rows={rows} paging={10} />;
 };
 ```

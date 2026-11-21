@@ -1,8 +1,8 @@
 ---
-vnwoh: ipdsdhe_2026-11-20_orxgu
-xrxugg: "[[Ticwps 2026-11]]"
-weiu: [xkduhu]
-dvedufg: 2026-11-20
+title: encoded_2026-11-20_notes
+source: "[[Sector 2026-11]]"
+tags: [shards]
+created: 2026-11-20
 ---
 
 # XQFT
