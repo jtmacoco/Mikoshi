@@ -50,6 +50,8 @@ description: "Root of Mikoshi. Top-level MOC"
 │   ├──  Driver Dev
 │   │   ├──  Driver Dev Quizzes
 │   │   └──  Driver Dev Notes
+│   ├──  Git
+│   │   └──  Results
 │   └──  Linux
 │       └──  Results
 └──  Templates            # Note templates
@@ -70,6 +72,7 @@ description: "Root of Mikoshi. Top-level MOC"
 - [[Ripperdoc]]: guided curricula (lessons, quizzes, gigs)
     - [[Cuda Dev]]
     - [[Driver Dev]]
+    - [[Mikoshi/Ripperdoc/Git/Git|Git]]
     - [[Mikoshi/Ripperdoc/Linux/Linux|Linux]]
 - [[Templates]]: note templates
 

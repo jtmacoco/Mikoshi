@@ -21,12 +21,12 @@ Two tracks, leveled independently.
 | Field | Main Track | Kernel Track |
 |---|---|---|
 | Current level | 2 — Punk | K1 — Ripper |
-| Sessions at this level | 1 | 0 |
+| Sessions at this level | 2 | 0 |
 | Streak (≥80%) | 0 | 0 |
 | Streak (<50%) | 0 | 0 |
-| ⚡ Preview hits at level | 0 | 0 |
-| Total sessions | 5 | 0 |
-| Last session | 2026-11-19 (56%) | — |
+| ⚡ Preview hits at level | 1 | 0 |
+| Total sessions | 6 | 0 |
+| Last session | 2026-11-20 (56%) | — |
 
 | Say | Runs |
 |---|---|
@@ -50,12 +50,14 @@ Commands/concepts I missed. An item clears after 2 ✅ in separate sessions.
 | `touch` existing file (timestamp only) | Main | 1 | 1 | 1 | 2026-11-18 |
 | `ls -A` (hidden, minus `.` `..`) | Main | 1 | 1 | 1 | 2026-11-18 |
 | `cmd --help \| grep` / `man` `/word` to find a flag (`ls -S`) | Main | 1 | 1 | 0 | 2026-11-18 |
-| `grep -rn` (`-r` recursive, `-n` line numbers) | Main | 2 | 1 | 0 | 2026-11-19 |
-| `uniq -c` (prefix counts; `sort` first) | Main | 2 | 1 | 0 | 2026-11-19 |
-| `find . -type f -name` (no `-r`; always recurses) | Main | 2 | 1 | 0 | 2026-11-19 |
-| `2>&1` (stderr → same place as stdout, not discarded) | Main | 2 | 1 | 0 | 2026-11-19 |
+| `grep -rn` (`-r` recursive, `-n` line numbers) | Main | 2 | 1 | 1 | 2026-11-20 |
+| `sort \| uniq -c \| sort -nr` (counts, most frequent first) | Main | 2 | 2 | 0 | 2026-11-20 |
+| `find . -type f -name` / `-mtime -2` (no `-r`; always recurses) | Main | 2 | 2 | 0 | 2026-11-20 |
+| `2>&1` (stderr → same place as stdout, not discarded) | Main | 2 | 2 | 0 | 2026-11-20 |
 | `cut -d: -f1` / awk needs single quotes + `-F:` | Main | 2 | 1 | 0 | 2026-11-19 |
 | `du -sh * \| sort -h` (biggest item in dir) | Main | 3 | 1 | 0 | 2026-11-19 |
+| `tr 'a-z' 'A-Z'` (translate chars one-for-one; `-d` deletes) | Main | 2 | 1 | 0 | 2026-11-20 |
+| `cmd \| tee file` (screen + file; `-a` appends) | Main | 2 | 1 | 0 | 2026-11-20 |
 
 ---
 
@@ -200,6 +202,7 @@ Newest first. Full details live in [[Results]].
 
 | Date | Track | Level | Score | Change | Note |
 |---|---|---|---|---|---|
+| 2026-11-20 | Main | 2 — Punk | 5 / 9 (56%) | none | [[2026-11-20 Linux Quiz]] |
 | 2026-11-19 | Main | 2 — Punk | 5 / 9 (56%) | none | [[2026-11-19 Linux Quiz]] |
 | 2026-11-18 | Main | 1 — Street Kid | 7.5 / 9 (83%) | ⬆️ early up to 2 (3/3 previews) | [[2026-11-18 Linux Quiz 3]] |
 | 2026-11-18 | Main | 1 — Street Kid | 7 / 9 (78%) | none | [[2026-11-18 Linux Quiz 2]] |

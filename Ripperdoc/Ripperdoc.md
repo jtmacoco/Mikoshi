@@ -51,4 +51,4 @@ return function RipperdocNotes() {
 ## Links
 
 - ⬆ [[SYSTEM MANIFEST]]
-- ⬇ [[Cuda Dev]] · [[Driver Dev]] · [[Mikoshi/Ripperdoc/Linux/Linux|Linux]]
+- ⬇ [[Cuda Dev]] · [[Driver Dev]] · [[Mikoshi/Ripperdoc/Git/Git|Git]] · [[Mikoshi/Ripperdoc/Linux/Linux|Linux]]

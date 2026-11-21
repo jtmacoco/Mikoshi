@@ -21,6 +21,7 @@ const TASKS = [
   { name: "Mental Math",     color: "#ff2a6d" },
   { name: "Leetcode",        color: "#f9f871" },
   { name: "Linux Quiz",      color: "#39ff14" },
+  { name: "Git Quiz",        color: "#bd00ff" },
 ];
 
 const sig = s => s.trim().split(/\s+/).map(w => w.length).join("-");

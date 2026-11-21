@@ -10,5 +10,6 @@ created: <% tp.date.now("YYYY-MM-DD") %>
 - [ ] Mental Math
 - [ ] Leetcode
 - [ ] Linux Quiz
+- [ ] Git Quiz
  
 # Shard Log
