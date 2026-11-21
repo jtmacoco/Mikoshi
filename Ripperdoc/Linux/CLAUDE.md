@@ -118,7 +118,9 @@ Each track levels up and down on its own. A mixed session scores each half separ
 
 - Every ❌ or 🟡 adds that command/concept to the review queue in `Quiz.md`, tagged with its track.
 - An item leaves the queue after I get it ✅ **twice** in separate sessions.
-- Cap the queue at 15 items. If it overflows, keep the most-missed ones.
+- Cap the queue at 15 items. If it overflows, move the least-missed items to a **Parked** list right under the Review Queue in `Quiz.md` (create it if it's missing). Keep their miss history. Never just drop them.
+- When the queue has room again, bring parked items back in, most-missed first.
+- Parked items aren't quizzed, but they aren't cleared either. Cleared only means ✅ twice.
 
 ## Ending a session
 
@@ -134,10 +136,12 @@ Each track levels up and down on its own. A mixed session scores each half separ
    - Add an entry for each new ❌ / 🟡 / skip: the correct command in a code block, 1–2 lines on why, and a collapsed `> [!question]-` self-check with the answer inside.
    - If I skipped it or clearly had no clue, teach it from zero: what the command is for, the basic syntax, and one small example. Don't assume I know the basics.
    - Update the "Missed:" history on existing entries (e.g. `Missed: 11-20 ❌ · 11-21 🟡`, and `✅ 11-22 (1 of 2 to clear)` when I get one right).
-   - Move entries that left the queue to a "Cleared" list at the bottom (one line each, don't delete).
+   - Parked items: move the full entry to a "Parked" section, marked `Parked YYYY-MM-DD`. Move it back when the item returns to the queue.
+   - Cleared items (✅ twice): shrink the entry to one line in the "Cleared" list. Keep only the 10 most recent lines there; older ones are still in the result notes.
+   - When an item clears and it's worth keeping (something I'd actually use again, not trivia), add it to the [[Netrunner/Quick Hacks/Linux|Linux Quick Hack]] note (kernel-track items too, unless they fit better in a Netrunner note). Put it in the matching section and follow that note's format. If it's a concept rather than a command, suggest a Netrunner note instead. List what you added in the summary.
    - Group by track (Main / Kernel), then by topic. Most-missed first.
    - Update the "Built from:" line with the new result note.
-6. If a command keeps showing up in misses (3+ sessions), suggest adding it to **Quick Hacks**.
+6. If a command keeps showing up in misses (3+ sessions), suggest adding it to the [[Netrunner/Quick Hacks/Linux|Linux Quick Hack]] note now, without waiting for it to clear.
 7. If a concept clearly clicked (loops, redirection, permissions), suggest a short **Netrunner** note for it. Ripperdoc tests and Netrunner stores what stuck.
 8. When I clear **K2**, offer to help me write `Netrunner/Makefile Template.md`: my own annotated kernel Makefile with every line explained, so I'm copying something I fully understand. Do the same with a CMake template after **K3**.
 
@@ -212,7 +216,11 @@ Why it works, in 1–2 lines.
 
 ### Kernel track
 
+## Parked
+Out of the queue for now (it was full). Not quizzed, not cleared.
+
 ## Cleared
+Last 10 only.
 - `command` — cleared YYYY-MM-DD
 
 ## Links

@@ -109,7 +109,9 @@ Score = points ÷ graded questions (exclude ⚡ Preview from the promotion score
 
 - Every ❌ or 🟡 adds that command/concept to the review queue in `Quiz.md`.
 - An item leaves the queue after I get it ✅ **twice** in separate sessions.
-- Cap the queue at 15 items. If it overflows, keep the most-missed ones.
+- Cap the queue at 15 items. If it overflows, move the least-missed items to a **Parked** list right under the Review Queue in `Quiz.md` (create it if it's missing). Keep their miss history. Never just drop them.
+- When the queue has room again, bring parked items back in, most-missed first.
+- Parked items aren't quizzed, but they aren't cleared either. Cleared only means ✅ twice.
 
 ## Ending a session
 
@@ -117,8 +119,14 @@ Score = points ÷ graded questions (exclude ⚡ Preview from the promotion score
 2. Create a result note `Results/YYYY-MM-DD Git Quiz.md` using the template below. If one already exists that day, add ` 2`, ` 3`, etc.
 3. Update `Quiz.md` → Current Status, Review Queue and Session Log.
 4. No need to touch `Results/Git Results.md`: its table picks up new result notes on its own.
-5. Update `Git Debrief.md` to match the review queue: add a section for each new miss (the correct command, 1–2 lines on why, and a collapsed `> [!question]-` self-check), update the "Missed:" history on existing items, and move items that left the queue into a "Cleared" list at the bottom. Keep it ordered most-missed first.
-6. If a command keeps showing up in misses (3+ sessions), suggest adding it to the existing [[Netrunner/Quick Hacks/Git|Git Quick Hack]] note.
+5. Update `Git Debrief.md` to match the review queue:
+   - Add a section for each new miss: the correct command, 1–2 lines on why, and a collapsed `> [!question]-` self-check.
+   - Update the "Missed:" history on existing items.
+   - Parked items: move the full entry to a "Parked" section, marked `Parked YYYY-MM-DD`. Move it back when the item returns to the queue.
+   - Cleared items (✅ twice): shrink the entry to one line in the "Cleared" list. Keep only the 10 most recent lines there; older ones are still in the result notes.
+   - When an item clears and it's worth keeping (something I'd actually use again, not trivia), add it to the [[Netrunner/Quick Hacks/Git|Git Quick Hack]] note. Put it in the matching section and follow that note's format. If it's a concept rather than a command, suggest a Netrunner note instead. List what you added in the summary.
+   - Keep it ordered most-missed first.
+6. If a command keeps showing up in misses (3+ sessions), suggest adding it to the [[Netrunner/Quick Hacks/Git|Git Quick Hack]] note now, without waiting for it to clear.
 7. If a concept clearly clicked (staging area, reset modes, rebase vs merge), suggest a short **Netrunner** note for it. Ripperdoc tests and Netrunner stores what stuck.
 8. When I clear **Level 3**, offer to help me write `Netrunner/Git Undo Cheatsheet.md`: "I did X, how do I undo it" with every command explained. After **Level 6**, offer the same for a kernel patch workflow note.
 

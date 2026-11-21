@@ -40,6 +40,7 @@ You may add a new folder if it clearly makes things more organized. When you do,
 - No orphan notes. Every note lives in a folder and links to that folder's MOC.
 - Don't nest more than 3 levels deep unless it's truly needed.
 - Memory Shards keeps one folder per day (`YYYY/MM/YYYY-MM-DD/`), even with a single note inside. This is on purpose: each day's shard can be decoded later without making a mess. Don't flatten it.
+- Journal notes in Memory Shards are encoded by me on purpose. The scrambled text isn't corruption. Don't decode it, rewrite it, or flag it as a problem. The `encoded_YYYY-MM-DD_notes.md` file names are also on purpose, an exception to the no-underscores rule. Frontmatter should stay plain text so links and MOCs work. If a journal's frontmatter looks scrambled, tell me.
 - Number prefixes on folders are optional. Let the names speak for themselves.
 - Attachments go in an `Assets/` folder inside the relevant subfolder.
 - Every MOC uses the same template structure. No exceptions.
