@@ -35,27 +35,27 @@ Don't edit `main.cu`. It's the test and benchmark harness.
 ## Before you code: predict
 Fill these in *first*, then compare them with the measurement.
 
-| | Your prediction |
-|---|---|
-| Bound (memory / compute / latency)? | |
-| Expected time (ms) | |
-| Expected % of peak bandwidth | |
-| Does block size (64 vs 256 vs 1024) matter much? Why? | |
+|                                                       | Your prediction       |
+| ----------------------------------------------------- | --------------------- |
+| Bound (memory / compute / latency)?                   | memory                |
+| Expected time (ms)                                    | 4.47 ms               |
+| Expected % of peak bandwidth                          | 1.61 gb               |
+| Does block size (64 vs 256 vs 1024) matter much? Why? | No since memory bound |
 
 ## Performance target (the math)
-<details><summary>Open after predicting</summary>
 
-| Quantity | Per element | Total (n ≈ 1.342 × 10⁸) |
-|---|---|---|
-| Bytes: read `x`, read `y`, write `y` | 12 B | **1.611 GB** |
-| FLOPs: 1 multiply + 1 add | 2 | 0.268 GFLOP |
-| Arithmetic intensity | 2 / 12 = **0.167 FLOP/B** | |
-
-- Ridge point on the RTX 3060: 12.7 TFLOP/s ÷ 360 GB/s ≈ **35 FLOP/B**. SAXPY sits about 200× to the left of it, so it's **memory-bound**.
-- Each array is about 512 MB, far bigger than the 3 MB L2, so every byte really does go to DRAM.
-- Ideal time: 1.611 GB ÷ 360 GB/s = **4.47 ms**.
-- **Target: ≥ 85% of peak, which is ≥ 306 GB/s, or about 5.3 ms or less.** Real GDDR6 rarely gets above about 90% of spec.
-</details>
+> [!note]- Open after predicting
+>
+>  | Quantity | Per element | Total (n ≈ 1.342 × 10⁸) |
+>  |---|---|---|
+>  | Bytes: read `x`, read `y`, write `y` | 12 B | **1.611 GB** |
+>  | FLOPs: 1 multiply + 1 add | 2 | 0.268 GFLOP |
+>  | Arithmetic intensity | 2 / 12 = **0.167 FLOP/B** | 
+>
+> - Ridge point on the RTX 3060: 12.7 TFLOP/s ÷ 360 GB/s ≈ **35 FLOP/B**. SAXPY sits about 200× to the left of it, so it's **memory-bound**.
+> - Each array is about 512 MB, far bigger than the 3 MB L2, so every byte really does go to DRAM.
+> - Ideal time: 1.611 GB ÷ 360 GB/s = **4.47 ms**.
+> - **Target: ≥ 85% of peak, which is ≥ 306 GB/s, or about 5.3 ms or less.** Real GDDR6 rarely gets above about 90% of spec.
 
 ## Build & run
 ```bash
@@ -78,4 +78,4 @@ Right now `kernel.cu` launches with 0 threads. Run `make run` once before you ch
 ## Results
 | Version | Block size | Time (ms) | GB/s | % of 360 GB/s | Notes |
 |---|---|---|---|---|---|
-| | | | | | |
+| v1 naive, 1 elem/thread | 256 | 4.868 | 330.9 | 91.9% | 10 regs, 0 spills, memcheck clean. Target met (≥306) |

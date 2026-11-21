@@ -1,0 +1,18 @@
+Device: NVIDIA GeForce RTX 3060 (sm_86, 28 SMs)
+
+Edge-case sizes:
+  n = 1           PASS
+  n = 31          PASS
+  n = 256         PASS
+  n = 257         PASS
+  n = 1000003     PASS
+
+Benchmark size:
+  n = 1000003     PASS
+
+  Timing (median of 20 runs, 3 warm-up):
+    time        3.010 ms   (min 2.929, max 3.389)
+    bytes moved 0.012 GB
+    bandwidth   4.0 GB/s  = 1.1% of 360 GB/s peak
+
+ALL TESTS PASSED
