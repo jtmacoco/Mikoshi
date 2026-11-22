@@ -1,3 +1,10 @@
+---
+title: encoded_2026-09-10_notes
+source: "[[Sector 2026-09]]"
+tags: [shards]
+created: 2026-09-10
+---
+
 # TPGT
 - [x] Errqb Wr Osfv ✅ 2026-09-10
 - [x] Qufcxkej F ✅ 2026-09-10

@@ -1,3 +1,10 @@
+---
+title: encoded_2026-08-02_notes
+source: "[[Sector 2026-08]]"
+tags: [shards]
+created: 2026-08-02
+---
+
 # XTFR
 - [c] Sffg ✅ 2026-08-02
 - [y] Stccwkgj E ✅ 2026-08-02

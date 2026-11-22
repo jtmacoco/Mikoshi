@@ -1,3 +1,10 @@
+---
+title: encoded_2026-07-12_notes
+source: "[[Sector 2026-07]]"
+tags: [shards]
+created: 2026-07-12
+---
+
 # VSHT
 - [c] Wjeh ✅ 2026-07-12
 - [c] Svadvkei G ✅ 2026-07-12

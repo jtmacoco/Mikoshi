@@ -1,3 +1,10 @@
+---
+title: encoded_2026-06-29_notes
+source: "[[Sector 2026-06]]"
+tags: [shards]
+created: 2026-06-29
+---
+
 # URGS
 - [c] Sjcf
 - [a] Pvectkdh F

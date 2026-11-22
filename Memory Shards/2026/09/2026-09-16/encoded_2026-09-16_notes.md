@@ -1,3 +1,10 @@
+---
+title: encoded_2026-09-16_notes
+source: "[[Sector 2026-09]]"
+tags: [shards]
+created: 2026-09-16
+---
+
 # TPIQ
 - [z] Ftuoy Us Msgv ✅ 2026-09-16
 - [x] Qwceymhh C ✅ 2026-09-16

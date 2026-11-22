@@ -1,3 +1,10 @@
+---
+title: encoded_2026-09-28_notes
+source: "[[Sector 2026-09]]"
+tags: [shards]
+created: 2026-09-28
+---
+
 # WTHQ
 - [a] Eupoy Tp Lret ✅ 2026-09-28
 - [ ] Sweewmhe F

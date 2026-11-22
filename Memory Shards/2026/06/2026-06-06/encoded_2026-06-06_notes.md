@@ -1,3 +1,10 @@
+---
+title: encoded_2026-06-06_notes
+source: "[[Sector 2026-06]]"
+tags: [shards]
+created: 2026-06-06
+---
+
 J yome wp ex cwrvre 9:30 cof hcd c pvivyb hspf ecy.
 Vhgn M hki pz pbwofra apd astphe svv na lggu. Tshcd
 lt xig gkrut viqi K'ah xssmff owt kn e ajnof wp K'n 

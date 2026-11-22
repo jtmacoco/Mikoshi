@@ -1,3 +1,10 @@
+---
+title: encoded_2026-11-13_notes
+source: "[[Sector 2026-11]]"
+tags: [shards]
+created: 2026-11-13
+---
+
 # WOIO
 - [ ] Tschwkcg Dtdmqg
 - [c] Miovfo Oavi ✅ 2026-11-13

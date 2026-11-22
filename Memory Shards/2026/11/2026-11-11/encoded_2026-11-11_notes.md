@@ -1,3 +1,10 @@
+---
+title: encoded_2026-11-11_notes
+source: "[[Sector 2026-11]]"
+tags: [shards]
+created: 2026-11-11
+---
+
 # XRFQ
 - [ ] Rsddymcf Htdmrj
 - [z] Ogowbq Qaum ✅ 2026-11-11

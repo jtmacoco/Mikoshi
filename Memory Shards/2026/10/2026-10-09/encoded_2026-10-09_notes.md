@@ -1,3 +1,10 @@
+---
+title: encoded_2026-10-09_notes
+source: "[[Sector 2026-10]]"
+tags: [shards]
+created: 2026-10-09
+---
+
 # VPDR
 - [x] Frrlc Up Nscs ✅ 2026-10-09
 - [ ] Rsaftneg C

@@ -1,3 +1,10 @@
+---
+title: encoded_2026-09-29_notes
+source: "[[Sector 2026-09]]"
+tags: [shards]
+created: 2026-09-29
+---
+
 # YQIT
 - [a] Ctulz Ur Jscw ✅ 2026-09-29
 - [x] Utfhwkgj C ✅ 2026-09-29

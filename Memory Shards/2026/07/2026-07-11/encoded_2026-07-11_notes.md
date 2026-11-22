@@ -1,3 +1,10 @@
+---
+title: encoded_2026-07-11_notes
+source: "[[Sector 2026-07]]"
+tags: [shards]
+created: 2026-07-11
+---
+
 # XRFQ
 - [ ] Uhaf
 - [ ] Pscetlgi G

@@ -1,3 +1,10 @@
+---
+title: encoded_2026-06-14_notes
+source: "[[Sector 2026-06]]"
+tags: [shards]
+created: 2026-06-14
+---
+
 # TOIO
 - [ ] Sidi
 - [ ] Psdfvmdf C

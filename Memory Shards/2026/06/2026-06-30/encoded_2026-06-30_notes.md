@@ -1,3 +1,10 @@
+---
+title: encoded_2026-06-30_notes
+source: "[[Sector 2026-06]]"
+tags: [shards]
+created: 2026-06-30
+---
+
 # XRDS
 - [x] Tjeg
 - [z] Prbfvlgh C

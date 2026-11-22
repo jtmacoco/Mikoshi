@@ -1,3 +1,10 @@
+---
+title: encoded_2026-06-01_notes
+source: "[[Sector 2026-06]]"
+tags: [shards]
+created: 2026-06-01
+---
+
 Jnvst dbd rf xsvm bdw ysday xtne vt e 6:30, vtro yle badp sameqgwv vted to xtuk.
 Hsx vt zswo earmd, euu rigi ws kmnd pbwniok xqrrvwsw. Orjjqtbxmqs zisx welm oxsu 
 aipy rzjv benfkltt erf 401p. Wljr tool f ouogl dzw gfjetesnd kjrhc xpeqp so auj dt 

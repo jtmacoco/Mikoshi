@@ -1,3 +1,10 @@
+---
+title: encoded_2026-06-10_notes
+source: "[[Sector 2026-06]]"
+tags: [shards]
+created: 2026-06-10
+---
+
 Ysdac M btnj uu dv fttynd 6:30. M hni pd mnqk bqwooux anyk yhj swqn zts, slszqgjrx,
 swxj zts, arh xnw zpx zjnem aas ksti. L flxr tjci ved vmxnql tmlu rqwrink. Xmjq N mfgg
 raxilf fvjfnkefvv bjngh wew ozvy elju fpi xoawx fsg yhjq K lqy veahc ktu bown. Qs od 

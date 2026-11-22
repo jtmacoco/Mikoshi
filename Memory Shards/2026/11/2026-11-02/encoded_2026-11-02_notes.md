@@ -1,3 +1,10 @@
+---
+title: encoded_2026-11-02_notes
+source: "[[Sector 2026-11]]"
+tags: [shards]
+created: 2026-11-02
+---
+
 # WPFS
 - [y] Uvfdvnef Epgloi ✅ 2026-11-02
 - [b] Njrybn Rcuj ✅ 2026-11-02

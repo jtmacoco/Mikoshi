@@ -1,3 +1,10 @@
+---
+title: encoded_2026-08-15_notes
+source: "[[Sector 2026-08]]"
+tags: [shards]
+created: 2026-08-15
+---
+
 # UQGR
 - [c] Vhbd ✅ 2026-08-15
 - [c] Qrfhxjdg F ✅ 2026-08-15

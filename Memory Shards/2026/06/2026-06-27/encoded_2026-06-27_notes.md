@@ -1,3 +1,10 @@
+---
+title: encoded_2026-06-27_notes
+source: "[[Sector 2026-06]]"
+tags: [shards]
+created: 2026-06-27
+---
+
 # WODS
 - [c] Ufee
 - [ ] Prefxlhh C

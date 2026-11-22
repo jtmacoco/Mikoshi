@@ -1,3 +1,10 @@
+---
+title: encoded_2026-08-11_notes
+source: "[[Sector 2026-08]]"
+tags: [shards]
+created: 2026-08-11
+---
+
 # WQIR
 - [y] Wgdi ✅ 2026-08-11
 - [x] Uwbdulfg H ✅ 2026-08-11

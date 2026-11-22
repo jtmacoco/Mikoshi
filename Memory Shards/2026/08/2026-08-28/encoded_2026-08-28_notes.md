@@ -1,3 +1,10 @@
+---
+title: encoded_2026-08-28_notes
+source: "[[Sector 2026-08]]"
+tags: [shards]
+created: 2026-08-28
+---
+
 # VRES
 - [ ] Tiah
 - [ ] Uudhxjdf E

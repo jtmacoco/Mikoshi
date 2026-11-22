@@ -1,3 +1,10 @@
+---
+title: encoded_2026-10-27_notes
+source: "[[Sector 2026-10]]"
+tags: [shards]
+created: 2026-10-27
+---
+
 # VTGP
 - [ ] Trecxlcg Hthmpl
 - [a] Ninxap Pavm ✅ 2026-10-27

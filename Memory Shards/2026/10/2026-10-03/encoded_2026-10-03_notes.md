@@ -1,3 +1,10 @@
+---
+title: encoded_2026-10-03_notes
+source: "[[Sector 2026-10]]"
+tags: [shards]
+created: 2026-10-03
+---
+
 # TOIS
 - [y] Fqulb Uo Oqbv ✅ 2026-10-03
 - [x] Pwedyjhe F ✅ 2026-10-03

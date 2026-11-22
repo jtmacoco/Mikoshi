@@ -1,3 +1,10 @@
+---
+title: encoded_2026-09-22_notes
+source: "[[Sector 2026-09]]"
+tags: [shards]
+created: 2026-09-22
+---
+
 # UOGT
 - [ ] Dstma Yp Nqgw
 - [ ] Psafylfi D

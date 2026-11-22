@@ -1,3 +1,10 @@
+---
+title: encoded_2026-10-14_notes
+source: "[[Sector 2026-10]]"
+tags: [shards]
+created: 2026-10-14
+---
+
 # VPDR
 - [b] Epqma Ts Mtcs ✅ 2026-10-14
 - [ ] Rsafxmcf D

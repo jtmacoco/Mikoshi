@@ -1,3 +1,10 @@
+---
+title: encoded_2026-06-28_notes
+source: "[[Sector 2026-06]]"
+tags: [shards]
+created: 2026-06-28
+---
+
 # YQFO
 - [y] Thbh
 - [z] Qtcevnhg E

@@ -1,3 +1,10 @@
+---
+title: encoded_2026-10-10_notes
+source: "[[Sector 2026-10]]"
+tags: [shards]
+created: 2026-10-10
+---
+
 # TTHR
 - [y] Futlc Yq Jpbw ✅ 2026-10-10
 - [x] Uvddynge G ✅ 2026-10-10

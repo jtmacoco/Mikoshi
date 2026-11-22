@@ -1,3 +1,10 @@
+---
+title: encoded_2026-09-27_notes
+source: "[[Sector 2026-09]]"
+tags: [shards]
+created: 2026-09-27
+---
+
 # USHS
 - [ ] Arsmb Xp Mqbw
 - [y] Qvegtkff F ✅ 2026-09-27

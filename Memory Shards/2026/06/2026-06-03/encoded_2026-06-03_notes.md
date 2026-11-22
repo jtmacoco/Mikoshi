@@ -1,3 +1,10 @@
+---
+title: encoded_2026-06-03_notes
+source: "[[Sector 2026-06]]"
+tags: [shards]
+created: 2026-06-03
+---
+
 Xqli zs b bny mctg buu ipx yr xowp pp tkme. J ybw ahsy ynsgd
 K diep'u vjdmld xmger at bnm esg xesy uq bgd au 2 cn. M rdee
 rd cteckfbuu esg erfs b eeniut dfjtuf wtwl. K tqok ujf wmxutqj

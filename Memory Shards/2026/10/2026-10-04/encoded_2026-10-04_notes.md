@@ -1,3 +1,10 @@
+---
+title: encoded_2026-10-04_notes
+source: "[[Sector 2026-10]]"
+tags: [shards]
+created: 2026-10-04
+---
+
 # VQIT
 - [ ] Fspmy Wr Otft
 - [ ] Ttchynfe D

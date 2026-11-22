@@ -1,3 +1,10 @@
+---
+title: encoded_2026-11-08_notes
+source: "[[Sector 2026-11]]"
+tags: [shards]
+created: 2026-11-08
+---
+
 # URHS
 - [b] Uvagxidg Fpdjqk ✅ 2026-11-08
 - [b] Qjrtep Mbvk ✅ 2026-11-08

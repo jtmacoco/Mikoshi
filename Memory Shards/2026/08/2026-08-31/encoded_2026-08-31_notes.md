@@ -1,3 +1,10 @@
+---
+title: encoded_2026-08-31_notes
+source: "[[Sector 2026-08]]"
+tags: [shards]
+created: 2026-08-31
+---
+
 # XRIQ
 - [ ] Sjee
 - [z] Urbeymei F ✅ 2026-08-31

@@ -1,3 +1,10 @@
+---
+title: encoded_2026-08-05_notes
+source: "[[Sector 2026-08]]"
+tags: [shards]
+created: 2026-08-05
+---
+
 # TPIP
 - [c] Tedd ✅ 2026-08-05
 - [z] Quehvjcf H ✅ 2026-08-05

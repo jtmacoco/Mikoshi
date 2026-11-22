@@ -1,3 +1,10 @@
+---
+title: encoded_2026-06-15_notes
+source: "[[Sector 2026-06]]"
+tags: [shards]
+created: 2026-06-15
+---
+
 # TQFR
 - [ ] Teag
 - [ ] Rufeyidh C

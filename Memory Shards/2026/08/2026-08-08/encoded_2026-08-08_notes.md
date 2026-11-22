@@ -1,3 +1,10 @@
+---
+title: encoded_2026-08-08_notes
+source: "[[Sector 2026-08]]"
+tags: [shards]
+created: 2026-08-08
+---
+
 # XQHT
 - [z] Wgei ✅ 2026-08-08
 - [a] Pwefulgg G ✅ 2026-08-08

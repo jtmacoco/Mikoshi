@@ -1,3 +1,10 @@
+---
+title: encoded_2026-08-13_notes
+source: "[[Sector 2026-08]]"
+tags: [shards]
+created: 2026-08-13
+---
+
 # TTFS
 - [ ] Sjfi
 - [y] Rwfgyice H ✅ 2026-08-13

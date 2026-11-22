@@ -1,3 +1,10 @@
+---
+title: encoded_2026-08-29_notes
+source: "[[Sector 2026-08]]"
+tags: [shards]
+created: 2026-08-29
+---
+
 # XSGO
 - [c] Vjdh ✅ 2026-08-29
 - [a] Ptdfvjgi F ✅ 2026-08-29

@@ -1,3 +1,10 @@
+---
+title: encoded_2026-07-30_notes
+source: "[[Sector 2026-07]]"
+tags: [shards]
+created: 2026-07-30
+---
+
 # YQDO
 - [x] Recg ✅ 2026-07-30
 - [b] Rtahtnhg C ✅ 2026-07-30

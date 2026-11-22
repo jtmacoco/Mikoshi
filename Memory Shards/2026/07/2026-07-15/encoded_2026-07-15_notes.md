@@ -1,3 +1,10 @@
+---
+title: encoded_2026-07-15_notes
+source: "[[Sector 2026-07]]"
+tags: [shards]
+created: 2026-07-15
+---
+
 # WSGP
 - [y] Wgbg ✅ 2026-07-15
 - [x] Qtdgujfi F ✅ 2026-07-15

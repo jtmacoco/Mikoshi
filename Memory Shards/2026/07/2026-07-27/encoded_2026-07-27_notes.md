@@ -1,3 +1,10 @@
+---
+title: encoded_2026-07-27_notes
+source: "[[Sector 2026-07]]"
+tags: [shards]
+created: 2026-07-27
+---
+
 # WODQ
 - [ ] Vfeg
 - [ ] Pucfxigg F

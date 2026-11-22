@@ -1,3 +1,10 @@
+---
+title: encoded_2026-06-08_notes
+source: "[[Sector 2026-06]]"
+tags: [shards]
+created: 2026-06-08
+---
+
 Urdfb I bpng xq au 6:30 aqe dtj vorf skcaa gou cuefnfftw. Vkfn J whow tt zowl
 eww J suiom kai wo ubum du tie ibu ltw eafq vkpuhh L hrt ykewf hcumy. Uopnrrtz
 I bjon wsy uo jfw tmhrj bw cupuod 8:40 wp vej lf N ddp jft b sspw cqrsjs. Eww

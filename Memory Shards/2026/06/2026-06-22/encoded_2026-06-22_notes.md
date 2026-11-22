@@ -1,3 +1,10 @@
+---
+title: encoded_2026-06-22_notes
+source: "[[Sector 2026-06]]"
+tags: [shards]
+created: 2026-06-22
+---
+
 # XPER
 - [y] Rjdh
 - [z] Rrcgwjgf D

@@ -1,3 +1,10 @@
+---
+title: encoded_2026-08-10_notes
+source: "[[Sector 2026-08]]"
+tags: [shards]
+created: 2026-08-10
+---
+
 # TQIP
 - [a] Uiff ✅ 2026-08-10
 - [y] Trddvicg H ✅ 2026-08-10

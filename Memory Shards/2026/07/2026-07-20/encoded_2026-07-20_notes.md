@@ -1,3 +1,10 @@
+---
+title: encoded_2026-07-20_notes
+source: "[[Sector 2026-07]]"
+tags: [shards]
+created: 2026-07-20
+---
+
 # XPHR
 - [x] Rjcf ✅ 2026-07-20
 - [ ] Twefwkfi D

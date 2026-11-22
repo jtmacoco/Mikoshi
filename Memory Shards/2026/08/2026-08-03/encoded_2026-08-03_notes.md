@@ -1,3 +1,10 @@
+---
+title: encoded_2026-08-03_notes
+source: "[[Sector 2026-08]]"
+tags: [shards]
+created: 2026-08-03
+---
+
 # USHP
 - [ ] Vefd
 - [x] Qsbgtmef G ✅ 2026-08-03

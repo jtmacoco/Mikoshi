@@ -1,3 +1,10 @@
+---
+title: encoded_2026-09-14_notes
+source: "[[Sector 2026-09]]"
+tags: [shards]
+created: 2026-09-14
+---
+
  # TTGQ
 - [x] Appqz Vt Lqcs ✅ 2026-09-14
 - [x] Uuccticj D ✅ 2026-09-14

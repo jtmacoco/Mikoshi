@@ -1,3 +1,10 @@
+---
+title: encoded_2026-08-16_notes
+source: "[[Sector 2026-08]]"
+tags: [shards]
+created: 2026-08-16
+---
+
 # UPHQ
 - [ ] Vjdg
 - [ ] Svddyjee D

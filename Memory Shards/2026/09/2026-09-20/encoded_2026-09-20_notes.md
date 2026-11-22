@@ -1,3 +1,10 @@
+---
+title: encoded_2026-09-20_notes
+source: "[[Sector 2026-09]]"
+tags: [shards]
+created: 2026-09-20
+---
+
 # WTHS
 - [ ] Brtob Xt Jrgu
 - [ ] Rufgxjei F

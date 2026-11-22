@@ -1,3 +1,10 @@
+---
+title: encoded_2026-10-30_notes
+source: "[[Sector 2026-10]]"
+tags: [shards]
+created: 2026-10-30
+---
+
 # YTEO
 - [a] Srfgxjch Cpensh ✅ 2026-10-30
 - [ ] Mhqtfp Qbtk

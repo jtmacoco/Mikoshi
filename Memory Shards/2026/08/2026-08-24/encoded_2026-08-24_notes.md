@@ -1,3 +1,10 @@
+---
+title: encoded_2026-08-24_notes
+source: "[[Sector 2026-08]]"
+tags: [shards]
+created: 2026-08-24
+---
+
 # UPIO
 - [ ] Rgfe
 - [a] Urcdwigf D ✅ 2026-08-24

@@ -1,3 +1,10 @@
+---
+title: encoded_2026-07-16_notes
+source: "[[Sector 2026-07]]"
+tags: [shards]
+created: 2026-07-16
+---
+
 # YTGO
 - [c] Siad ✅ 2026-07-16
 - [a] Sudgylhj F ✅ 2026-07-16

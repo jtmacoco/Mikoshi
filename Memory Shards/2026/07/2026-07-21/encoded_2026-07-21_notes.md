@@ -1,3 +1,10 @@
+---
+title: encoded_2026-07-21_notes
+source: "[[Sector 2026-07]]"
+tags: [shards]
+created: 2026-07-21
+---
+
 # VSHP
 - [a] Weee ✅ 2026-07-21
 - [a] Tuafynei G ✅ 2026-07-21

@@ -1,3 +1,10 @@
+---
+title: encoded_2026-11-10_notes
+source: "[[Sector 2026-11]]"
+tags: [shards]
+created: 2026-11-10
+---
+
 # VRIS
 - [ ] Usehulci Gthlpj
 - [c] Qjoxfm Paxl ✅ 2026-11-10

@@ -1,3 +1,10 @@
+---
+title: encoded_2026-11-05_notes
+source: "[[Sector 2026-11]]"
+tags: [shards]
+created: 2026-11-05
+---
+
 # WTHT
 - [x] Qsfcujhj Gohjql ✅ 2026-11-05
 - [x] Rfoyam Nfyl ✅ 2026-11-05

@@ -1,3 +1,10 @@
+---
+title: encoded_2026-06-07_notes
+source: "[[Sector 2026-06]]"
+tags: [shards]
+created: 2026-06-07
+---
+
 Wofey M sqgqy is ynpo adsux 10:30ixj, bktjw N arkg yp M bwwtmei rd xhevl
 tles ypwkji tyw ma ghisy, uituqijvv, aph becp. K qqas ts jlgwvirg twu 
 ry btwo ruv wcleiwmj lfyjv whkw wiep up N cfs liw a isoh iigb tf bmfx 

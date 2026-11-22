@@ -1,3 +1,10 @@
+---
+title: encoded_2026-06-23_notes
+source: "[[Sector 2026-06]]"
+tags: [shards]
+created: 2026-06-23
+---
+
 # YPIT
 - [b] Ribg
 - [y] Utfcwmhf H

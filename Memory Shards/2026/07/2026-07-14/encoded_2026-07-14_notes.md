@@ -1,3 +1,10 @@
+---
+title: encoded_2026-07-14_notes
+source: "[[Sector 2026-07]]"
+tags: [shards]
+created: 2026-07-14
+---
+
 # WOHO
 - [x] Tjbf ✅ 2026-07-14
 - [x] Pvefvlfe G ✅ 2026-07-14

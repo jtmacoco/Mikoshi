@@ -1,3 +1,10 @@
+---
+title: encoded_2026-06-16_notes
+source: "[[Sector 2026-06]]"
+tags: [shards]
+created: 2026-06-16
+---
+
 # TTHR
 - [ ] Wech
 - [ ] Puffxnhe H

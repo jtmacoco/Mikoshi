@@ -1,3 +1,10 @@
+---
+title: encoded_2026-11-16_notes
+source: "[[Sector 2026-11]]"
+tags: [shards]
+created: 2026-11-16
+---
+
 # USHR
 - [x] Ptagtigi Gtgmok ✅ 2026-11-16
 - [b] Peptel Mexl ✅ 2026-11-16

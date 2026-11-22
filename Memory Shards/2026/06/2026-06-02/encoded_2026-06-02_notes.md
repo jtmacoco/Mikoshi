@@ -1,3 +1,10 @@
+---
+title: encoded_2026-06-02_notes
+source: "[[Sector 2026-06]]"
+tags: [shards]
+created: 2026-06-02
+---
+
 Vrdba M atnj vr fw csqxne 6 crh rdif odvgmh vong iklv fof qhhu hrr xqvo futvpi 7.
 L ipv wo xqvo fw fsqzqf 8 cww I'n uxmqo ysanqi uq iihwvi txy xjjug ju eetv xs udwl.
 Cy zqsm L gpv wiyxu xkyk vig wopnw M shje dzw K'n uwimn pifusjpl wjf nlnhq eptql 

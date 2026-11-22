@@ -1,3 +1,10 @@
+---
+title: encoded_2026-09-08_notes
+source: "[[Sector 2026-09]]"
+tags: [shards]
+created: 2026-09-08
+---
+
 # TSDR
 - [z] Btspc Ys Jrgx ✅ 2026-09-08
 - [ ] Pvafvjgh G

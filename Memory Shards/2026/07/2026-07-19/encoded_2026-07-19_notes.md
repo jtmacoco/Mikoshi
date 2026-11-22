@@ -1,3 +1,10 @@
+---
+title: encoded_2026-07-19_notes
+source: "[[Sector 2026-07]]"
+tags: [shards]
+created: 2026-07-19
+---
+
 # TTGS
 - [a] Wgah ✅ 2026-07-19
 - [x] Pufevjcj F ✅ 2026-07-19

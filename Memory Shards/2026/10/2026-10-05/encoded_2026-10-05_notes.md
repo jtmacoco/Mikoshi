@@ -1,3 +1,10 @@
+---
+title: encoded_2026-10-05_notes
+source: "[[Sector 2026-10]]"
+tags: [shards]
+created: 2026-10-05
+---
+
 # UPFP
 - [y] Atrob Wo Mrgs ✅ 2026-10-05
 - [x] Qscduigg F ✅ 2026-10-05

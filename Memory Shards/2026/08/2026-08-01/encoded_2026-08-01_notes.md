@@ -1,3 +1,10 @@
+---
+title: encoded_2026-08-01_notes
+source: "[[Sector 2026-08]]"
+tags: [shards]
+created: 2026-08-01
+---
+
 # YPEQ
 - [y] Ticd ✅ 2026-08-01
 - [c] Qrbdxlhf D ✅ 2026-08-01

@@ -1,3 +1,10 @@
+---
+title: encoded_2026-11-12_notes
+source: "[[Sector 2026-11]]"
+tags: [shards]
+created: 2026-11-12
+---
+
 # UQDS
 - [ ] Qsagvnde Esejoi
 - [x] Qfoten Rbtj ✅ 2026-11-12

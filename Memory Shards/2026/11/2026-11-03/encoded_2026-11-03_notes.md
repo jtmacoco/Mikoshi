@@ -1,3 +1,10 @@
+---
+title: encoded_2026-11-03_notes
+source: "[[Sector 2026-11]]"
+tags: [shards]
+created: 2026-11-03
+---
+
 # YSES
 - [ ] Subcxihj Godksk
 - [y] Qhquap Mfyl ✅ 2026-11-03

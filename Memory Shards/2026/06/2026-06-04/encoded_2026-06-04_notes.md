@@ -1,3 +1,10 @@
+---
+title: encoded_2026-06-04_notes
+source: "[[Sector 2026-06]]"
+tags: [shards]
+created: 2026-06-04
+---
+
 J zplj zq c bmu pfvg xpgbz gzu K wet wyknp pq ujrj gqr apvp. K 
 resnfe pnof oj gew cph urp umj dqmtbrd ujyuwmf yt xqro. J ehvwemoz
 hty uq wsso f dkx fdsmd ypfac. Bx bqto J gje f gjv mssi fpf pfdsoji

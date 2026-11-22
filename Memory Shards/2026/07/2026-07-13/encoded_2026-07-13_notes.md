@@ -1,3 +1,10 @@
+---
+title: encoded_2026-07-13_notes
+source: "[[Sector 2026-07]]"
+tags: [shards]
+created: 2026-07-13
+---
+
 # VOEO
 - [y] Tead ✅ 2026-07-13
 - [ ] Qrcevieg C

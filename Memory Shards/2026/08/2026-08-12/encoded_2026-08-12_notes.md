@@ -1,3 +1,10 @@
+---
+title: encoded_2026-08-12_notes
+source: "[[Sector 2026-08]]"
+tags: [shards]
+created: 2026-08-12
+---
+
 # TRDR
 - [z] Rfed ✅ 2026-08-12
 - [x] Pvecwich C ✅ 2026-08-12

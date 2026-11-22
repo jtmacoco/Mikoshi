@@ -1,3 +1,10 @@
+---
+title: encoded_2026-10-07_notes
+source: "[[Sector 2026-10]]"
+tags: [shards]
+created: 2026-10-07
+---
+
 # VPIT
 - [y] Cuuoa Vq Jofu ✅ 2026-10-07
 - [x] Rsfhukhj F ✅ 2026-10-07

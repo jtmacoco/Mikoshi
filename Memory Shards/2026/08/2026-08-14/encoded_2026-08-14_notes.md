@@ -1,3 +1,10 @@
+---
+title: encoded_2026-08-14_notes
+source: "[[Sector 2026-08]]"
+tags: [shards]
+created: 2026-08-14
+---
+
 # UQIP
 - [ ] Sefe
 - [ ] Ttbfwjee D

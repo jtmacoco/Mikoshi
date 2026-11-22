@@ -1,3 +1,10 @@
+---
+title: encoded_2026-08-27_notes
+source: "[[Sector 2026-08]]"
+tags: [shards]
+created: 2026-08-27
+---
+
 # WTDQ
 - [ ] Vhai
 - [z] Pweewmch H ✅ 2026-08-27

@@ -1,3 +1,10 @@
+---
+title: encoded_2026-09-15_notes
+source: "[[Sector 2026-09]]"
+tags: [shards]
+created: 2026-09-15
+---
+
 # VOFP
 - [ ] Aqtpy Vr Opds
 - [ ] Rtaeuidi G

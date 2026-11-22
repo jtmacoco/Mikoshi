@@ -1,3 +1,10 @@
+---
+title: encoded_2026-10-08_notes
+source: "[[Sector 2026-10]]"
+tags: [shards]
+created: 2026-10-08
+---
+
 # XQFQ
 - [y] Bsrlz Ws Npew ✅ 2026-10-08
 - [b] Rtcdulee D ✅ 2026-10-08

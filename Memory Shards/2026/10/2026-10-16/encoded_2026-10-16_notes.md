@@ -1,3 +1,10 @@
+---
+title: encoded_2026-10-16_notes
+source: "[[Sector 2026-10]]"
+tags: [shards]
+created: 2026-10-16
+---
+
 # TODO
 - [x] Apply To Jobs ✅ 2026-10-16
 - [ ] Practice C

@@ -1,3 +1,10 @@
+---
+title: encoded_2026-09-17_notes
+source: "[[Sector 2026-09]]"
+tags: [shards]
+created: 2026-09-17
+---
+
 # UREP
 - [b] Ctqpz Xs Jodv ✅ 2026-09-17
 - [ ] Qubdxkgf G

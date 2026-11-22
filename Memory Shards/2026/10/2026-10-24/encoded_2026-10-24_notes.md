@@ -1,3 +1,10 @@
+---
+title: encoded_2026-10-24_notes
+source: "[[Sector 2026-10]]"
+tags: [shards]
+created: 2026-10-24
+---
+
 # XQDQ
 - [a] Auspb Uo Lqct ✅ 2026-10-24
 - [ ] Ttaewihh G

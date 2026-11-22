@@ -1,3 +1,10 @@
+---
+title: encoded_2026-08-25_notes
+source: "[[Sector 2026-08]]"
+tags: [shards]
+created: 2026-08-25
+---
+
 # WOFO
 - [ ] Sife
 - [b] Rvafwkhh C ✅ 2026-08-25

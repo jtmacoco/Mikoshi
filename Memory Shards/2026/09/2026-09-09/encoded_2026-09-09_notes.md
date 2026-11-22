@@ -1,3 +1,10 @@
+---
+title: encoded_2026-09-09_notes
+source: "[[Sector 2026-09]]"
+tags: [shards]
+created: 2026-09-09
+---
+
 # XTGP
 - [b] Crspb Us Krgw ✅ 2026-09-09
 - [b] Uubgvkfi F ✅ 2026-09-09

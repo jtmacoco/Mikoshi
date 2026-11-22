@@ -1,3 +1,10 @@
+---
+title: encoded_2026-07-17_notes
+source: "[[Sector 2026-07]]"
+tags: [shards]
+created: 2026-07-17
+---
+
 # VTIS
 - [x] Wjfh ✅ 2026-07-17
 - [x] Rsaeyigg E ✅ 2026-07-17

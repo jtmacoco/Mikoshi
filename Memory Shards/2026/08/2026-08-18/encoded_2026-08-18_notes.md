@@ -1,3 +1,10 @@
+---
+title: encoded_2026-08-18_notes
+source: "[[Sector 2026-08]]"
+tags: [shards]
+created: 2026-08-18
+---
+
 # WOHO
 - [y] Sedf ✅ 2026-08-18
 - [b] Uvaftlfe G ✅ 2026-08-18

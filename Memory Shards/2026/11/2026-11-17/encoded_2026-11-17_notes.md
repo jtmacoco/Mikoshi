@@ -1,3 +1,10 @@
+---
+title: encoded_2026-11-17_notes
+source: "[[Sector 2026-11]]"
+tags: [shards]
+created: 2026-11-17
+---
+
 # VPHR
 - [ ] Qwddxmce Dpdlph
 - [b] Pfswbp Qati ✅ 2026-11-17

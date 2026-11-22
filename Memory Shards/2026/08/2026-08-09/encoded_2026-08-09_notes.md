@@ -1,3 +1,10 @@
+---
+title: encoded_2026-08-09_notes
+source: "[[Sector 2026-08]]"
+tags: [shards]
+created: 2026-08-09
+---
+
 # VSDT
 - [x] Rebh ✅ 2026-08-09
 - [b] Quffykfg G ✅ 2026-08-09

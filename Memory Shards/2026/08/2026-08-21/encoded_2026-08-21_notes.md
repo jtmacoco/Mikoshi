@@ -1,3 +1,10 @@
+---
+title: encoded_2026-08-21_notes
+source: "[[Sector 2026-08]]"
+tags: [shards]
+created: 2026-08-21
+---
+
 # UTHO
 - [ ] Rgae
 - [ ] Qrfhuiff D

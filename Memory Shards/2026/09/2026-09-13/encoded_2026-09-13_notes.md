@@ -1,3 +1,10 @@
+---
+title: encoded_2026-09-13_notes
+source: "[[Sector 2026-09]]"
+tags: [shards]
+created: 2026-09-13
+---
+
 # XTHT
 - [z] Cpqnb Wt Kret ✅ 2026-09-13
 - [ ] Twehvkcf E

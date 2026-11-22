@@ -1,3 +1,10 @@
+---
+title: encoded_2026-11-18_notes
+source: "[[Sector 2026-11]]"
+tags: [shards]
+created: 2026-11-18
+---
+
 # WPFQ
 - [ ] Pubcvlej Hpfjqh
 - [z] Oequan Pcym ✅ 2026-11-18

@@ -1,3 +1,10 @@
+---
+title: encoded_2026-09-07_notes
+source: "[[Sector 2026-09]]"
+tags: [shards]
+created: 2026-09-07
+---
+
 # UOHP
 - [ ] Fuspy Uq Kqbw
 - [ ] Tsagunhh G

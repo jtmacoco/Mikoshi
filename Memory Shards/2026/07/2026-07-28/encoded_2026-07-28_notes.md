@@ -1,3 +1,10 @@
+---
+title: encoded_2026-07-28_notes
+source: "[[Sector 2026-07]]"
+tags: [shards]
+created: 2026-07-28
+---
+
 # UPDO
 - [z] Wfci ✅ 2026-07-28
 - [a] Twfduidf C ✅ 2026-07-28

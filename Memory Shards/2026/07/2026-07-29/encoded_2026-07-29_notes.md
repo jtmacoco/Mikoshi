@@ -1,3 +1,10 @@
+---
+title: encoded_2026-07-29_notes
+source: "[[Sector 2026-07]]"
+tags: [shards]
+created: 2026-07-29
+---
+
 # TTGT
 - [x] Ugbd ✅ 2026-07-29
 - [z] Swbftlcj F ✅ 2026-07-29
