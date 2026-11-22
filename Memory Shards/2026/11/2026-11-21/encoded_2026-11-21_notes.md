@@ -6,9 +6,9 @@ created: 2026-11-21
 ---
 
 # TODO
-- [ ] Practice Coding
+- [x] Practice Coding
 - [x] Mental Math
-- [ ] Leetcode
+- [x] Leetcode
 - [x] Linux Quiz
 - [x] Git Quiz
  

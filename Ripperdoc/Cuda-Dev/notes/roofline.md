@@ -8,7 +8,7 @@ status: learning
 arch: all
 created: 2026-11-20
 updated: 2026-11-20
-related: ["[[grid-sizing]]", "[[occupancy]]"]
+related: ["[[grid-sizing]]", "[[occupancy]]", "[[littles-law]]"]
 sources: [Best Practices Guide §Performance Metrics, PMPP ch. 5, Williams et al. "Roofline" (2009)]
 ---
 

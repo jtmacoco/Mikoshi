@@ -7,8 +7,8 @@ level: 3
 status: learning
 arch: all (limits below are sm_86)
 created: 2026-11-20
-updated: 2026-11-20
-related: ["[[grid-sizing]]", "[[roofline]]"]
+updated: 2026-11-21
+related: ["[[grid-sizing]]", "[[roofline]]", "[[littles-law]]"]
 sources: [CUDA C++ Programming Guide §Compute Capabilities (table), Best Practices Guide §Occupancy, CUDA Occupancy Calculator]
 ---
 
@@ -48,6 +48,7 @@ min(16, 1536/32 = 48) = 16 blocks → 16 × 32 = 512 threads → 512/1536 = 33%
 
 ## Pitfalls
 - Higher occupancy isn't always faster. You only need *enough* warps to hide latency, and register-heavy kernels (GEMM) often run best at low occupancy.
+- For memory-bound kernels, warps aren't there for math. They keep enough **loads in flight** to hide DRAM latency ([[littles-law]]): bytes in flight = BW × latency (≈ 6.4 KB/SM on the 3060). 01-saxpy: tpb 32 (16 warps) lost about 20%, and 64+ leveled off.
 - Forgetting to round down. A block can't be partly resident.
 - Limits differ by architecture (e.g. sm_80 has 2048 threads/SM and 32 block slots), so check the table for your GPU.
 
@@ -55,5 +56,12 @@ min(16, 1536/32 = 48) = 16 blocks → 16 × 32 = 512 threads → 512/1536 = 33%
 > [!question]- tpb = 128, 40 regs/thread, 0 smem. Blocks/SM, occupancy, and the limiter?
 > Slots 16; threads 1536/128 = 12; regs 65536/(40×128) = 12.8 → 12. min = **12** blocks → 1536 threads = **100%**. Threads and registers tie.
 
-> [!todo] Open from 01-saxpy sweep
-> Fill in tpb = 64, 256, 1024 yourself, then compare with the measured sweep.
+## 01-saxpy sweep (2026-11-21, min times)
+| tpb | blocks/SM | occupancy | limiter | GB/s |
+|---|---|---|---|---|
+| 32 | 16 | 33% | block slots | 266 |
+| 64 | 16 | 67% | block slots | 334 |
+| 256 | 6 | 100% | threads | 336 |
+| 1024 | 1 | 67% | threads (1.5 → 1) | 326 |
+
+Past about 67%, extra occupancy didn't help: enough loads were already in flight ([[littles-law]]).

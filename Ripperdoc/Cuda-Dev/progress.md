@@ -46,8 +46,10 @@ Rating: 1 = can't do it without help, 2 = shaky, 3 = OK with docs, 4 = solid, 5 
 | Memory coalescing | 2 | 1 | 2026-11-20 | 2026-11-08 | Q1. 01-saxpy: 1D idx coalesced correctly (trivial case, not yet 2D) |
 | When shared memory helps (data reuse) | 2 | 1 | – | 2026-11-08 | Proposed smem for elementwise; missed blur (Q1 follow-up) |
 | Warps / SIMT / divergence | 3 | 2 | – | 2026-11-08 | Warp definition right; didn't explain divergence (Q5) |
-| Occupancy & its limiters | 3 | 1 | 2026-11-20 | 2026-11-08 | Couldn't compute (Q2). 01-saxpy sweep: knew 16-block cap limits tpb=32, but couldn't turn it into occupancy %; re-explained min-over-limits method (help level 2) [[occupancy]] |
+| Occupancy & its limiters | 3 | 2 | 2026-11-21 | 2026-11-08 | Couldn't compute (Q2). 01-saxpy sweep: knew 16-block cap limits tpb=32, but couldn't turn it into occupancy %; re-explained min-over-limits method (help level 2). 2026-11-21: computed tpb 64/256/1024 correctly unaided, incl. round-down for 1024 and seeing thread cap take over at 256 [[occupancy]] |
 | Roofline / arithmetic intensity | 3 | 1 | 2026-11-20 | 2026-11-08 | Couldn't compute for SAXPY (Q4). 01-saxpy: got 12 B/elem right, slipped 10× on total (16.08 GB vs 1.61), needed "show me" for time = bytes / BW [[roofline]] |
+| Little's law / latency hiding | 3 | 2 | 2026-11-21 | 2026-11-21 | Sweep: said warps needed "for computation" (partial); then named float4 as the ILP lever ✓ but called it "like quantization" ✗ [[littles-law]] |
+| Vectorized loads (float4) vs quantization | 3 | 2 | 2026-11-21 | 2026-11-21 | Confused float4 (same bytes, wider loads) with quantization (fewer bytes) [[littles-law]] |
 | __syncthreads placement | 4 | 2 | – | 2026-11-08 | Spotted sync-in-branch; missed sync after smem load (Q3) |
 
 ## Performance records
@@ -67,6 +69,8 @@ Specific mistakes and misconceptions. Mark `[x]` when resolved (two correct quiz
 - [ ] 2026-11-08, placement Q4: couldn't do roofline math → bytes/elem, FLOPs/elem, AI vs ridge (35 FLOP/B on 3060), time = bytes / BW
 - [ ] 2026-11-20, 01-saxpy prediction: 12 B × 1.34e8 written as 16.08 GB (10× off) → 1.61 GB; sanity-check exponent (1e1 × 1e8 = 1e9 = GB)
 - [ ] 2026-11-20, 01-saxpy prediction: didn't know ideal time formula → memory-bound: time = total bytes / peak BW (1.61e9 / 360e9 = 4.47 ms)
+- [ ] 2026-11-21, 01-saxpy sweep: explained occupancy need as "threads to handle the computation" → for memory-bound kernels warps are needed to keep enough *loads in flight* to hide DRAM latency (Little's law: bytes in flight = BW × latency ≈ 180 KB on 3060, ~6.4 KB/SM)
+- [ ] 2026-11-21, 01-saxpy follow-up: called float4 "like quantization" → float4 = same bytes in fewer, wider loads (more in flight); quantization = fewer bytes per value
 - [ ] 2026-11-08, placement Q5: didn't explain warp divergence → different paths within a warp are serialized (masked lanes); cost ~ sum of both paths
 
 ## Quiz log
@@ -76,6 +80,14 @@ Specific mistakes and misconceptions. Mark `[x]` when resolved (two correct quiz
 
 ## Session log
 <!-- The tutor adds an entry here at the end of each session. Newest first. -->
+### 2026-11-21: Gigs/01-saxpy, block-size sweep
+- Status: stretch 1 done; stretches 2–4 open
+- Highest help level: 1 (occupancy rows done unaided after confirming 64)
+- Performance: sweep by min time: 32 → 266 GB/s, 64–512 → 330–337 GB/s, 1024 → 326 GB/s. Medians noisy (display shares GPU)
+- Got comfortable with: occupancy min-over-limits incl. round-down at 1024; predictions for 32 ("in between") and 1024 ("same") both right
+- Struggled with: *why* memory-bound kernels need occupancy (said computation, not latency hiding / bytes in flight)
+- Also: explained float4 (help level 2, demo kernel in scratchpad, not SAXPY); user hasn't used float4 before. Clarified float4 ≠ quantization
+- Next session plan: (1) `/quiz` on grid sizing + error checking (both at 2; need ≥3 to leave Level 1). (2) Pass → new gig for Level 2 (matrix add, then transpose ladder). Still below 3 → small Level 1 variation gig targeting the weak one (e.g. error-checking/launch-failure gig). (3) float4 stretch is optional, user may do it anytime
 ### 2026-11-20: Gigs/01-saxpy (in progress)
 - Status: core done, passes review (0 critical/major); stretch goals open
 - Highest help level: 5 ("show me") for roofline ideal-time calc; level 1 for ceil-div

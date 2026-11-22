@@ -68,12 +68,3 @@ SORT file.mtime DESC
 ## Directive Heatmap
 
 ![[Directive Heatmap]]
-
-## Fast Travel
-
-| Grind          | Knowledge           | Archive           |
-| -------------- | ------------------- | ----------------- |
-| [[Directives]] | [[Netrunner]]       | [[Data Shards]]   |
-| [[Contracts]]  | [[Ripperdoc]]       | [[Memory Shards]] |
-| [[Academy]]    | [[ICEbreaker]]      | [[Flatlined]]     |
-| [[Inbox]]      | [[SYSTEM MANIFEST]] | [[Templates]]     |

@@ -76,6 +76,12 @@ Right now `kernel.cu` launches with 0 threads. Run `make run` once before you ch
 4. Add `const __restrict__` to the pointer parameters. Does `make ptxas` or the timing change?
 
 ## Results
-| Version | Block size | Time (ms) | GB/s | % of 360 GB/s | Notes |
-|---|---|---|---|---|---|
-| v1 naive, 1 elem/thread | 256 | 4.868 | 330.9 | 91.9% | 10 regs, 0 spills, memcheck clean. Target met (≥306) |
+| Version                 | Block size | Time (ms)         | GB/s                  | % of 360 GB/s | Notes                                                |
+| ----------------------- | ---------- | ----------------- | --------------------- | ------------- | ---------------------------------------------------- |
+| v1 naive, 1 elem/thread | 256        | 4.868             | 330.9                 | 91.9%         | 10 regs, 0 spills, memcheck clean. Target met (≥306) |
+| sweep (2026-11-21)      | 32         | 6.125 (min 6.058) | 263.0 (min-based 266) | 73.0%         | 33% occ; only clearly slower size                    |
+| sweep                   | 64         | 5.165 (min 4.817) | 311.8 (334)           | 86.6%         | 67% occ                                              |
+| sweep                   | 128        | 5.815 (min 4.786) | 277.0 (337)           | 76.9%         | 100% occ; median noisy                               |
+| sweep                   | 256        | 5.663 (min 4.789) | 284.4 (336)           | 79.0%         | 100% occ; median noisy (was 4.868 on 11-20)          |
+| sweep                   | 512        | 5.798 (min 4.885) | 277.8 (330)           | 77.2%         | 100% occ; median noisy                               |
+| sweep                   | 1024       | 5.304 (min 4.940) | 303.6 (326)           | 84.3%         | 67% occ                                              |

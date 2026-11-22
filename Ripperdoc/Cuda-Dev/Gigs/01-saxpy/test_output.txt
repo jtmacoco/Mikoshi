@@ -8,11 +8,11 @@ Edge-case sizes:
   n = 1000003     PASS
 
 Benchmark size:
-  n = 1000003     PASS
+  n = 134217741   PASS
 
   Timing (median of 20 runs, 3 warm-up):
-    time        3.010 ms   (min 2.929, max 3.389)
-    bytes moved 0.012 GB
-    bandwidth   4.0 GB/s  = 1.1% of 360 GB/s peak
+    time        5.304 ms   (min 4.940, max 6.240)
+    bytes moved 1.611 GB
+    bandwidth   303.6 GB/s  = 84.3% of 360 GB/s peak
 
 ALL TESTS PASSED
