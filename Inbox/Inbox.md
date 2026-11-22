@@ -13,3 +13,9 @@ description: "Dump here sort later"
 - ContextIQ, maybe continue
 - Open Source contribution with CUDA or parallel programming
 - Personal custom assistant local LLM
+
+## Bucket List 
+- Make contribution to Linux Kernel (specifically nv drivers)
+- Make a video game
+	- Still need a good idea and figure out architecture
+- Make contribution to any NVIDIA software
