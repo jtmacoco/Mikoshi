@@ -14,7 +14,7 @@ created: 2026-10-25
 - Goals: contribute to the Linux kernel, specifically NVIDIA GPU drivers (nouveau/nova); long term, firmware for robots or rockets
 
 ## Current level
-Level 2: Character device (repeat, 03-kbank-multi). 02 works (38/38) but never formally passed. In 03, param validation and step 1 (`alloc_chrdev_region` for `nbanks` minors) are done and checkpatch-clean; steps 2–6, the unwind, `kbank_exit` cleanup and all fops are still to write. The real tests are the loop unwinds (`fail_at` 2 and 5).
+Level 2: Character device (repeat, 03-kbank-multi). 02 works (38/38) but never formally passed. In 03, param validation, step 1 (`alloc_chrdev_region`) and step 2's allocations (`kcalloc` array + per-bank buffer loop) are written; the loop's NULL check, `fail_at` 1/2, the partial-loop unwind, steps 3–6, `kbank_exit` cleanup and all fops are still to write. The real tests are the loop unwinds (`fail_at` 2 and 5).
 
 ## Weak spots
 Top 3–5 concepts to focus on right now, each with one line on why.
@@ -23,7 +23,7 @@ Top 3–5 concepts to focus on right now, each with one line on why.
 - Kernel coding style: brace rule still flips: 11-19 fixed the structs, then put every `if` brace on its own line; reached 0E/0W only after pointers. Watch whether it sticks unprompted.
 - Concurrency reasoning: couldn't identify the check-then-set lost update on `data_len`; thought `data_len` was per-process and `ubuf` was shared.
 - Error unwinding in real code: first step returning directly was right unaided (11-19), but no unwind label is written yet; step 2's buffer loop is the real test.
-- Pointer vs value / data layout: wanted a `dev_t *` field (would oops: NULL write) and mixed driver-wide and per-bank state in one struct (11-19).
+- Pointer vs value / data layout: wanted a `dev_t *` field (11-19); on 11-23 took four tries to fill `ctx.banks[i].buffer`: `ctx[i]`, then a stack copy (garbage fields), then an extra heap struct (leak), then a stack copy again. Needs to write into the existing element, not build a copy.
 
 ## Concept tracker
 Rating: 1 = can't do it without help, 2 = shaky, 3 = OK with docs, 4 = solid, 5 = could teach it.
@@ -45,7 +45,8 @@ Rating: 1 = can't do it without help, 2 = shaky, 3 = OK with docs, 4 = solid, 5 
 | cdev_init / cdev_add / cdev_del | 2 | 2 | 2026-11-01 | – | Forgot `cdev_add()` at first; assigned `cdev_init()`'s void result to `ret` |
 | class_create / device_create and destroy | 2 | 2 | 2026-11-01 | 2026-11-19 | Used correctly after pointers; wrong device name and order at first. /explain 11-19: partial (knew mknod workaround, didn't say /sys/class is empty too) [[struct-class]] |
 | alloc_chrdev_region / MAJOR / MINOR | 2 | 3 | 2026-11-19 | – | Misread the base minor as `10` in 02; 03: all four args right for `nbanks` minors after a level-1 explanation; first step returns directly (unaided) |
-| kzalloc / kfree | 2 | 2 | 2026-11-08 | – | Wrong `kfree()` args in 11-01; used `sizeof(pointer)` as the allocation size in 11-08 |
+| kzalloc / kcalloc / kfree | 2 | 2 | 2026-11-23 | – | Wrong `kfree()` args in 11-01; `sizeof(pointer)` as size in 11-08; 11-23: `sizeof(*kbank_bank)` on a struct tag, `sizeof(struct)` as the buffer size, GFP inside `sizeof()`; `kcalloc` for the array right after a pointer |
+| Array of structs: element access vs copies | 2 | 1 | 2026-11-23 | – | 11-23: copied stack/heap structs into `ctx.banks[i]` instead of writing the element's field; needed the exact line (level 4) |
 | file_operations .owner | 2 | 2 | 2026-11-08 | – | Refcount test passes; README question 3 not answered yet |
 | copy_to_user / copy_from_user | 2 | 2 | 2026-11-08 | – | Return value OK after a hint; used `copy_to_user` in `write`, then swapped `copy_from_user` args |
 | File position `loff_t *ppos` | 2 | 2 | 2026-11-08 | 2026-11-18 | `off` vs `*off` confusion three times; quiz 11-15: fixes right but framed it as local vs global; used bare `off` again in Q2; quiz 11-18: knew the infinite-loop symptom and one f_pos per open, but still said "global `*off`" |
@@ -102,6 +103,14 @@ Specific mistakes and misconceptions. Mark `[x]` when resolved (two correct quiz
 - [ ] 2026-11-19, 03-kbank-multi: param range checks tested only the upper bound, then used `< 0` for 1-based ranges → `nbanks=0`/`size=0` slipped through; check both ends, `<= 0` for ranges starting at 1
 - [ ] 2026-11-19, 03-kbank-multi: put every `if` `{` on its own line after fixing the structs → only function definitions do that (repeat of 11-08)
 - [ ] 2026-11-19, /explain struct-class: didn't say `/sys/class` and `/dev` stay empty without class/device → cdev = works, class/device = visible; MAJOR is found in `/proc/devices`
+- [ ] 2026-11-23, 03-kbank-multi: `sizeof(*kbank_bank)` → `kbank_bank` is a struct tag, not a variable; use `sizeof(struct kbank_bank)` or (preferred) `sizeof(*ctx.banks)`
+- [ ] 2026-11-23, 03-kbank-multi: `kzalloc(nbanks * sizeof(...))` for an array → `kcalloc(n, size, flags)` checks the multiplication for overflow (README Q5 still unanswered)
+- [ ] 2026-11-23, 03-kbank-multi: buffer loop wrote `ctx[i] = kzalloc(sizeof(struct kbank_bank, GFP_KERNEL))` → `ctx` is one struct, the array is `ctx.banks`; the buffer is `size` bytes; flags go outside `sizeof`
+- [ ] 2026-11-23, 03-kbank-multi: built a local `struct kbank_bank bank;` and assigned it to `ctx.banks[i]` (twice) → uninitialized stack fields overwrite kcalloc's zeroes (garbage `data_len`/`buffer`); write the element's field directly
+- [ ] 2026-11-23, 03-kbank-multi: `kzalloc`'d a new struct per bank and copied `*bank` into the array → leaks `nbanks` structs, NULL deref if it fails; the structs already exist after `kcalloc`
+- [ ] 2026-11-23, 03-kbank-multi: set `data_len = size` for a new bank → `size` is capacity, `data_len` is bytes written; a new bank is 0 (repeat of the 11-08 capacity vs data confusion)
+- [ ] 2026-11-23, 03-kbank-multi: checked `if (ret)` after the array kzalloc → check the returned pointer; `ret` still held step 1's result (fixed after a hint)
+- [ ] 2026-11-23, 03-kbank-multi: loop counter declared in `for (... i ...)` → the unwind label needs `i`, so declare it at the top of `kbank_init`; `size_t i` breaks a `for (--i; i >= 0; i--)` unwind (switched to `int`, scope still open)
 - [ ] 2026-11-18, quiz: described a leaked class only as "leaks memory" → the class name stays registered, so the next `class_create()` fails with -EEXIST and you can't reload
 
 ## Quiz log
@@ -168,3 +177,12 @@ Specific mistakes and misconceptions. Mark `[x]` when resolved (two correct quiz
 - Struggled with: `dev_t *` vs `dev_t`; one-struct-for-everything layout; missing struct `;`; range lower bounds (twice); if-brace placement (repeat). /explain struct class: check question partial. New note: [[struct-class]].
 - Review findings: none formal (mid-exercise checks only; all items fixed except `kbank_exit`)
 - Next: add `unregister_chrdev_region()` + exact `unregistered` log to exit; build in the VM and read the first error/warning myself. Then step 2: `kcalloc` the bank array (answer README's "why kcalloc over kmalloc(n*size)"), buffer loop, and its partial-loop unwind; test `fail_at=1` and `fail_at=2`.
+
+### 2026-11-23: 03-kbank-multi
+- Status: in progress. Step 2's allocations are now correct: `ctx.banks = kcalloc(nbanks, sizeof(struct kbank_bank), GFP_KERNEL)` with a NULL check → `goto err_unregister_chrdev`, and a loop doing `ctx.banks[i].buffer = kzalloc(size, GFP_KERNEL)`. Not built this session.
+- Highest help level: 4 (for: array element access; I gave the exact loop line after three wrong attempts). Level 2 for `kcalloc`/`sizeof` form.
+- Got comfortable with: the loop count = `nbanks` (same as the minors); `kcalloc` for the array; switching the loop counter to `int`; setting `ret = -ENOMEM` before the goto
+- Struggled with: `sizeof` on a struct tag; filling an array element (stack copy, extra heap struct, stack copy again); capacity vs `data_len`; a step-1 regression (swapped messages, returned `-ENOMEM` instead of `ret`, fixed)
+- Still open in `kbank_init`: line 77 sets `data_len = 0` (harmless, redundant after kcalloc); a leftover `if (ret)` block after the loop; **success path falls through into `err_unregister_chrdev`** (repeat of 11-01: success must return before the first label); `i` declared inside the `for`
+- Review findings: none formal (mid-exercise checks)
+- Next: NULL check + `fail_at` 1/2 in step 2, move `i` to the top, write the partial-loop unwind (free buffers `0..i-1`, then the array, then the region) and return before the labels on success. Build in the VM and test `fail_at=1`/`2`. A quick quiz on "array element vs copy" and unwind order would be good warm-up.
