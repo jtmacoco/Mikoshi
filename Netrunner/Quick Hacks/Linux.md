@@ -17,9 +17,9 @@ created: 2026-08-15
 | `find . -name "*.c"` | Find all .c files recursively |
 | `find . -type d -name build` | Directories only (`-type f` = files only) |
 | `find /var/log -type f -mtime -2` | Files modified in the last 2 days |
-| `find . -size +100M` | Files bigger than 100 MB |
+| `find ~ -type f -size +100M` | Files over 100 MB anywhere in home |
 
-> `find` always recurses, so there's no `-r`. Quote the `-name` pattern.
+> `find` always recurses, so there's no `-r`. Quote the `-name` pattern. `.` = current dir, `~` = home. Add `-type f` when you only want files.
 
 ---
 
@@ -66,7 +66,9 @@ created: 2026-08-15
 | `grep -i` | Case insensitive |
 | `awk '{print $1}'` | Print first column |
 | `sed 's/old/new/g'` | Find and replace |
-| `cut -d: -f1` | Cut by delimiter |
+| `cut -d: -f1` | Keep field 1 (`-d` delimiter, `-f` fields to keep) |
+| `cut -d: -f1,7` | Keep fields 1 and 7 → `root:/bin/bash` (one line, same delimiter) |
+| `cut -d: -f1,7 --output-delimiter=' '` | Same, joined with a space |
 | `sort \| uniq -c \| sort -nr` | Count each line, most frequent first |
 
 > `uniq` only collapses lines that sit next to each other, so always `sort` first.
@@ -81,9 +83,11 @@ created: 2026-08-15
 | `cmd > file 2>&1` | stdout **and** stderr to file |
 | `cmd 2>&1 \| grep err` | Pipe errors too (`\|` only carries stdout) |
 | `cmd \|& grep err` | Bash shortcut for `2>&1 \|` |
-| `cmd 2>/dev/null` | Throw errors away |
+| `cmd 2>/dev/null` | Throw errors away (stdout still prints) |
+| `cmd > /dev/null 2>&1` | Silence everything |
+| `cmd &> /dev/null` | Bash shortcut for the line above |
 
-> `2>&1` = "send stream 2 (stderr) to the same place as stream 1 (stdout)". Nothing is discarded.
+> `2>&1` = "send stream 2 (stderr) to the same place as stream 1 (stdout)". Nothing is discarded. Order matters: `2>&1 > /dev/null` leaves errors on screen.
 
 ---
 

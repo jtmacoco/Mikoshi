@@ -221,6 +221,49 @@ git restore --staged <file>   # unstage a file (keep the edits)
 
 Flow: edit file (working dir) → git add (staging) → git commit (repository).
 
+```
+working tree  ──git add──▶  staging (index)  ──git commit──▶  HEAD (last commit)
+ (your files)  ◀─restore──   (next commit)    ◀─restore --staged─
+```
+
+**Which diff compares what**
+
+| Command | Compares | Answers |
+|---|---|---|
+| `git diff` | staging → working tree | "What have I edited but not staged?" |
+| `git diff --staged` | HEAD → staging | "What will `commit` record?" |
+| `git diff HEAD` | HEAD → working tree | "Everything since the last commit" |
+
+**Reading `git status -s`**: left column = staging, right column = working tree
+
+```
+M  a.c    staged, no further edits
+ M b.c    edited, not staged
+MM c.c    staged, then edited again (add snapshots the file at that moment)
+A  d.c    new file, staged
+?? e.c    untracked
+```
+
+**More staging commands**
+
+```bash
+git add -A           # whole repo, from any folder (git add . = current dir only)
+git commit -a        # stage tracked edits + deletions, then commit (skips untracked)
+git mv old.c new.c   # rename on disk + stage the rename
+git rm file          # delete from disk + stage the deletion
+```
+
+---
+# .gitignore + already-tracked files
+
+`.gitignore` only stops **untracked** files from being added. A file that's already committed stays tracked until you remove it from the index.
+
+```bash
+echo "node_modules/" >> .gitignore
+git rm -r --cached node_modules/   # untrack, keep on disk (-r for folders, -n for dry run)
+git commit -m "Stop tracking node_modules"
+```
+
 ---
 # git restore
 

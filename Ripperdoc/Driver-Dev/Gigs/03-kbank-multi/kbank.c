@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-2.0
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 
+#include <linux/slab.h>
 #include <linux/cdev.h>
 #include <linux/device.h>
 #include <linux/fs.h>
@@ -61,9 +62,29 @@ static int __init kbank_init(void)
 
 	ret = alloc_chrdev_region(&ctx.kbank_dev, 0, nbanks, DEVICE_NAME);
 	if (ret) {
+		pr_err("Failed to alloc buf\n");
+		return ret;
+	}
+
+	ctx.banks = kcalloc(nbanks, sizeof(struct kbank_bank), GFP_KERNEL);
+	if (unlikely(!ctx.banks)) {
+		ret = -ENOMEM;
+		goto err_unregister_chrdev;
+	}
+
+	for (int i = 0; i < nbanks; ++i) {
+		ctx.banks[i].buffer = kzalloc(size, GFP_KERNEL);
+		ctx.banks[i].data_len = 0;
+	}
+
+
+	if (ret) {
 		pr_err("Failed to allocate device numbers\n");
 		return ret;
 	}
+
+err_unregister_chrdev:
+	unregister_chrdev_region(ctx.kbank_dev, nbanks);
 
 	return ret;
 }
