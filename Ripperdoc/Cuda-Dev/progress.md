@@ -26,22 +26,23 @@ created: 2026-10-25
 - Where I run: local Arch Linux desktop (Hyprland); GPU also drives the display, so desktop apps (Firefox, etc.) share it. Close heavy GPU apps before benchmarking.
 
 ## Current level
-Level 1: Foundations. 01-saxpy core passes review at 91.9% of peak BW (2026-11-20); block-size sweep in progress. Placement check (2026-11-08) showed gaps in the performance model: coalescing, occupancy, roofline math, and when shared memory helps. Plan: fast pass through Level 1 (SAXPY with roofline target), then Level 2 (transpose ladder), then Level 3. Move quickly where things click.
+Level 1: Foundations. 01-saxpy passes review at 91.9% of peak BW; sweep done. Grid sizing now 3 (2026-11-24 quiz); error checking still 2, so one small Level 1 gig on error checking before Level 2 (transpose ladder).
 
 ## Weak spots
 - Roofline / back-of-envelope: couldn't count bytes/FLOPs or compute AI and ideal time for SAXPY (Q4). Core interview skill.
 - Memory coalescing: didn't spot `threadIdx.x` mapped to row (strided access) in a 2D kernel (Q1).
 - When shared memory helps: suggested tiling for a no-reuse elementwise kernel; missed that the blur benefits (Q1 follow-up).
 - Occupancy calculation: couldn't work out blocks/SM from regs, smem, threads (Q2).
-- Grid sizing and bounds checks: missed truncating `width/16` grid (Q1) and `in[i]` out of bounds (Q3).
+- Error checking & async errors: 2026-11-24 quiz showed launch-vs-execution errors and locating them are unclear. Blocks leaving Level 1.
 
 ## Concept tracker
 Rating: 1 = can't do it without help, 2 = shaky, 3 = OK with docs, 4 = solid, 5 = could teach it.
 
 | Concept | Level | Rating | Last practiced | Last tested | Notes |
 |---|---|---|---|---|---|
-| Grid sizing (ceil-div) & bounds checks | 1 | 2 | 2026-11-20 | 2026-11-08 | Missed truncating grid (Q1) and OOB `in[i]` in last block (Q3). 01-saxpy: derived ceil-div after level-1 hint, wrote guard unprompted; fuzzy on *why* the -1 [[grid-sizing]] |
-| Error checking (launch + sync) | 1 | 2 | – | 2026-11-08 | Didn't flag missing checks in Q1 |
+| Grid sizing (ceil-div) & bounds checks | 1 | 3 | 2026-11-20 | 2026-11-24 | Missed truncating grid (Q1) and OOB `in[i]` in last block (Q3). 01-saxpy: derived ceil-div after level-1 hint, wrote guard unprompted; fuzzy on *why* the -1. 2026-11-24 quiz: Q1 partial (right expr, no count, thought unguarded threads sit idle), Q3 correct (`<=` off-by-one, `n/256+1` extra block at n=1024) [[grid-sizing]] |
+| Error checking (launch + sync) | 1 | 2 | – | 2026-11-24 | Didn't flag missing checks in Q1. 2026-11-24 quiz: Q2 partial (thought bad launch crashes; didn't know GetLastError vs sync), Q4 partial (knew memcpy wasn't the bug; couldn't name compute-sanitizer / sync-after-launch / CUDA_LAUNCH_BLOCKING to locate it) |
+| Async launches & host-device sync | 1 | 2 | – | 2026-11-24 | Q4/Q5: said "threads not synced" for host-GPU wait; described `__syncthreads` (block) right but not `cudaDeviceSynchronize` (CPU waits for all prior GPU work); picked the right one for Q4 |
 | 2D indexing (x → contiguous dim) | 2 | 1 | – | 2026-11-08 | Mapped row from threadIdx.x went unnoticed (Q1) |
 | Memory coalescing | 2 | 1 | 2026-11-20 | 2026-11-08 | Q1. 01-saxpy: 1D idx coalesced correctly (trivial case, not yet 2D) |
 | When shared memory helps (data reuse) | 2 | 1 | – | 2026-11-08 | Proposed smem for elementwise; missed blur (Q1 follow-up) |
@@ -63,7 +64,7 @@ Best result per kernel. % of peak is against the bound named in the exercise REA
 Specific mistakes and misconceptions. Mark `[x]` when resolved (two correct quiz answers).
 - [ ] 2026-11-08, placement Q1: thought shared memory speeds up any kernel → it only helps when global data is reused (blur, transpose, GEMM), not elementwise ops
 - [ ] 2026-11-08, placement Q1: didn't notice `row = ...threadIdx.x` in row-major 2D kernel → threadIdx.x must index the contiguous (column) dimension for coalescing
-- [ ] 2026-11-08, placement Q1: missed `grid(width/16, ...)` truncation → use `(width + 15) / 16` plus in-kernel bounds check
+- [ ] 2026-11-08, placement Q1: missed `grid(width/16, ...)` truncation → use `(width + 15) / 16` plus in-kernel bounds check (1/2: correct in 2026-11-24 quiz Q3)
 - [ ] 2026-11-08, placement Q2: couldn't compute occupancy → blocks/SM = min over threads, regs, smem(+1 KB reserved), block slots
 - [ ] 2026-11-08, placement Q3: missed `__syncthreads()` between smem load and first tree step; missed OOB `in[i]` → pad with identity
 - [ ] 2026-11-08, placement Q4: couldn't do roofline math → bytes/elem, FLOPs/elem, AI vs ridge (35 FLOP/B on 3060), time = bytes / BW
@@ -71,15 +72,29 @@ Specific mistakes and misconceptions. Mark `[x]` when resolved (two correct quiz
 - [ ] 2026-11-20, 01-saxpy prediction: didn't know ideal time formula → memory-bound: time = total bytes / peak BW (1.61e9 / 360e9 = 4.47 ms)
 - [ ] 2026-11-21, 01-saxpy sweep: explained occupancy need as "threads to handle the computation" → for memory-bound kernels warps are needed to keep enough *loads in flight* to hide DRAM latency (Little's law: bytes in flight = BW × latency ≈ 180 KB on 3060, ~6.4 KB/SM)
 - [ ] 2026-11-21, 01-saxpy follow-up: called float4 "like quantization" → float4 = same bytes in fewer, wider loads (more in flight); quantization = fewer bytes per value
+- [ ] 2026-11-24, quiz Q1c: thought threads without an `i < n` guard sit idle → they run the body and read/write past the allocation (UB: often silent, can corrupt neighbours, sometimes illegal address)
+- [ ] 2026-11-24, quiz Q2b: thought an invalid launch (2048 tpb) crashes → launch is rejected, kernel never runs, program continues and prints garbage silently
+- [ ] 2026-11-24, quiz Q2c/Q4b: didn't know the two post-launch checks → `cudaGetLastError()` = launch/config errors (immediate); `cudaDeviceSynchronize()` = execution errors (async, e.g. illegal address)
+- [ ] 2026-11-24, quiz Q4c: couldn't say how to find the real source of an error reported at `cudaMemcpy` → compute-sanitizer (line via -lineinfo), sync+check after each launch, `CUDA_LAUNCH_BLOCKING=1`; illegal access is sticky
+- [ ] 2026-11-24, quiz Q4a/Q5: conflated thread sync with host-device sync → `__syncthreads` = threads of one block wait at a barrier; `cudaDeviceSynchronize` = CPU waits for all queued GPU work
 - [ ] 2026-11-08, placement Q5: didn't explain warp divergence → different paths within a warp are serialized (masked lanes); cost ~ sum of both paths
 
 ## Quiz log
 | Date | Topic | Score | Missed concepts |
 |---|---|---|---|
+| 2026-11-24 | Grid sizing + error checking (L1) | 1/5 (4 partial) | error checking (launch vs sync), locating async errors, unguarded-thread behavior, cudaDeviceSynchronize |
 | 2026-11-08 | Placement (L1–L4) | 1/5 (2 partial, 3 wrong) | coalescing, smem reuse, grid sizing, occupancy, roofline, sync after load, divergence |
 
 ## Session log
 <!-- The tutor adds an entry here at the end of each session. Newest first. -->
+### 2026-11-24: quiz (grid sizing + error checking)
+- Status: quiz done; session in progress
+- Highest help level: n/a (quiz, no hints)
+- Result: 1/5 correct, 4 partial. Grid sizing 2→3; error checking stays 2; new concept "async launches & host-device sync" at 2
+- Got comfortable with: ceil-div expression and counts (follow-up n=1000/128 ✓), spotting `<=` off-by-one, 1024 tpb limit, compute-sanitizer as the OOB catcher
+- Struggled with: what unguarded threads do; invalid launch fails silently (not a crash); GetLastError vs sync; locating an error reported at a later call
+- Set up `Gigs/02-error-checking/` (not started; user will do it another session). Six planted-bug cases; user writes CUDA_CHECK in `check.cuh`, adds post-launch checks, locates bugs with memcheck/initcheck/CUDA_LAUNCH_BLOCKING, fixes. Tutor verified each bug behaves as intended (planted bugs are in `cases.cu`; read it before reviewing)
+- Next: start `Gigs/02-error-checking/` (fill prediction table first). Pass + error checking ≥3 → Level 2 (matrix add, transpose ladder)
 ### 2026-11-21: Gigs/01-saxpy, block-size sweep
 - Status: stretch 1 done; stretches 2–4 open
 - Highest help level: 1 (occupancy rows done unaided after confirming 64)

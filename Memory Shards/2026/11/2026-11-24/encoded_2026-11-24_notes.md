@@ -6,10 +6,10 @@ created: 2026-11-24
 ---
 
 # TODO
-- [ ] Practice Coding
-- [ ] Mental Math
-- [ ] Leetcode
-- [ ] Linux Quiz
-- [ ] Git Quiz
+- [x] Practice Coding
+- [x] Mental Math
+- [x] Leetcode
+- [x] Linux Quiz
+- [x] Git Quiz
  
 # Shard Log

@@ -12,6 +12,17 @@ cssclasses:
 
 > [!quote] Another tale for the next dreamer
 
+## Fast Travel
+
+> [!abstract] ⟁ Jump points
+> | Sector | Destinations |
+> |---|---|
+> | 🩺 [[Ripperdoc]] | [[Cuda Dev]] · [[Driver Dev]] · [[Mikoshi/Ripperdoc/Git/Git\|Git]] · [[Mikoshi/Ripperdoc/Linux/Linux\|Linux]] |
+> | 📋 Debriefs | [[Git Debrief\|Git]] · [[Linux Debrief\|Linux]] |
+> | 🧊 [[ICEbreaker]] | [[Leetcode]] |
+
+---
+
 ## Today
 
 ```dataviewjs

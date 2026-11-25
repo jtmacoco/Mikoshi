@@ -10,7 +10,7 @@ status: active
 
 Review notes built from the [[Mikoshi/Ripperdoc/Linux/Quiz#Review Queue|Review Queue]]. Read it before jacking in. Most-missed first. Answer each self-check in your head before you peek.
 
-Built from: [[2026-11-23 Linux Quiz]]
+Built from: [[2026-11-24 Linux Quiz 2]]
 
 ## Notes
 
@@ -19,7 +19,7 @@ Built from: [[2026-11-23 Linux Quiz]]
 #### Redirection
 
 ##### `2>&1`: send errors where normal output goes
-Missed: 11-19 🟡 · 11-20 🟡 · 11-21 ❌ · 11-23 🟡
+Missed: 11-19 🟡 · 11-20 🟡 · 11-21 ❌ · 11-23 🟡 · 11-24 ❌ · 11-24 drill ❌
 
 Every command has two output streams: **stdout** (1, normal output) and **stderr** (2, errors). Both show on your terminal, but `>` and `|` only grab stdout.
 
@@ -31,8 +31,35 @@ cmd > /dev/null 2>&1   # silence everything (or: cmd &> /dev/null)
 ```
 Read `2>&1` as "2 goes to the same place as 1". Nothing is discarded. Only `2>/dev/null` throws errors away, and *only* errors. Stdout still prints.
 
+Think of two hoses, both aimed at the screen at the start. Bash reads redirects **left to right**, and each one re-aims one hose. `2>&1` **copies** where hose 1 points *right now*. It's not a permanent link, so put it **last**.
+
+| Command | Hose 1 ends at | Hose 2 ends at |
+|---|---|---|
+| `cmd > f 2>&1` | f | f ✅ |
+| `cmd 2>&1 > f` | f | screen (copied before hose 1 moved) |
+| `cmd 2>/dev/null 2>&1` | screen | screen (re-aimed back) |
+| `cmd > f 2>&1 > /dev/null` | trash (last redirect wins) | f |
+
+Sending a hose to a file **already takes it off the screen**. Add `/dev/null` only when you want output gone.
+
+> [!question]- Self-check: what lands on screen for `ls /tmp /nope 2>&1 > out.txt`?
+> The `/nope` error. Hose 2 copied "screen" before hose 1 moved to the file.
+
 > [!question]- Self-check: `make | tee build.log` but the compiler errors aren't in the log. Fix it.
 > `make 2>&1 | tee build.log`. The errors went to stderr, which skipped the pipe.
+
+##### `2> file`: save only the errors
+Missed: 11-24 ❌ · ✅ 11-24 drill (1 of 2 to clear)
+
+```bash
+make 2> errors.log          # errors → file, progress stays on screen
+make > /dev/null            # hide progress, see only errors
+make > out.log 2> err.log   # each stream in its own file
+```
+Pick the stream: `>` (or `1>`) = stdout only, `2>` = stderr only, `> f 2>&1` or `&> f` = both. `2>&1 | tee` merges them, so it can't separate anything.
+
+> [!question]- Self-check: run `./build.sh` with progress in `out.log` and errors in `err.log`.
+> `./build.sh > out.log 2> err.log`
 
 ##### `sort -o f f`: don't redirect into the file you're reading
 Missed: 11-23 ❌
@@ -50,7 +77,7 @@ The shell sets up `> names.txt` **before** the command runs, and `>` truncates t
 #### Finding files
 
 ##### `find`: search by name, type, age or size
-Missed: 11-19 ❌ · 11-20 ❌ · 11-21 ❌ · 11-23 🟡
+Missed: 11-19 ❌ · 11-20 ❌ · 11-21 ❌ · 11-23 🟡 · 11-24 🟡
 
 `find` walks a directory tree and prints every path that passes all your filters. It always goes into subfolders, so there's no `-r`.
 
@@ -84,7 +111,7 @@ sort ips.txt | uniq -c | sort -nr | head
 > `sort words.txt | uniq -c | sort -nr | head -3`
 
 ##### `cut -d -f`: pick columns
-Missed: 11-19 ❌ · 11-21 🟡 · 11-23 🟡
+Missed: 11-19 ❌ · 11-21 🟡 · 11-23 🟡 · ✅ 11-24 (1 of 2 to clear)
 
 ```bash
 cut -d: -f1 /etc/passwd     # usernames
@@ -122,7 +149,7 @@ make 2>&1 | tee -a build.log
 #### Searching text
 
 ##### `grep -l`: just the file names
-Missed: 11-21 ❌ · 11-23 ❌
+Missed: 11-21 ❌ · 11-23 ❌ · ✅ 11-24 (1 of 2 to clear)
 
 By default grep prints every matching line. `-l` prints each matching **file name** once instead.
 
@@ -137,7 +164,7 @@ Give grep the files as **arguments** to search inside them. `find ... | grep ssh
 > `grep -rl TODO src/ | wc -l`
 
 ##### `grep -c`: count matching lines
-Missed: 11-23 ❌
+Missed: 11-23 ❌ · ✅ 11-24 (1 of 2 to clear)
 
 ```bash
 grep -c "ERROR" app.log            # number of lines with ERROR
@@ -160,17 +187,6 @@ Plain grep treats `|` as a literal character. `-E` makes it mean "or". Put the w
 
 > [!question]- Self-check: lines with `fail` or `panic` in `dmesg` output, any case.
 > `dmesg | grep -iE 'fail|panic'`
-
-##### `grep -rn`: recursive with line numbers
-Missed: 11-19 ❌ · ✅ 11-20 (1 of 2 to clear)
-
-```bash
-grep -rn "TODO" .
-```
-`-r` searches every file under the folder, and `-n` adds the line number to each match.
-
-> [!question]- Self-check: what does `-n` add to the output?
-> `file:LINE:` before each match.
 
 #### Shell history
 
@@ -236,6 +252,18 @@ No sessions yet.
 
 ## Parked
 Out of the queue for now (it was full). Not quizzed, not cleared.
+
+##### `grep -rn`: recursive with line numbers
+Parked 2026-11-24
+Missed: 11-19 ❌ · ✅ 11-20 (1 of 2 to clear)
+
+```bash
+grep -rn "TODO" .
+```
+`-r` searches every file under the folder, and `-n` adds the line number to each match.
+
+> [!question]- Self-check: what does `-n` add to the output?
+> `file:LINE:` before each match.
 
 ##### `>>` append vs `>` overwrite
 Parked 2026-11-23

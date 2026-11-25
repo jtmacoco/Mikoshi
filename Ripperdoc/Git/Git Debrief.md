@@ -10,13 +10,13 @@ status: active
 
 Pre-quiz review built from the [[Mikoshi/Ripperdoc/Git/Quiz#Review Queue|Review Queue]]. Read it before jacking in. Most-missed first. Open each self-check and answer it in your head before you peek.
 
-Built from: [[2026-11-20 Git Quiz]] · [[2026-11-21 Git Quiz]] · [[2026-11-23 Git Quiz]]
+Built from: [[2026-11-20 Git Quiz]] · [[2026-11-21 Git Quiz]] · [[2026-11-23 Git Quiz]] · [[2026-11-24 Git Quiz]]
 
 ## Notes
 
 ### 📐 The diff family (missed most)
 
-Missed: `diff --staged` 11-20 ❌ · 11-23 🟡 · `diff` vs `--staged` swapped 11-21 🟡 · 11-23 🟡 · `diff HEAD` 11-20 ❌ (✅ 11-23, 1 of 2 to clear)
+Missed: `diff --staged` 11-20 ❌ · 11-23 🟡 (✅ 11-24, 1 of 2) · `diff` vs `--staged` swapped 11-21 🟡 · 11-23 🟡 (✅ 11-24, 1 of 2) · `diff HEAD` 11-20 ❌ · 11-24 🟡 (answered `git status`)
 
 Your definitions are right. What keeps slipping is turning them into area pairs. Each command compares **two neighbours in the chain**:
 
@@ -38,26 +38,23 @@ Memory trick: plain `diff` = the right-hand gap, `--staged` = the left-hand gap,
 > [!question]- Self-check: HEAD has `v0`. You write `v1`, `git add`, then write `v2`. What does each diff show?
 > `git diff` → v1→v2 · `git diff --staged` → v0→v1 · `git diff HEAD` → v0→v2
 
+> [!question]- Self-check: one command to see the actual line changes since the last commit, staged and unstaged together?
+> `git diff HEAD`. `git status` only lists the file names.
+
+#### `git show HEAD~1` vs `git diff HEAD~1`
+Missed: 11-24 ❌ (used `diff HEAD~1`)
+
+```bash
+git show HEAD~1          # message + diff of the commit one before HEAD
+git show HEAD~1 --stat   # just the files it touched
+git diff HEAD~1          # HEAD~1 → working tree (≠ one commit!)
+```
+`show` = look at a commit that exists. `diff` = compare two states.
+
+> [!question]- Self-check: show what the commit two before the latest one changed.
+> `git show HEAD~2`
+
 ### 🔁 Missed twice
-
-#### `git status -s` columns
-Missed: 11-20 ❌ · 11-21 ❌ · ✅ 11-23 (1 of 2 to clear)
-
-```
-XY file
-│└─ right = working tree (edited, not staged)
-└── left  = staging area (staged, ready to commit)
-
-M  a.c    staged, nothing else since
- M b.c    edited, not staged
-MM c.c    staged, then edited again
-A  d.c    new file, staged
-?? e.c    untracked
-```
-Memory trick: **left = ready to commit, right = still on your desk.**
-
-> [!question]- Self-check: what does ` D old.c` mean?
-> Deleted from disk but the deletion isn't staged yet. `git rm old.c` (or `git add old.c`) stages it, and then it shows as `D ` (left column).
 
 #### `git rm --cached`: untrack but keep the file
 Missed: 11-20 🟡 · 11-21 🟡 · ✅ 11-23 (1 of 2 to clear)
@@ -72,22 +69,8 @@ It removes the file from the index, so git forgets it, but leaves it on disk. Us
 > [!question]- Self-check: you committed `.env`. Untrack it and keep it on disk.
 > `echo .env >> .gitignore` → `git rm --cached .env` → `git commit -m "Untrack .env"`
 
-### ✍️ Commits
-
-#### `git commit -a`: tracked files only
-Missed: 11-23 🟡
-
-```bash
-git commit -am "msg"   # = git add -u (tracked edits + deletions) + commit
-git add -A && git commit -m "msg"   # include new files too
-```
-`-a` stages every modified **tracked** file and commits it. Untracked files are never included.
-
-> [!question]- Self-check: you edited `app.py` (tracked) and created `new.py`, then ran `git commit -am "x"`. What does `git status -s` show?
-> Only `?? new.py`. The `app.py` edit is in the commit.
-
 #### Commit message format
-Missed: 11-23 ❌ (flagged the hash and date instead of the message)
+Missed: 11-23 ❌ (flagged the hash and date) · 11-24 🟡 (fixed the format, missed that it was 3 changes)
 
 ```
 parser: Fix crash on empty input        ← subject ~50 chars, imperative
@@ -98,10 +81,40 @@ dereferenced it.
 ```
 - Short subject, then a blank line, then the body
 - Use the imperative mood: "Fix", not "Fixed". The subject completes "If applied, this commit will ___"
-- **One logical change per commit.** A parser fix, a refactor and a README update are 3 commits
+- **One logical change per commit.** If the subject needs "and" or "also", split it. A parser fix, a refactor and a README update are 3 commits
 
 > [!question]- Self-check: what's wrong with `Fixed stuff and updated docs and refactored tokenizer`?
 > It's vague, in the past tense, and bundles 3 changes into one commit. Split it up and write a specific subject for each.
+
+### ✍️ Commits
+
+#### `git commit -a`: tracked files only
+Missed: 11-23 🟡 · ✅ 11-24 (1 of 2 to clear)
+
+```bash
+git commit -am "msg"   # = git add -u (tracked edits + deletions) + commit
+git add -A && git commit -m "msg"   # include new files too
+```
+`-a` stages every modified **tracked** file and commits it. Untracked files are never included.
+
+> [!question]- Self-check: you edited `app.py` (tracked) and created `new.py`, then ran `git commit -am "x"`. What does `git status -s` show?
+> Only `?? new.py`. The `app.py` edit is in the commit.
+
+### 🙈 Ignoring
+
+#### `.gitignore` root anchor
+Missed: 11-24 🟡 (wrote `build/`)
+
+```gitignore
+*.log        # every .log, any depth
+!keep.log    # re-include one file
+/build/      # root build/ only
+build/       # build/ at ANY depth (src/build/ too)
+```
+A leading `/` pins the pattern to the `.gitignore`'s own folder. `git check-ignore -v path` shows which rule matched.
+
+> [!question]- Self-check: ignore every `temp/` folder at any depth, and only the root `dist/`.
+> `temp/` · `/dist/`
 
 ### 📦 Staging
 
@@ -132,7 +145,7 @@ It renames the file on disk and stages the rename in one step, like `mv` + `git 
 ### 📜 History, help & config
 
 #### `git config --global core.editor`
-Missed: 11-23 🟡 (wrote `git config editor vim`)
+Missed: 11-23 🟡 (wrote `git config editor vim`) · ✅ 11-24 (1 of 2 to clear)
 
 ```bash
 git config --global core.editor vim   # key is section.key → core.editor
@@ -144,7 +157,7 @@ Without `--global`, the setting only goes into this repo's `.git/config`.
 > `git config --global user.name "Your Name"`
 
 #### `git <cmd> -h` vs `--help`
-Missed: 11-21 🟡
+Missed: 11-21 🟡 · ✅ 11-24 (1 of 2 to clear)
 
 ```bash
 git log -h        # quick flag summary in the terminal
@@ -170,7 +183,7 @@ git config user.email             # check one value
 ### ⚡ Level 2 preview
 
 #### `git branch -d` vs `-D`
-Missed: 11-21 ❌ (reversed)
+Missed: 11-21 ❌ (reversed) · 11-24 🟡 (safe/destructive right; left out `branch`, used `-d` on the unmerged branch)
 
 ```bash
 git branch -d feature   # safe: refuses if feature has unmerged commits
@@ -180,6 +193,7 @@ Neither one asks for confirmation. `-d` protects you from losing work, `-D` does
 
 ### ✅ Cleared
 
+- `git status -s` columns: left = staged, right = working tree (✅ 11-23, 11-24)
 - `.gitignore` doesn't affect tracked files: run `git rm --cached` first (✅ 11-21, 11-23)
 
 ## Links

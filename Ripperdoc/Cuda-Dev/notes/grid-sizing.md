@@ -7,7 +7,7 @@ level: 1
 status: learning
 arch: all
 created: 2026-11-20
-updated: 2026-11-20
+updated: 2026-11-24
 related: ["[[occupancy]]", "[[roofline]]"]
 sources: [CUDA C++ Programming Guide §Thread Hierarchy, PMPP ch. 2]
 ---
@@ -44,6 +44,8 @@ Without the `-1`, an exact fit gets one useless extra block.
 ## Pitfalls
 - `n / tpb` truncates and silently skips the tail (placement Q1: `width/16`).
 - Forgetting the `idx < n` guard reads and writes out of bounds in the last block. `compute-sanitizer` catches it.
+- Extra threads don't "sit idle" on their own. Without the guard they run the body and touch memory past the end; the guard is what idles them (2026-11-24 quiz Q1).
+- `if (i <= n)` is off by one: thread `i == n` reads and writes one element past the end (2026-11-24 quiz Q3).
 - `idx` as `int` overflows past about 2.1 × 10⁹ elements. Use `size_t` for huge inputs (01-saxpy review, minor).
 
 ## Check yourself

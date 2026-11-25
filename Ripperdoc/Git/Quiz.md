@@ -19,12 +19,12 @@ Say **"jack in git"** to start. Review [[Git Debrief]] first.
 | Field | Value |
 |---|---|
 | Current level | 1 — Street Kid |
-| Sessions at this level | 3 |
+| Sessions at this level | 4 |
 | Streak (≥80%) | 0 |
 | Streak (<50%) | 0 |
 | ⚡ Preview hits at level | 2 |
-| Total sessions | 3 |
-| Last session | 2026-11-23 — 72% |
+| Total sessions | 4 |
+| Last session | 2026-11-24 — 72% |
 
 | Say | Runs |
 |---|---|
@@ -39,18 +39,19 @@ Commands/concepts I missed. An item clears after 2 ✅ in separate sessions.
 
 | Command / Concept | Level | Times missed | ✅ since | Last seen |
 |---|---|---|---|---|
-| `git diff` vs `--staged` (which pair each compares) | 1 | 2 | 0 | 2026-11-23 |
-| `git status -s` columns | 1 | 2 | 1 | 2026-11-23 |
+| `git diff` vs `--staged` (which pair each compares) | 1 | 2 | 1 | 2026-11-24 |
 | `git rm --cached` (untrack, keep on disk; `-r` for dirs) | 1 | 2 | 1 | 2026-11-23 |
-| `git diff --staged` (HEAD → index) | 1 | 2 | 0 | 2026-11-23 |
-| `git commit -a` (stages tracked files only) | 1 | 1 | 0 | 2026-11-23 |
-| Commit message format (≤50-char subject, blank line, one change per commit) | 1 | 1 | 0 | 2026-11-23 |
-| `git config --global core.editor` | 1 | 1 | 0 | 2026-11-23 |
-| `git <cmd> -h` (quick help) | 1 | 1 | 0 | 2026-11-21 |
-| `git branch -d` vs `-D` | 2 | 1 | 0 | 2026-11-21 |
+| `git diff --staged` (HEAD → index) | 1 | 2 | 1 | 2026-11-24 |
+| Commit message format (≤50-char subject, blank line, one change per commit) | 1 | 2 | 0 | 2026-11-24 |
+| `git diff HEAD` (HEAD → working tree) | 1 | 2 | 0 | 2026-11-24 |
+| `git branch -d` vs `-D` | 2 | 2 | 0 | 2026-11-24 |
+| `git show HEAD~1` (show a past commit, not `diff`) | 1 | 1 | 0 | 2026-11-24 |
+| `.gitignore` root anchor (`/build/` vs `build/`) | 1 | 1 | 0 | 2026-11-24 |
+| `git commit -a` (stages tracked files only) | 1 | 1 | 1 | 2026-11-24 |
+| `git config --global core.editor` | 1 | 1 | 1 | 2026-11-24 |
+| `git <cmd> -h` (quick help) | 1 | 1 | 1 | 2026-11-24 |
 | `git add .` vs `git add -A` (scope) | 1 | 1 | 1 | 2026-11-23 |
 | `git mv` | 1 | 1 | 1 | 2026-11-23 |
-| `git diff HEAD` | 1 | 1 | 1 | 2026-11-23 |
 | `git log --oneline` | 1 | 1 | 1 | 2026-11-23 |
 | `git config --list` | 1 | 1 | 1 | 2026-11-21 |
 
@@ -135,6 +136,7 @@ Newest first. Full details live in [[Git Results]].
 
 | Date | Level | Score | Change | Note |
 |---|---|---|---|---|
+| [[2026-11-24 Git Quiz\|2026-11-24]] | 1 — Street Kid | 6.5 / 9 (72%) | none | Diff pairs + `status -s` ✅ (cleared); `show` vs `diff` and one-change-per-commit weakest |
 | [[2026-11-23 Git Quiz\|2026-11-23]] | 1 — Street Kid | 6.5 / 9 (72%) | none | Staging block all ✅; diff direction + commit msgs weakest |
 | [[2026-11-21 Git Quiz\|2026-11-21]] | 1 — Street Kid | 4.5 / 9 (50%) | none | Up from 39%; staging commands weakest |
 | [[2026-11-20 Git Quiz\|2026-11-20]] | 1 — Street Kid | 3.5 / 9 (39%) | none | First session; diffs weakest |
