@@ -10,7 +10,7 @@ status: active
 
 Review notes built from the [[Mikoshi/Ripperdoc/Linux/Quiz#Review Queue|Review Queue]]. Read it before jacking in. Most-missed first. Answer each self-check in your head before you peek.
 
-Built from: [[2026-11-24 Linux Quiz 2]]
+Built from: [[2026-11-25 Linux Quiz]]
 
 ## Notes
 
@@ -19,7 +19,7 @@ Built from: [[2026-11-24 Linux Quiz 2]]
 #### Redirection
 
 ##### `2>&1`: send errors where normal output goes
-Missed: 11-19 🟡 · 11-20 🟡 · 11-21 ❌ · 11-23 🟡 · 11-24 ❌ · 11-24 drill ❌
+Missed: 11-19 🟡 · 11-20 🟡 · 11-21 ❌ · 11-23 🟡 · 11-24 ❌ · 11-24 drill ❌ · 11-25 ❌ (Q1 reading it ✅, Q7 writing it ❌)
 
 Every command has two output streams: **stdout** (1, normal output) and **stderr** (2, errors). Both show on your terminal, but `>` and `|` only grab stdout.
 
@@ -42,8 +42,19 @@ Think of two hoses, both aimed at the screen at the start. Bash reads redirects 
 
 Sending a hose to a file **already takes it off the screen**. Add `/dev/null` only when you want output gone.
 
+Don't drop the arrow: `make build.log 2>&1` has no `>`, so make reads `build.log` as a **target** to build. The file name always comes right after `>` or `&>`.
+
+```bash
+make > build.log 2>&1   # ✅
+make &> build.log       # ✅ shorthand
+make build.log &>       # ❌ no file after &>
+```
+
 > [!question]- Self-check: what lands on screen for `ls /tmp /nope 2>&1 > out.txt`?
 > The `/nope` error. Hose 2 copied "screen" before hose 1 moved to the file.
+
+> [!question]- Self-check: save everything `./run.sh` prints into `all.log`, nothing on screen. Two ways.
+> `./run.sh > all.log 2>&1` or `./run.sh &> all.log`
 
 > [!question]- Self-check: `make | tee build.log` but the compiler errors aren't in the log. Fix it.
 > `make 2>&1 | tee build.log`. The errors went to stderr, which skipped the pipe.
@@ -74,10 +85,21 @@ The shell sets up `> names.txt` **before** the command runs, and `>` truncates t
 > [!question]- Self-check: strip blank lines from `list.txt` in place with grep.
 > `grep -v '^$' list.txt > tmp && mv tmp list.txt`
 
+##### `>>` append vs `>` overwrite
+Missed: 11-17 🟡 · ✅ 11-18 (1 of 2 to clear)
+
+```bash
+echo hi >  log.txt    # wipe file, write "hi"
+echo hi >> log.txt    # add "hi" to the end
+```
+
+> [!question]- Self-check: you run `date > log.txt` three times. How many lines are in the file?
+> One. `>` empties the file every time.
+
 #### Finding files
 
 ##### `find`: search by name, type, age or size
-Missed: 11-19 ❌ · 11-20 ❌ · 11-21 ❌ · 11-23 🟡 · 11-24 🟡
+Missed: 11-19 ❌ · 11-20 ❌ · 11-21 ❌ · 11-23 🟡 · 11-24 🟡 · 11-25 🟡
 
 `find` walks a directory tree and prints every path that passes all your filters. It always goes into subfolders, so there's no `-r`.
 
@@ -88,63 +110,10 @@ find . -type d -name build        # directories named build
 find /var/log -type f -mtime -2   # files modified in the last 2 days
 find ~ -type f -size +100M        # files over 100 MB anywhere in home
 ```
-`-type f` = file, `-type d` = directory. `.` = where you are now, `~` = home. Quote the `-name` pattern so the shell doesn't expand `*` first. Leave off `2>/dev/null` until it works.
+`-type f` = file, `-type d` = directory. `.` = where you are now, `~` = **your** home (`/home/you`). `/home` is the folder that holds *every* user's home, so searching it hits other users' files and throws `Permission denied`. Quote the `-name` pattern so the shell doesn't expand `*` first. Leave off `2>/dev/null` until it works.
 
 > [!question]- Self-check: list every `.o` file under `src/` changed in the last day.
 > `find src -type f -name "*.o" -mtime -1`
-
-#### Text tools
-
-##### `sort | uniq -c | sort -nr`: count and rank
-Missed: 11-19 🟡 · 11-20 🟡 · 11-21 ❌ · ✅ 11-23 (1 of 2 to clear)
-
-```bash
-sort ips.txt | uniq -c | sort -nr | head
-```
-1. `sort` puts identical lines next to each other (`uniq` only collapses neighbours).
-2. `uniq -c` collapses each group and puts the count in front.
-3. `sort -nr` sorts by that number, biggest first.
-
-`sort | uniq | wc -l` is a different question: how many *distinct* lines there are, as a single number.
-
-> [!question]- Self-check: `words.txt` has one word per line. Show the 3 most common words.
-> `sort words.txt | uniq -c | sort -nr | head -3`
-
-##### `cut -d -f`: pick columns
-Missed: 11-19 ❌ · 11-21 🟡 · 11-23 🟡 · ✅ 11-24 (1 of 2 to clear)
-
-```bash
-cut -d: -f1 /etc/passwd     # usernames
-cut -d, -f2,3 users.csv     # keep columns 2 and 3
-```
-`-d` sets the delimiter and `-f` sets the fields to **keep**. Several fields print on **one line**, joined by the same delimiter: `echo a:b:c | cut -d: -f1,3` → `a:c`. To drop a column instead, use `--complement`. If you use awk, wrap it in single quotes: `awk -F: '{print $1}'`.
-
-> [!question]- Self-check: what does `cut -d, -f1` print for the line `3,alice,/bin/sh`?
-> `3`
-
-##### `tr`: translate or delete characters
-Missed: 11-20 ❌ · ✅ 11-21 (1 of 2 to clear)
-
-```bash
-tr 'a-z' 'A-Z'    # uppercase
-tr -d '0-9'       # delete digits
-tr -d '\r'        # strip Windows line endings
-```
-`tr` reads from stdin only, so feed it with a pipe or `<`.
-
-> [!question]- Self-check: `echo "a-b-c" | tr '-' ' '` prints?
-> `a b c`
-
-##### `tee`: screen and file at once
-Missed: 11-20 ❌ · ✅ 11-21 (1 of 2 to clear)
-
-```bash
-make 2>&1 | tee -a build.log
-```
-`-a` appends instead of overwriting.
-
-> [!question]- Self-check: save `dmesg` to `boot.txt` and still see it on screen.
-> `dmesg | tee boot.txt`
 
 #### Searching text
 
@@ -177,7 +146,7 @@ grep -o "ERROR" app.log | wc -l    # every match, even 2 on one line
 > `grep -c 'bash$' /etc/passwd`
 
 ##### `grep -E`: match this or that
-Missed: 11-21 🟡
+Missed: 11-21 🟡 · ✅ 11-25 (1 of 2 to clear)
 
 ```bash
 grep -iE 'warn|error' kern.log
@@ -187,6 +156,17 @@ Plain grep treats `|` as a literal character. `-E` makes it mean "or". Put the w
 
 > [!question]- Self-check: lines with `fail` or `panic` in `dmesg` output, any case.
 > `dmesg | grep -iE 'fail|panic'`
+
+##### `grep -rn`: recursive with line numbers
+Missed: 11-19 ❌ · ✅ 11-20 (1 of 2 to clear)
+
+```bash
+grep -rn "TODO" .
+```
+`-r` searches every file under the folder, and `-n` adds the line number to each match.
+
+> [!question]- Self-check: what does `-n` add to the output?
+> `file:LINE:` before each match.
 
 #### Shell history
 
@@ -246,39 +226,19 @@ kill -9 1234         # force-kill one PID
 > [!question]- Self-check: check whether any `qemu` process is still running.
 > `pgrep -a qemu`. No output means none.
 
-### Kernel track
+#### Navigation
 
-No sessions yet.
+##### `ls -A`: hidden files, without `.` and `..`
+Missed: 11-18 🟡 · ✅ 11-18 (1 of 2 to clear)
 
-## Parked
-Out of the queue for now (it was full). Not quizzed, not cleared.
+`-a` shows everything, including `.` and `..`. `-A` shows hidden files but skips those two.
 
-##### `grep -rn`: recursive with line numbers
-Parked 2026-11-24
-Missed: 11-19 ❌ · ✅ 11-20 (1 of 2 to clear)
+> [!question]- Self-check: `ls -a` vs `ls -A` in an empty folder?
+> `-a` shows `.  ..`, `-A` shows nothing.
 
-```bash
-grep -rn "TODO" .
-```
-`-r` searches every file under the folder, and `-n` adds the line number to each match.
-
-> [!question]- Self-check: what does `-n` add to the output?
-> `file:LINE:` before each match.
-
-##### `>>` append vs `>` overwrite
-Parked 2026-11-23
-Missed: 11-17 🟡 · ✅ 11-18 (1 of 2 to clear)
-
-```bash
-echo hi >  log.txt    # wipe file, write "hi"
-echo hi >> log.txt    # add "hi" to the end
-```
-
-> [!question]- Self-check: you run `date > log.txt` three times. How many lines are in the file?
-> One. `>` empties the file every time.
+#### Getting help
 
 ##### `--help | grep` / `man` then `/word`: find a flag
-Parked 2026-11-23
 Missed: 11-18 ❌
 
 ```bash
@@ -290,14 +250,12 @@ man ls    # then type /size, press n for the next match
 > [!question]- Self-check: find the `grep` flag that counts matches.
 > `grep --help | grep -i count` → `-c`
 
-##### `ls -A`: hidden files, without `.` and `..`
-Parked 2026-11-23
-Missed: 11-18 🟡 · ✅ 11-18 (1 of 2 to clear)
+### Kernel track
 
-`-a` shows everything, including `.` and `..`. `-A` shows hidden files but skips those two.
+No sessions yet.
 
-> [!question]- Self-check: `ls -a` vs `ls -A` in an empty folder?
-> `-a` shows `.  ..`, `-A` shows nothing.
+## Parked
+Out of the queue for now (it was full). Not quizzed, not cleared.
 
 ##### `rm -i`: ask before deleting
 Parked 2026-11-21
@@ -319,6 +277,10 @@ Missed: 11-18 ❌ · ✅ 11-18 (1 of 2 to clear)
 
 ## Cleared
 Last 10 only.
+- `cut -d -f` — cleared 2026-11-25
+- `sort | uniq -c | sort -nr` — cleared 2026-11-25
+- `tr 'a-z' 'A-Z'` — cleared 2026-11-25
+- `cmd | tee -a file` — cleared 2026-11-25
 - `tail -n` (off-by-one) — cleared 2026-11-18
 - `cd -` — cleared 2026-11-19
 - `type` — cleared 2026-11-19

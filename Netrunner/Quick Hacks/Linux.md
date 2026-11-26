@@ -70,6 +70,8 @@ created: 2026-08-15
 | `cut -d: -f1,7` | Keep fields 1 and 7 → `root:/bin/bash` (one line, same delimiter) |
 | `cut -d: -f1,7 --output-delimiter=' '` | Same, joined with a space |
 | `sort \| uniq -c \| sort -nr` | Count each line, most frequent first |
+| `tr 'a-z' 'A-Z' < file` | Uppercase (`tr` reads stdin only) |
+| `tr -d '\r'` | Delete chars (strip Windows line endings) |
 
 > `uniq` only collapses lines that sit next to each other, so always `sort` first.
 
@@ -86,6 +88,8 @@ created: 2026-08-15
 | `cmd 2>/dev/null` | Throw errors away (stdout still prints) |
 | `cmd > /dev/null 2>&1` | Silence everything |
 | `cmd &> /dev/null` | Bash shortcut for the line above |
+| `cmd \| tee file` | Screen **and** file (`-a` appends) |
+| `cmd 2>&1 \| tee -a log` | Screen + log, errors included |
 
 > `2>&1` = "send stream 2 (stderr) to the same place as stream 1 (stdout)". Nothing is discarded. Order matters: `2>&1 > /dev/null` leaves errors on screen.
 

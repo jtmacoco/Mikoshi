@@ -10,13 +10,13 @@ status: active
 
 Pre-quiz review built from the [[Mikoshi/Ripperdoc/Git/Quiz#Review Queue|Review Queue]]. Read it before jacking in. Most-missed first. Open each self-check and answer it in your head before you peek.
 
-Built from: [[2026-11-20 Git Quiz]] · [[2026-11-21 Git Quiz]] · [[2026-11-23 Git Quiz]] · [[2026-11-24 Git Quiz]]
+Built from: [[2026-11-20 Git Quiz]] · [[2026-11-21 Git Quiz]] · [[2026-11-23 Git Quiz]] · [[2026-11-24 Git Quiz]] · [[2026-11-25 Git Quiz]]
 
 ## Notes
 
 ### 📐 The diff family (missed most)
 
-Missed: `diff --staged` 11-20 ❌ · 11-23 🟡 (✅ 11-24, 1 of 2) · `diff` vs `--staged` swapped 11-21 🟡 · 11-23 🟡 (✅ 11-24, 1 of 2) · `diff HEAD` 11-20 ❌ · 11-24 🟡 (answered `git status`)
+Missed: `diff` vs `--staged` swapped 11-20 ❌ · 11-21 🟡 · 11-23 🟡 · 11-25 🟡 (✅ 11-24 didn't stick, back to 0 of 2) · `diff HEAD` 11-20 ❌ · 11-24 🟡 (✅ 11-25, 1 of 2)
 
 Your definitions are right. What keeps slipping is turning them into area pairs. Each command compares **two neighbours in the chain**:
 
@@ -33,7 +33,7 @@ HEAD (last commit) ──── staging (index) ──── working tree (your 
 | `git diff HEAD`     | HEAD → working tree    | "Everything I changed since the last commit" |
 | `git show`          | a commit vs its parent | "What did that commit change?"               |
 
-Memory trick: plain `diff` = the right-hand gap, `--staged` = the left-hand gap, `HEAD` = both.
+Memory trick: plain `diff` = the right-hand gap, `--staged` = the left-hand gap, `HEAD` = both. Or: "`diff` = what's still on my desk." Your desk is the working tree.
 
 > [!question]- Self-check: HEAD has `v0`. You write `v1`, `git add`, then write `v2`. What does each diff show?
 > `git diff` → v1→v2 · `git diff --staged` → v0→v1 · `git diff HEAD` → v0→v2
@@ -42,7 +42,7 @@ Memory trick: plain `diff` = the right-hand gap, `--staged` = the left-hand gap,
 > `git diff HEAD`. `git status` only lists the file names.
 
 #### `git show HEAD~1` vs `git diff HEAD~1`
-Missed: 11-24 ❌ (used `diff HEAD~1`)
+Missed: 11-24 ❌ (used `diff HEAD~1`) · ✅ 11-25 (1 of 2 to clear)
 
 ```bash
 git show HEAD~1          # message + diff of the commit one before HEAD
@@ -56,21 +56,8 @@ git diff HEAD~1          # HEAD~1 → working tree (≠ one commit!)
 
 ### 🔁 Missed twice
 
-#### `git rm --cached`: untrack but keep the file
-Missed: 11-20 🟡 · 11-21 🟡 · ✅ 11-23 (1 of 2 to clear)
-
-```bash
-git rm --cached secrets.env          # one file
-git rm -r --cached build/            # a folder needs -r
-git commit -m "Stop tracking build/"
-```
-It removes the file from the index, so git forgets it, but leaves it on disk. Use `-n` first for a dry run.
-
-> [!question]- Self-check: you committed `.env`. Untrack it and keep it on disk.
-> `echo .env >> .gitignore` → `git rm --cached .env` → `git commit -m "Untrack .env"`
-
 #### Commit message format
-Missed: 11-23 ❌ (flagged the hash and date) · 11-24 🟡 (fixed the format, missed that it was 3 changes)
+Missed: 11-23 ❌ (flagged the hash and date) · 11-24 🟡 (fixed the format, missed that it was 3 changes) · ✅ 11-25 (1 of 2 to clear)
 
 ```
 parser: Fix crash on empty input        ← subject ~50 chars, imperative
@@ -85,6 +72,35 @@ dereferenced it.
 
 > [!question]- Self-check: what's wrong with `Fixed stuff and updated docs and refactored tokenizer`?
 > It's vague, in the past tense, and bundles 3 changes into one commit. Split it up and write a specific subject for each.
+
+### 🆕 New misses
+
+#### `git status -s` on new files
+Missed: 11-25 ❌ (wrote `MM` for a staged new file and `A ` for a file never added)
+
+```
+A  a.txt   new file, staged (never committed, so it's A, not M)
+AM a.txt   new file, staged, then edited again
+?? b.txt   never `git add`-ed, so it's untracked
+M  c.txt   tracked file, changed since the last commit, staged
+```
+The left `M` means "changed since the last commit." A file with no last commit gets `A`.
+
+> [!question]- Self-check: fresh repo. `echo x > n.c`, `git add n.c`, `echo y >> n.c`, `touch m.c`. What does `git status -s` show?
+> `AM n.c` and `?? m.c`
+
+#### `git config --global user.name / user.email`
+Missed: 11-25 🟡 (missing closing quote on the email)
+
+```bash
+git config --global user.name "Jordan T"
+git config --global user.email "jt@example.com"
+git config --global --list     # verify
+```
+An unclosed `"` leaves the shell waiting at `>` and swallows your next line into the value.
+
+> [!question]- Self-check: check which email git will use in this repo.
+> `git config user.email`
 
 ### ✍️ Commits
 
@@ -172,14 +188,6 @@ git log --oneline -n 5    # last 5, one line each
 git log --oneline -5      # same
 ```
 
-#### `git config --list`
-Missed: 11-20 🟡 · ✅ 11-21 (1 of 2 to clear)
-
-```bash
-git config --list --show-origin   # every setting + which file it came from
-git config user.email             # check one value
-```
-
 ### ⚡ Level 2 preview
 
 #### `git branch -d` vs `-D`
@@ -191,8 +199,21 @@ git branch -D feature   # 🔴 force: deletes even if unmerged
 ```
 Neither one asks for confirmation. `-d` protects you from losing work, `-D` doesn't. If you delete by accident, `git reflog` still has the hash, and `git branch feature <sha>` brings the branch back.
 
+### 🅿️ Parked
+
+Queue overflow. Not quizzed, not cleared.
+
+#### `git config --list`
+Parked 2026-11-25 · Missed: 11-20 🟡 · ✅ 11-21 (1 of 2 to clear)
+
+```bash
+git config --list --show-origin   # every setting + which file it came from
+git config user.email             # check one value
+```
+
 ### ✅ Cleared
 
+- `git rm --cached`: untrack but keep on disk, `-r` for folders (✅ 11-23, 11-25)
 - `git status -s` columns: left = staged, right = working tree (✅ 11-23, 11-24)
 - `.gitignore` doesn't affect tracked files: run `git rm --cached` first (✅ 11-21, 11-23)
 

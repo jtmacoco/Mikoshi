@@ -21,12 +21,12 @@ Two tracks, leveled independently.
 | Field | Main Track | Kernel Track |
 |---|---|---|
 | Current level | 2 — Punk | K1 — Ripper |
-| Sessions at this level | 6 | 0 |
-| Streak (≥80%) | 0 | 0 |
+| Sessions at this level | 7 | 0 |
+| Streak (≥80%) | 1 | 0 |
 | Streak (<50%) | 0 | 0 |
-| ⚡ Preview hits at level | 3 | 0 |
-| Total sessions | 10 | 0 |
-| Last session | 2026-11-24 (60%) | — |
+| ⚡ Preview hits at level | 4 | 0 |
+| Total sessions | 11 | 0 |
+| Last session | 2026-11-25 (83%) | — |
 
 | Say | Runs |
 |---|---|
@@ -43,21 +43,21 @@ Commands/concepts I missed. An item clears after 2 ✅ in separate sessions.
 
 | Command / Concept | Track | Level | Times missed | ✅ since | Last seen |
 |---|---|---|---|---|---|
-| `2>&1` (copies hose 1's target *now*, so put it last; a file already hides output, no `/dev/null` needed) | Main | 2 | 6 | 0 | 2026-11-24 |
-| `find ~ -type f -name/-size/-mtime` (no `-r`; `-type f` = files only) | Main | 2 | 5 | 0 | 2026-11-24 |
-| `cut -d: -f1,7` (`-f` keeps fields, joined by the delimiter on one line) | Main | 2 | 3 | 1 | 2026-11-24 |
-| `sort \| uniq -c \| sort -nr` (counts, most frequent first) | Main | 2 | 3 | 1 | 2026-11-23 |
+| `2>&1` (copies hose 1's target *now*, so put it last; `> file` needs the arrow: `make > build.log 2>&1`) | Main | 2 | 7 | 0 | 2026-11-25 |
+| `find ~ -type f -name/-size/-mtime` (no `-r`; `-type f` = files only; `~` = your home, not `/home`) | Main | 2 | 6 | 0 | 2026-11-25 |
 | `grep -l` (list matching file names; pass files as args, don't pipe names in) | Main | 2 | 2 | 1 | 2026-11-24 |
 | `Ctrl+L` clear / `Ctrl+Z` suspends → `fg` to resume | Main | 1 | 2 | 1 | 2026-11-19 |
 | `grep -c` (count matching lines; `-n` = line numbers) | Main | 2 | 1 | 1 | 2026-11-24 |
 | `2> file` (stderr only; stdout stays on screen) | Main | 2 | 1 | 1 | 2026-11-24 |
+| `grep -iE 'a\|b'` (`-E` for `\|` = or; one pair of quotes) | Main | 2 | 1 | 1 | 2026-11-25 |
+| `Ctrl+R` (reverse history search) | Main | 2 | 1 | 1 | 2026-11-23 |
+| `grep -rn` (`-r` recursive, `-n` line numbers) | Main | 2 | 1 | 1 | 2026-11-20 |
+| `>>` append vs `>` overwrite | Main | 2 | 1 | 1 | 2026-11-18 |
 | `sort -o f f` (`> f` truncates before the command reads it) | Main | 2 | 1 | 0 | 2026-11-23 |
 | `pgrep firefox` (show PID; `pkill` kills) | Main | 3 | 1 | 0 | 2026-11-23 |
-| `grep -iE 'a\|b'` (`-E` for `\|` = or; one pair of quotes) | Main | 2 | 1 | 0 | 2026-11-21 |
 | `du -sh * \| sort -h` (biggest item in dir) | Main | 3 | 1 | 0 | 2026-11-19 |
-| `Ctrl+R` (reverse history search) | Main | 2 | 1 | 1 | 2026-11-23 |
-| `tr 'a-z' 'A-Z'` (translate chars one-for-one; `-d` deletes) | Main | 2 | 1 | 1 | 2026-11-21 |
-| `cmd \| tee file` (screen + file; `-a` appends) | Main | 2 | 1 | 1 | 2026-11-21 |
+| `cmd --help \| grep` / `man` `/word` to find a flag (`ls -S`) | Main | 1 | 1 | 0 | 2026-11-18 |
+| `ls -A` (hidden, minus `.` `..`) | Main | 1 | 1 | 1 | 2026-11-18 |
 
 ### Parked
 
@@ -65,10 +65,6 @@ Out of the queue because it hit the 15-item cap. Not quizzed, not cleared. Most-
 
 | Command / Concept | Track | Level | Times missed | ✅ since | Last seen | Parked |
 |---|---|---|---|---|---|---|
-| `grep -rn` (`-r` recursive, `-n` line numbers) | Main | 2 | 1 | 1 | 2026-11-20 | 2026-11-24 |
-| `>>` append vs `>` overwrite | Main | 2 | 1 | 1 | 2026-11-18 | 2026-11-23 |
-| `ls -A` (hidden, minus `.` `..`) | Main | 1 | 1 | 1 | 2026-11-18 | 2026-11-23 |
-| `cmd --help \| grep` / `man` `/word` to find a flag (`ls -S`) | Main | 1 | 1 | 0 | 2026-11-18 | 2026-11-23 |
 | `rm -i` (prompt before each delete) | Main | 1 | 1 | 1 | 2026-11-18 | 2026-11-21 |
 | `whatis` (one-line man page summary) | Main | 1 | 1 | 1 | 2026-11-18 | 2026-11-21 |
 | `touch` on existing file (updates timestamp only) | Main | 1 | 1 | 1 | 2026-11-18 | 2026-11-21 |
@@ -216,6 +212,7 @@ Newest first. Full details live in [[Linux Results]].
 
 | Date | Track | Level | Score | Change | Note |
 |---|---|---|---|---|---|
+| 2026-11-25 | Main | 2 — Punk | 7.5 / 9 (83%) | none (streak 1/2) | [[2026-11-25 Linux Quiz]] |
 | 2026-11-24 | Main | 2 — Punk | 3 / 5 (60%) | none | [[2026-11-24 Linux Quiz 2]] (redirection drill) |
 | 2026-11-24 | Main | 2 — Punk | 6.5 / 9 (72%) | none | [[2026-11-24 Linux Quiz]] |
 | 2026-11-23 | Main | 2 — Punk | 4.5 / 9 (50%) | none | [[2026-11-23 Linux Quiz]] |
