@@ -43,6 +43,10 @@ struct kbank_bank {
 
 static struct kbank_ctx ctx;
 
+static const struct file_operations kbank_fops{
+	.read = kba
+};
+
 static int __init kbank_init(void)
 {
 	int ret = 0;
@@ -77,12 +81,21 @@ static int __init kbank_init(void)
 		ctx.banks[i].data_len = 0;
 	}
 
+	cdev_init(&ctx.my_cdev, //TODO fops needed here);
+	ret = cdev_add(&ctx.my_cdev, ctx.kbank_dev, nbanks);
+
+	if (ret) {
+		pr_err("Failed to register character device\n");
+		goto err_cdev_del;
+	}
+
 
 	if (ret) {
 		pr_err("Failed to allocate device numbers\n");
 		return ret;
 	}
-
+err_cdev_del:
+	cdev_del(&my_cdev);
 err_unregister_chrdev:
 	unregister_chrdev_region(ctx.kbank_dev, nbanks);
 

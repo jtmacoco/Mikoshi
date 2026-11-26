@@ -57,13 +57,13 @@ When `fail_at` is set, **don't call** the real function for that step. Act as
 if it had failed with the error shown, and let your normal error handling run.
 Log one `kbank: ...` line saying which step failed.
 
-| `fail_at` | Pretend this failed                                 | With              |
-|-----------|-----------------------------------------------------|-------------------|
-| 1         | allocating the bank array                           | NULL → `-ENOMEM`  |
-| 2         | allocating the **last** bank's buffer (others OK)   | NULL → `-ENOMEM`  |
-| 3         | `cdev_add()`                                        | `-ENODEV`         |
-| 4         | `class_create()`                                    | `ERR_PTR(-ENODEV)`|
-| 5         | `device_create()` for the **last** bank (others OK) | `ERR_PTR(-ENODEV)`|
+| `fail_at` | Pretend this failed                                 | With               |
+| --------- | --------------------------------------------------- | ------------------ |
+| 1         | allocating the bank array                           | NULL → `-ENOMEM`   |
+| 2         | allocating the **last** bank's buffer (others OK)   | NULL → `-ENOMEM`   |
+| 3         | `cdev_add()`                                        | `-ENODEV`          |
+| 4         | `class_create()`                                    | `ERR_PTR(-ENODEV)` |
+| 5         | `device_create()` for the **last** bank (others OK) | `ERR_PTR(-ENODEV)` |
 
 For 4 and 5, put the `ERR_PTR` into the same variable the real call would have
 returned, so your real `IS_ERR()`/`PTR_ERR()` check catches it. The point is
