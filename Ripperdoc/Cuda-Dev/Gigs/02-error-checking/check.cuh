@@ -17,4 +17,12 @@
 //
 // Then decide what to check right after a kernel launch (Q2/Q4 of the 2026-11-24 quiz).
 
-#define CUDA_CHECK(call) (call)
+#define CUDA_CHECK(expr_to_check)               					\
+do {											\
+	cudaError_t result = expr_to_check;     					\
+	if (result != cudaSuccess) {							\
+		fprintf(stderr, "CUDA Runtime Error: %s:%i:%d = %s, %s\n", __FILE__,    \
+        		__LINE__, result, cudaGetErrorString(result), #expr_to_check);  \
+        	exit(EXIT_FAILURE);					                \
+	}										\
+} while(0)										

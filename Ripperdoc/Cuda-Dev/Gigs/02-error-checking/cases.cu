@@ -70,6 +70,9 @@ void case1(const std::vector<float>& h_a, const std::vector<float>& h_b, std::ve
     int threads = 2048;
     int blocks  = (n + threads - 1) / threads;
     vec_add<<<blocks, threads>>>(d.a, d.b, d.c, n);
+    
+    CUDA_CHECK(cudaGetLastError());
+    CUDA_CHECK(cudaDeviceSynchronize());
 
     download_and_free(d, h_c);
 }
@@ -82,6 +85,8 @@ void case2(const std::vector<float>& h_a, const std::vector<float>& h_b, std::ve
     int threads = 256;
     int blocks  = (n + threads - 1) / threads;
     vec_add_unguarded<<<blocks, threads>>>(d.a, d.b, d.c, n);
+    CUDA_CHECK(cudaGetLastError());
+    CUDA_CHECK(cudaDeviceSynchronize());
 
     download_and_free(d, h_c);
 }
@@ -95,12 +100,18 @@ void case3(const std::vector<float>& h_a, const std::vector<float>& h_b, std::ve
 
     int blocks_a = (n + threads - 1) / threads;
     scale<<<blocks_a, threads>>>(d.a, 2.0f, n);                       // kernel A
+    CUDA_CHECK(cudaGetLastError());
+    CUDA_CHECK(cudaDeviceSynchronize());
 
     int blocks_b = (int)((d.bytes + threads - 1) / threads);
     vec_add_unguarded<<<blocks_b, threads>>>(d.a, d.b, d.c, n);       // kernel B
+    CUDA_CHECK(cudaGetLastError());
+    CUDA_CHECK(cudaDeviceSynchronize());
 
     int blocks_c = (n + threads - 1) / threads;
     scale<<<blocks_c, threads>>>(d.c, 2.0f, n);                       // kernel C
+    CUDA_CHECK(cudaGetLastError());
+    CUDA_CHECK(cudaDeviceSynchronize());
 
     download_and_free(d, h_c);
 }
@@ -115,9 +126,12 @@ void case4(const std::vector<float>& h_a, const std::vector<float>& h_b, std::ve
     CUDA_CHECK(cudaMalloc(&d.c, d.bytes));
     CUDA_CHECK(cudaMemcpy(d.a, h_a.data(), d.bytes, cudaMemcpyHostToDevice));
 
+
     int threads = 256;
     int blocks  = (n + threads - 1) / threads;
     vec_add<<<blocks, threads>>>(d.a, d.b, d.c, n);
+    CUDA_CHECK(cudaGetLastError());
+    CUDA_CHECK(cudaDeviceSynchronize());
 
     download_and_free(d, h_c);
 }
@@ -131,6 +145,8 @@ void case5(const std::vector<float>& h_a, const std::vector<float>& h_b, std::ve
     int threads = 256;
     int blocks  = (n + threads - 1) / threads;
     vec_add<<<blocks, threads>>>(d.a, d.b, d.c, n);
+    CUDA_CHECK(cudaGetLastError());
+    CUDA_CHECK(cudaDeviceSynchronize());
 
     download_and_free(d, h_c);
 }
@@ -145,6 +161,8 @@ void case6(const std::vector<float>& h_a, const std::vector<float>& h_b, std::ve
     int stages  = 8;                                   // room to pipeline later
     size_t smem = stages * 2 * threads * sizeof(float);
     vec_add_staged<<<blocks, threads, smem>>>(d.a, d.b, d.c, n);
+    CUDA_CHECK(cudaGetLastError());
+    CUDA_CHECK(cudaDeviceSynchronize());
 
     download_and_free(d, h_c);
 }

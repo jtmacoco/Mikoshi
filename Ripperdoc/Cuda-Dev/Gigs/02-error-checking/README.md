@@ -3,7 +3,7 @@ title: 02 Error Checking
 source: "[[Cuda Dev]]"
 tags: [cuda, level-1, exercise]
 level: 1
-status: not started
+status: in progress
 created: 2026-11-24
 ---
 
@@ -39,14 +39,14 @@ Don't edit `main.cu`.
 
 ## Predictions and findings
 
-| Case | Predicted: crash, error, or silent? | Predicted: what's wrong | Actual (no checks) | Error message (with checks) | Reported at line | Tool that found it | Fix |
-|---|---|---|---|---|---|---|---|
-| 1 | | | | | | | |
-| 2 | | | | | | | |
-| 3 | | | | | | | |
-| 4 | | | | | | | |
-| 5 | | | | | | | |
-| 6 | | | | | | | |
+| Case | Predicted: crash, error, or silent? | Predicted: what's wrong                                | Actual (no checks)                               | Error message (with checks) | Reported at line | Tool that found it | Fix |
+| ---- | ----------------------------------- | ------------------------------------------------------ | ------------------------------------------------ | --------------------------- | ---------------- | ------------------ | --- |
+| 1    | silent                              | To many threads per block. No sync threads             | outputs were 0                                   |                             |                  |                    |     |
+| 2    | silent                              | no guarded checks need if statement in the global func | passed                                           |                             |                  |                    |     |
+| 3    | silent                              | no device sync. Kernel B broken                        | output was garbage -12345                        |                             |                  |                    |     |
+| 4    | crash                               | missing malloc for d.b only does d.a                   | output was 1.37454 since the memory was not init |                             |                  |                    |     |
+| 5    | error                               | architecture is wrong in make                          | Ran but used wrong architecture so got 0's       |                             |                  |                    |     |
+| 6    | silent                              | need to sync streams                                   | Got 0's, reached end normally though             |                             |                  |                    |     |
 
 For case 3 also answer: **which of the three kernels is broken**, and how you proved it.
 
@@ -70,5 +70,5 @@ make clean
 
 ## Results
 | Date | Cases passing | memcheck clean | initcheck clean | Notes |
-|---|---|---|---|---|
-| | | | | |
+| ---- | ------------- | -------------- | --------------- | ----- |
+|      |               |                |                 |       |
