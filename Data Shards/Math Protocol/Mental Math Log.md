@@ -76,22 +76,23 @@ Track my quiz progress
 | 2026-10-28 | Chapter 3 - Intermediate Multiplication | 17/20 | 870.9    | 85%      |
 | 2026-10-29 | Chapter 3 - Intermediate Multiplication | 20/20 | 564.4    | 100%     |
 | 2026-10-30 | Chapter 3 - Intermediate Multiplication | 20/20 | 600.6    | 100%     |
-| 2026-11-03 | Chapter 3 - Intermediate Multiplication | 19/20 | 633.8 | 95% |
-| 2026-11-04 | Chapter 3 - Intermediate Multiplication | 16/20 | 664.4 | 80% |
-| 2026-11-06 | Chapter 3 - Intermediate Multiplication | 16/20 | 633.5 | 80% |
-| 2026-11-07 | Chapter 1 - Addition & Subtraction | 21/25 | 261.3 | 84% |
-| 2026-11-08 | Chapter 1 - Addition & Subtraction | 15/25 | 219.5 | 60% |
-| 2026-11-11 | Chapter 1 - Addition & Subtraction | 24/25 | 242.2 | 96% |
-| 2026-11-12 | Chapter 1 - Addition & Subtraction | 20/25 | 244.5 | 80% |
-| 2026-11-13 | Chapter 1 - Addition & Subtraction | 22/25 | 206.5 | 88% |
-| 2026-11-14 | Chapter 1 - Addition & Subtraction | 22/25 | 232.4 | 88% |
-| 2026-11-15 | Chapter 1 - Addition & Subtraction | 20/25 | 196.2 | 80% |
-| 2026-11-17 | Chapter 1 - Addition & Subtraction | 21/25 | 218.0 | 84% |
-| 2026-11-18 | Chapter 1 - Addition & Subtraction | 22/25 | 371.0 | 88% |
-| 2026-11-19 | Chapter 1 - Addition & Subtraction | 23/25 | 237.8 | 92% |
-| 2026-11-20 | Chapter 1 - Addition & Subtraction | 23/25 | 298.2 | 92% |
-| 2026-11-21 | Chapter 1 - Addition & Subtraction | 22/25 | 216.3 | 88% |
-| 2026-11-21 | Chapter 1 - Addition & Subtraction | 22/25 | 240.7 | 88% |
-| 2026-11-24 | Chapter 1 - Addition & Subtraction | 20/25 | 240.8 | 80% |
-| 2026-11-25 | Chapter 1 - Addition & Subtraction | 21/25 | 192.0 | 84% |
-| 2026-11-26 | Chapter 1 - Addition & Subtraction | 24/25 | 248.6 | 96% |
+| 2026-11-03 | Chapter 3 - Intermediate Multiplication | 19/20 | 633.8    | 95%      |
+| 2026-11-04 | Chapter 3 - Intermediate Multiplication | 16/20 | 664.4    | 80%      |
+| 2026-11-06 | Chapter 3 - Intermediate Multiplication | 16/20 | 633.5    | 80%      |
+| 2026-11-07 | Chapter 1 - Addition & Subtraction      | 21/25 | 261.3    | 84%      |
+| 2026-11-08 | Chapter 1 - Addition & Subtraction      | 15/25 | 219.5    | 60%      |
+| 2026-11-11 | Chapter 1 - Addition & Subtraction      | 24/25 | 242.2    | 96%      |
+| 2026-11-12 | Chapter 1 - Addition & Subtraction      | 20/25 | 244.5    | 80%      |
+| 2026-11-13 | Chapter 1 - Addition & Subtraction      | 22/25 | 206.5    | 88%      |
+| 2026-11-14 | Chapter 1 - Addition & Subtraction      | 22/25 | 232.4    | 88%      |
+| 2026-11-15 | Chapter 1 - Addition & Subtraction      | 20/25 | 196.2    | 80%      |
+| 2026-11-17 | Chapter 1 - Addition & Subtraction      | 21/25 | 218.0    | 84%      |
+| 2026-11-18 | Chapter 1 - Addition & Subtraction      | 22/25 | 371.0    | 88%      |
+| 2026-11-19 | Chapter 1 - Addition & Subtraction      | 23/25 | 237.8    | 92%      |
+| 2026-11-20 | Chapter 1 - Addition & Subtraction      | 23/25 | 298.2    | 92%      |
+| 2026-11-21 | Chapter 1 - Addition & Subtraction      | 22/25 | 216.3    | 88%      |
+| 2026-11-21 | Chapter 1 - Addition & Subtraction      | 22/25 | 240.7    | 88%      |
+| 2026-11-24 | Chapter 1 - Addition & Subtraction      | 20/25 | 240.8    | 80%      |
+| 2026-11-25 | Chapter 1 - Addition & Subtraction      | 21/25 | 192.0    | 84%      |
+| 2026-11-26 | Chapter 1 - Addition & Subtraction      | 24/25 | 248.6    | 96%      |
+| 2026-11-26 | Chapter 1 - Addition & Subtraction      | 20/25 | 223.8    | 80%      |
