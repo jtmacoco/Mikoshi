@@ -10,7 +10,7 @@ status: active
 
 Review notes built from the [[Mikoshi/Ripperdoc/Linux/Quiz#Review Queue|Review Queue]]. Read it before jacking in. Most-missed first. Answer each self-check in your head before you peek.
 
-Built from: [[2026-11-25 Linux Quiz]]
+Built from: [[2026-11-26 Linux Quiz]]
 
 ## Notes
 
@@ -19,7 +19,7 @@ Built from: [[2026-11-25 Linux Quiz]]
 #### Redirection
 
 ##### `2>&1`: send errors where normal output goes
-Missed: 11-19 🟡 · 11-20 🟡 · 11-21 ❌ · 11-23 🟡 · 11-24 ❌ · 11-24 drill ❌ · 11-25 ❌ (Q1 reading it ✅, Q7 writing it ❌)
+Missed: 11-19 🟡 · 11-20 🟡 · 11-21 ❌ · 11-23 🟡 · 11-24 ❌ · 11-24 drill ❌ · 11-25 ❌ (Q1 reading it ✅, Q7 writing it ❌) · ✅ 11-26 (1 of 2 to clear)
 
 Every command has two output streams: **stdout** (1, normal output) and **stderr** (2, errors). Both show on your terminal, but `>` and `|` only grab stdout.
 
@@ -73,7 +73,7 @@ Pick the stream: `>` (or `1>`) = stdout only, `2>` = stderr only, `> f 2>&1` or 
 > `./build.sh > out.log 2> err.log`
 
 ##### `sort -o f f`: don't redirect into the file you're reading
-Missed: 11-23 ❌
+Missed: 11-23 ❌ · ✅ 11-26 (1 of 2 to clear)
 
 ```bash
 sort names.txt > names.txt        # ❌ file ends up empty
@@ -99,7 +99,7 @@ echo hi >> log.txt    # add "hi" to the end
 #### Finding files
 
 ##### `find`: search by name, type, age or size
-Missed: 11-19 ❌ · 11-20 ❌ · 11-21 ❌ · 11-23 🟡 · 11-24 🟡 · 11-25 🟡
+Missed: 11-19 ❌ · 11-20 ❌ · 11-21 ❌ · 11-23 🟡 · 11-24 🟡 · 11-25 🟡 · ✅ 11-26 (1 of 2 to clear)
 
 `find` walks a directory tree and prints every path that passes all your filters. It always goes into subfolders, so there's no `-r`.
 
@@ -118,7 +118,7 @@ find ~ -type f -size +100M        # files over 100 MB anywhere in home
 #### Searching text
 
 ##### `grep -l`: just the file names
-Missed: 11-21 ❌ · 11-23 ❌ · ✅ 11-24 (1 of 2 to clear)
+Missed: 11-21 ❌ · 11-23 ❌ · ✅ 11-24 · 11-26 ❌ (0 of 2 to clear)
 
 By default grep prints every matching line. `-l` prints each matching **file name** once instead.
 
@@ -129,8 +129,34 @@ grep -l ssh /etc/*.conf   # which .conf files mention ssh
 ```
 Give grep the files as **arguments** to search inside them. `find ... | grep ssh` only searches the list of names.
 
+```bash
+grep -l TODO *.c                       # ✅ shell expands *.c into file names
+grep -rl TODO --include='*.c' .        # ✅ same, into subfolders
+find . -name '*.c' | grep -rl TODO     # ❌ grep ignores the pipe's names, searches all of .
+```
+Also: it's `-type f`, not `-type -f`.
+
+> [!question]- Self-check: which `.h` files in `include/` mention `uint64_t`?
+> `grep -l uint64_t include/*.h`
+
 > [!question]- Self-check: how many files under `src/` contain `TODO`?
 > `grep -rl TODO src/ | wc -l`
+
+##### `^$`: regex anchors (empty line)
+Missed: 11-26 🟡
+
+In a grep pattern, `^` = start of line and `$` = end of line. `$` is not a literal dollar sign.
+
+```bash
+grep -v '^$' f       # drop empty lines
+grep -vc '^$' f      # count non-empty lines
+grep '^#' f          # lines starting with #
+grep 'bash$' f       # lines ending in bash
+grep '\$HOME' f      # a literal $: escape it
+```
+
+> [!question]- Self-check: show `nginx.conf` without comments or blank lines.
+> `grep -v '^#' nginx.conf | grep -v '^$'` (or `grep -vE '^(#|$)' nginx.conf`)
 
 ##### `grep -c`: count matching lines
 Missed: 11-23 ❌ · ✅ 11-24 (1 of 2 to clear)
@@ -168,25 +194,6 @@ grep -rn "TODO" .
 > [!question]- Self-check: what does `-n` add to the output?
 > `file:LINE:` before each match.
 
-#### Shell history
-
-##### `Ctrl+R`: search history as you type
-Missed: 11-21 🟡 · ✅ 11-23 (1 of 2 to clear)
-
-Press `Ctrl+R` and start typing part of an old command. The most recent match appears.
-- `Ctrl+R` again: next older match
-- `Enter`: run it
-- `→`: put it on the line to edit
-- `Ctrl+G`: cancel
-
-```bash
-history | grep qemu    # the long way
-!1234                  # rerun history line 1234
-```
-
-> [!question]- Self-check: pull back your last `qemu-system-x86_64` command without scrolling.
-> `Ctrl+R`, type `qemu`, then press Enter.
-
 #### Keyboard
 
 ##### `Ctrl+L` clear / `Ctrl+Z` suspend → `fg`
@@ -213,7 +220,7 @@ du -sh * | sort -h    # biggest last
 #### Processes
 
 ##### `pgrep`: find a PID by name
-Missed: 11-23 🟡 (⚡ L3 preview)
+Missed: 11-23 🟡 (⚡ L3 preview) · 11-26 🟡 (⚡ L3 preview, `pgrep Firefox`)
 
 ```bash
 pgrep firefox        # PIDs only
@@ -221,7 +228,7 @@ pgrep -a firefox     # PID + full command line
 pkill firefox        # skip the lookup, send SIGTERM
 kill -9 1234         # force-kill one PID
 ```
-`pgrep` and `pkill` match names the same way. `pgrep` shows the PID, `pkill` sends the signal.
+`pgrep` and `pkill` match names the same way, and the match is **case-sensitive**: the process is `firefox`, not `Firefox`. Use `-i` to ignore case. `pgrep` shows the PID, `pkill` sends the signal.
 
 > [!question]- Self-check: check whether any `qemu` process is still running.
 > `pgrep -a qemu`. No output means none.
@@ -277,6 +284,7 @@ Missed: 11-18 ❌ · ✅ 11-18 (1 of 2 to clear)
 
 ## Cleared
 Last 10 only.
+- `Ctrl+R` — cleared 2026-11-26
 - `cut -d -f` — cleared 2026-11-25
 - `sort | uniq -c | sort -nr` — cleared 2026-11-25
 - `tr 'a-z' 'A-Z'` — cleared 2026-11-25

@@ -64,6 +64,8 @@ created: 2026-08-15
 |---|---|
 | `grep -rn "pattern"` | Recursive search with line numbers |
 | `grep -i` | Case insensitive |
+| `grep -l TODO *.c` | File names only (pass files as args, don't pipe names in) |
+| `grep -rl TODO --include='*.c' .` | Same, into subfolders, `.c` only |
 | `awk '{print $1}'` | Print first column |
 | `sed 's/old/new/g'` | Find and replace |
 | `cut -d: -f1` | Keep field 1 (`-d` delimiter, `-f` fields to keep) |
@@ -74,6 +76,15 @@ created: 2026-08-15
 | `tr -d '\r'` | Delete chars (strip Windows line endings) |
 
 > `uniq` only collapses lines that sit next to each other, so always `sort` first.
+
+---
+
+## Shell History
+| Command | Action |
+|---|---|
+| `Ctrl+R` | Search history as you type (`Ctrl+R` again = older match, `Ctrl+G` = cancel) |
+| `history \| grep ssh` | Every past command with `ssh`, with numbers |
+| `!512` | Rerun history entry 512 |
 
 ---
 

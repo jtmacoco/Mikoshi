@@ -9,7 +9,7 @@ created: 2026-11-26
 - [ ] Practice Coding
 - [x] Mental Math
 - [x] Leetcode
-- [ ] Linux Quiz
-- [ ] Git Quiz
+- [x] Linux Quiz
+- [x] Git Quiz
  
 # Shard Log

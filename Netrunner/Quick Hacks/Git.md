@@ -254,6 +254,20 @@ git rm file          # delete from disk + stage the deletion
 ```
 
 ---
+# Commit messages
+
+```
+parser: fix crash on empty input        ← subject ≤50 chars, imperative
+
+The tokenizer returned NULL for an      ← blank line, then why
+empty buffer and the parser
+dereferenced it.
+```
+- Subject completes "If applied, this commit will ___"
+- One logical change per commit. Needs "and"? Split it.
+- `git commit -m "subject" -m "body"` adds the blank line for you
+
+---
 # .gitignore + already-tracked files
 
 `.gitignore` only stops **untracked** files from being added. A file that's already committed stays tracked until you remove it from the index.
