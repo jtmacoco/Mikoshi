@@ -43,8 +43,29 @@ struct kbank_bank {
 
 static struct kbank_ctx ctx;
 
-static const struct file_operations kbank_fops{
-	.read = kba
+static ssize_t kbank_read(struct file *flip, char __user *ubuf, size_t count, loff_t *off)
+{
+	//TODO
+	return count;
+}
+
+static ssize_t kbank_write(struct file *flip, const char __user *ubuf, size_t count, loff_t *off)
+{
+	//TODO
+	return count;
+}
+
+static int kbank_open(struct inode *inode, struct file *flip)
+{
+	//TODO
+	return nonseekable_open(inode, flip);
+}
+
+static const struct file_operations kbank_fops = {
+	.read  = kbank_read,
+	.write = kbank_write,
+	.open  = kbank_open,
+	.owner = THIS_MODULE
 };
 
 static int __init kbank_init(void)
@@ -66,7 +87,7 @@ static int __init kbank_init(void)
 
 	ret = alloc_chrdev_region(&ctx.kbank_dev, 0, nbanks, DEVICE_NAME);
 	if (ret) {
-		pr_err("Failed to alloc buf\n");
+		pr_err("Failed to allocate device numbers\n");
 		return ret;
 	}
 
@@ -81,21 +102,39 @@ static int __init kbank_init(void)
 		ctx.banks[i].data_len = 0;
 	}
 
-	cdev_init(&ctx.my_cdev, //TODO fops needed here);
+	cdev_init(&ctx.my_cdev, &kbank_fops); 
 	ret = cdev_add(&ctx.my_cdev, ctx.kbank_dev, nbanks);
 
 	if (ret) {
 		pr_err("Failed to register character device\n");
+		goto err_buf_free;
+	}
+
+	kbank = class_create("kbank");
+	if (IS_ERR(kbank)) {
+		pr_err("failed creating the class \n");
+		ret = PTR_ERR(kbank);
 		goto err_cdev_del;
 	}
 
+	struct device *my_dev = device_create(kbank, NULL, ctx.kbank_dev, NULL, "kbuf");
 
-	if (ret) {
-		pr_err("Failed to allocate device numbers\n");
-		return ret;
+	if (IS_ERR(my_dev)) {
+		pr_err("failed creating device \n");
+		ret = PTR_ERR(my_dev);
+		goto err_class_destroy;
 	}
+	return 0;
+
+
+err_class_destroy:
+	class_destroy(kbank);
 err_cdev_del:
-	cdev_del(&my_cdev);
+	cdev_del(&ctx.my_cdev);
+err_buf_free:
+	for (int i = 0; i < nbanks; ++i)
+		kfree(ctx.banks[i].buffer);
+	kfree(ctx.banks);
 err_unregister_chrdev:
 	unregister_chrdev_region(ctx.kbank_dev, nbanks);
 
@@ -104,6 +143,14 @@ err_unregister_chrdev:
 
 static void __exit kbank_exit(void)
 {
+	device_destroy(kbank, ctx.dev);
+	class_destroy(kbank);
+	cdev_del(&ctx.my_cdev);
+
+	for (int i = 0; i < nbanks; ++i)
+		kfree(ctx.banks[i].buffer);
+	kfree(ctx.banks);
+	unregister_chrdev_region(ctx.kbank_dev, nbanks);
 	pr_info("unregistered device\n");
 }
 
