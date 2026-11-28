@@ -1,6 +1,6 @@
 ---
 title: Roofline and back-of-envelope estimates
-source: "[[Cuda Dev]]"
+source: "[[Cuda Dev Notes]]"
 aliases: [arithmetic intensity, ideal time, memory-bound, compute-bound]
 tags: [cuda, hpc, ripperdoc, level-3, performance-model]
 level: 3

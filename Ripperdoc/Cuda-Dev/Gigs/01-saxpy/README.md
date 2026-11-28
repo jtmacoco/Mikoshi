@@ -1,8 +1,9 @@
 ---
 title: 01 SAXPY
+source: "[[Cuda Dev]]"
 tags: [cuda, level-1, exercise]
 level: 1
-status: in progress
+status: done
 created: 2026-11-08
 ---
 

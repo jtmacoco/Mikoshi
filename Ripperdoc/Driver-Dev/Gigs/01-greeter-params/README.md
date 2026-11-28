@@ -1,3 +1,12 @@
+---
+title: 01 Greeter Params
+source: "[[Driver Dev]]"
+tags: [ripperdoc, driver-dev, gig]
+level: 1
+status: done
+created: 2026-10-25
+---
+
 # 01: greeter (module parameters checkpoint)
 
 You already know how to load a hello-world module. This exercise checks the

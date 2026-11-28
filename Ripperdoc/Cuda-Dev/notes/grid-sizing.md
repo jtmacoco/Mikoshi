@@ -1,6 +1,6 @@
 ---
 title: Grid sizing (ceiling divide)
-source: "[[Cuda Dev]]"
+source: "[[Cuda Dev Notes]]"
 aliases: [ceil-div, num_blocks, bounds check]
 tags: [cuda, hpc, ripperdoc, level-1, launch-config]
 level: 1

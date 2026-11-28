@@ -64,3 +64,5 @@ built-in.a
 
 # CUDA gig binaries (no extension, so listed by name)
 Ripperdoc/Cuda-Dev/Gigs/*/saxpy
+Ripperdoc/Cuda-Dev/Gigs/*/errlab
+Ripperdoc/Cuda-Dev/Gigs/*/errlab_sm90

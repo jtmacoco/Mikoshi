@@ -45,3 +45,4 @@ return function View() {
 ## Links
 
 - ⬆ [[Ripperdoc]]
+- ⬇ [[Cuda Dev Quizzes]] · [[Cuda Dev Notes]]

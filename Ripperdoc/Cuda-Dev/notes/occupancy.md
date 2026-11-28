@@ -1,6 +1,6 @@
 ---
 title: Occupancy
-source: "[[Cuda Dev]]"
+source: "[[Cuda Dev Notes]]"
 aliases: [blocks per SM, resident warps, occupancy limiters]
 tags: [cuda, hpc, ripperdoc, level-3, architecture]
 level: 3

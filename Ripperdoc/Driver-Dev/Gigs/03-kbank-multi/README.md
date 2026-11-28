@@ -1,3 +1,12 @@
+---
+title: 03 Kbank Multi
+source: "[[Driver Dev]]"
+tags: [ripperdoc, driver-dev, gig]
+level: 2
+status: in-progress
+created: 2026-11-08
+---
+
 # 03: kbank (several char devices from one driver)
 
 Level 2, second exercise. Same family as 02, but the driver now creates

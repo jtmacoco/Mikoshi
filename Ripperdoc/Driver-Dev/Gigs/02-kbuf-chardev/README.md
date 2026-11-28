@@ -1,3 +1,12 @@
+---
+title: 02 Kbuf Chardev
+source: "[[Driver Dev]]"
+tags: [ripperdoc, driver-dev, gig]
+level: 2
+status: done
+created: 2026-10-25
+---
+
 # 02: kbuf (your first character device)
 
 Level 2. You'll write a driver that creates `/dev/kbuf`, a device node backed

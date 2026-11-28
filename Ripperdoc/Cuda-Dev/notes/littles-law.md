@@ -1,6 +1,6 @@
 ---
 title: Little's law (latency hiding)
-source: "[[Cuda Dev]]"
+source: "[[Cuda Dev Notes]]"
 aliases: [bytes in flight, latency hiding, memory-level parallelism]
 tags: [cuda, hpc, ripperdoc, level-3, performance-model]
 level: 3
