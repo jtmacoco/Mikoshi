@@ -28,7 +28,7 @@ The goal is to be able to build, train, debug, and speed up models in PyTorch on
 - When possible, design the gig so it also re-exercises one or two concepts from my "Weak spots" list.
 - For multi-step topics (training a model up to a target, a speed-up ladder in Level 6), split the work into several gigs, **one idea per step**, each starting from my previous version. Copy my previous `solution.py` into the new folder as the starting point.
 - Create a new numbered folder **inside `Gigs/`** (create `Gigs/` if missing), e.g. `Gigs/04-mnist-mlp/`. All gig folders live in `Gigs/`, never in the track root. Each contains:
-  - `README.md`: the brief, with frontmatter (`title`, `source: "[[Torch Dev]]"`, `tags: [ripperdoc, torch-dev, gig]`, `status: in-progress`, `created`). It covers what I must build, the input/output shapes and dtypes, the PyTorch and ML concepts it exercises, and a **target** (a test that passes, an accuracy or loss to reach, or a speed-up), with the reasoning behind the target. Include **stretch goals**, a few **questions to answer** in the README, and an empty **results table** (version, metric, time per epoch or step, peak GPU memory, notes).
+  - `README.md`: the brief, with frontmatter (`title`, `source: "[[Torch Dev]]"`, `tags: [ripperdoc, torch-dev, gig]`, `level`, `status: in-progress`, `created`). It covers what I must build, the input/output shapes and dtypes, the PyTorch and ML concepts it exercises, and a **target** (a test that passes, an accuracy or loss to reach, or a speed-up), with the reasoning behind the target. Include **stretch goals**, a few **questions to answer** in the README, and an empty **results table** (version, metric, time per epoch or step, peak GPU memory, notes).
   - `harness.py`: you write this. It handles fixed seeds, data loading, and tests: it compares my functions against a reference (`torch.testing.assert_close` with a tolerance suited to the dtype, or `torch.autograd.gradcheck` for gradients) and checks shapes and dtypes. For training gigs it runs the loop budget, reports the metric, time per epoch, and `torch.cuda.max_memory_allocated()`. On failure it prints the expected vs actual value (shape, dtype, and the first few mismatches). It saves the full output to `test_output.txt`. Run it with `python harness.py`.
   - `solution.py`: only imports, the function/class signatures with docstrings giving the shapes, and `# TODO` markers. **Do not write the bodies.** Don't use `torch.nn` building blocks in the stub that the gig asks me to build myself.
 - Keep each gig small enough to finish in one to two hours. Prefer small datasets and models that train in minutes on my GPU.
@@ -308,7 +308,7 @@ Specific mistakes and misconceptions. Mark `[x]` when resolved (two correct quiz
 
 ## Session log
 ### YYYY-MM-DD: <gig folder>
-- Status: done / in progress / abandoned
+- Status: done / in-progress / abandoned
 - Highest help level: N (for: <concept>)
 - Result: <metric> vs target <target>
 - Got comfortable with: …

@@ -66,3 +66,15 @@ built-in.a
 Ripperdoc/Cuda-Dev/Gigs/*/saxpy
 Ripperdoc/Cuda-Dev/Gigs/*/errlab
 Ripperdoc/Cuda-Dev/Gigs/*/errlab_sm90
+
+# PyTorch output (Ripperdoc/Torch-Dev: datasets, checkpoints, logs live outside the vault)
+*.pt
+*.pth
+*.ckpt
+*.safetensors
+*.onnx
+runs/
+lightning_logs/
+wandb/
+__pycache__/
+.ipynb_checkpoints/

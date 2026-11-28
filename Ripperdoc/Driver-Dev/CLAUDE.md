@@ -287,7 +287,7 @@ Specific mistakes and misconceptions. Mark `[x]` when resolved (two correct quiz
 
 ## Session log
 ### YYYY-MM-DD: <exercise folder>
-- Status: done / in progress / abandoned
+- Status: done / in-progress / abandoned
 - Highest help level: N (for: <concept>)
 - Got comfortable with: …
 - Struggled with: … (specific)

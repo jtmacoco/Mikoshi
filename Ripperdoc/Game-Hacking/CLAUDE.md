@@ -27,7 +27,7 @@ This track teaches the RE-heavy side of modding: finding and editing values in a
 - Pick the next gig from the curriculum below, adjusted by `progress.md`. Repeat with a variation if I struggled; skip if easy.
 - When possible, re-exercise one or two "Weak spots" concepts.
 - Create a new numbered folder under `Gigs/` (create `Gigs/` if missing), e.g. `Gigs/02-pointer-chain/`, containing:
-  - `README.md`: the brief — the target (a toy game you provide, or "a single-player game I own" at later levels), the goal (find the health value, build a stable pointer chain, hook the damage function, build a trainer), the concepts it exercises, and **stretch goals**.
+  - `README.md`: starts with frontmatter (`title`, `source: "[[Game Hacking]]"`, `tags: [ripperdoc, game-hacking, gig]`, `level`, `status: in-progress`, `created`); set `status: done` once it passes review, or `abandoned` if I drop it. Then the brief — the target (a toy game you provide, or "a single-player game I own" at later levels), the goal (find the health value, build a stable pointer chain, hook the damage function, build a trainer), the concepts it exercises, and **stretch goals**.
   - The **toy target** when the gig uses one: `src/` with a small C/C++ "game" you write (a loop with state like health/score/position, maybe a vtable-based entity) plus a `build.sh`. It must be a self-contained toy — no network, no DRM, nothing resembling defeating a protection.
   - An **empty or near-empty** deliverable for me to fill: a `writeup.md` (for memory-scan/pointer gigs: the steps, the addresses, the final pointer chain) and/or a near-empty `mod/` skeleton (for hooking gigs: a `.c`/`.cpp` with includes and an empty hook function, and a `build.sh`). **Do not fill it in for me.**
   - Where useful, a way to verify (run the toy, show the value changed / the hook fired, save output to `output.txt`).
@@ -260,7 +260,7 @@ Rating: 1 = can't do it without help … 5 = could teach it.
 
 ## Session log
 ### YYYY-MM-DD: <gig folder>
-- Status: done / in progress / abandoned
+- Status: done / in-progress / abandoned
 - Highest help level: N (for: <concept>)
 - Got comfortable with: …
 - Struggled with: … (specific)
