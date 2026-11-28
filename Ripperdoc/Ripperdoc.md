@@ -51,4 +51,4 @@ return function RipperdocNotes() {
 ## Links
 
 - ⬆ [[SYSTEM MANIFEST]]
-- ⬇ [[Cuda Dev]] · [[Driver Dev]] · [[Mikoshi/Ripperdoc/Git/Git|Git]] · [[Mikoshi/Ripperdoc/Linux/Linux|Linux]]
+- ⬇ [[Cuda Dev]] · [[Driver Dev]] · [[Exploit Dev]] · [[Game Hacking]] · [[Mikoshi/Ripperdoc/Git/Git|Git]] · [[Mikoshi/Ripperdoc/Linux/Linux|Linux]] · [[Malware RE]] · [[Torch Dev]]

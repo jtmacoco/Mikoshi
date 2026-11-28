@@ -50,10 +50,14 @@ description: "Root of Mikoshi. Top-level MOC"
 │   ├──  Driver Dev
 │   │   ├──  Driver Dev Quizzes
 │   │   └──  Driver Dev Notes
+│   ├──  Exploit Dev         # Binary exploitation / pwn (lab & CTF)
+│   ├──  Game Hacking        # Modding via RE (single-player)
 │   ├──  Git
 │   │   └──  Results
-│   └──  Linux
-│       └──  Results
+│   ├──  Linux
+│   │   └──  Results
+│   ├──  Malware RE          # Reverse engineering & malware analysis
+│   └──  Torch Dev           # PyTorch & practical ML
 └──  Templates            # Note templates
 ```
 
@@ -72,8 +76,12 @@ description: "Root of Mikoshi. Top-level MOC"
 - [[Ripperdoc]]: guided curricula (lessons, quizzes, gigs)
     - [[Cuda Dev]]
     - [[Driver Dev]]
+    - [[Exploit Dev]]
+    - [[Game Hacking]]
     - [[Mikoshi/Ripperdoc/Git/Git|Git]]
     - [[Mikoshi/Ripperdoc/Linux/Linux|Linux]]
+    - [[Malware RE]]
+    - [[Torch Dev]]
 - [[Templates]]: note templates
 
 ---
