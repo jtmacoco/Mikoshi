@@ -19,12 +19,12 @@ Say **"jack in git"** to start. Review [[Git Debrief]] first.
 | Field | Value |
 |---|---|
 | Current level | 1 — Street Kid |
-| Sessions at this level | 6 |
-| Streak (≥80%) | 0 |
+| Sessions at this level | 7 |
+| Streak (≥80%) | 1 |
 | Streak (<50%) | 0 |
 | ⚡ Preview hits at level | 3 |
-| Total sessions | 6 |
-| Last session | 2026-11-26 — 78% |
+| Total sessions | 7 |
+| Last session | 2026-11-27 — 83% |
 
 | Say | Runs |
 |---|---|
@@ -39,25 +39,22 @@ Commands/concepts I missed. An item clears after 2 ✅ in separate sessions.
 
 | Command / Concept | Level | Times missed | ✅ since | Last seen |
 |---|---|---|---|---|
-| `git diff` vs `--staged` (which pair each compares) | 1 | 3 | 1 | 2026-11-26 |
-| `git diff --staged` (HEAD → index) | 1 | 3 | 1 | 2026-11-26 |
-| `git branch -d` vs `-D` (`-d` refuses unmerged) | 2 | 3 | 0 | 2026-11-26 |
-| `git show HEAD~N` (pick a commit; not `diff`, not `-n`) | 1 | 2 | 0 | 2026-11-26 |
-| `git log --oneline -n N` (`log` lists, `show` opens one) | 1 | 2 | 0 | 2026-11-26 |
-| `git status -s` deletions (` D` = shell `rm`, `D ` = `git rm`) | 1 | 1 | 0 | 2026-11-26 |
+| `git diff` vs `--staged` (which pair each compares) | 1 | 4 | 0 | 2026-11-27 |
+| `git diff --staged` (HEAD → index) | 1 | 4 | 0 | 2026-11-27 |
+| `git branch -d` vs `-D` (`-d` refuses unmerged) | 2 | 4 | 0 | 2026-11-27 |
+| `git status -s` deletions (` D` = shell `rm`, `D ` = `git rm`) | 1 | 2 | 0 | 2026-11-27 |
+| `git show HEAD~N` (pick a commit; not `diff`, not `-n`) | 1 | 2 | 1 | 2026-11-27 |
+| `git log --oneline -n N` (`log` lists, `show` opens one) | 1 | 2 | 1 | 2026-11-27 |
 | `git status -s` new files (`A`/`AM` = new + staged, `??` = never added) | 1 | 1 | 1 | 2026-11-26 |
 | `git config --global user.name/user.email` (quote the value) | 1 | 1 | 1 | 2026-11-26 |
-| `.gitignore` root anchor (`/build/` vs `build/`) | 1 | 1 | 1 | 2026-11-26 |
-| `git commit -a` (stages tracked files only) | 1 | 1 | 1 | 2026-11-24 |
 | `git config --global core.editor` | 1 | 1 | 1 | 2026-11-24 |
 | `git <cmd> -h` (quick help) | 1 | 1 | 1 | 2026-11-24 |
-| `git config --list` | 1 | 1 | 1 | 2026-11-21 |
 
 ### Parked
 
 Queue overflow. Not quizzed, not cleared. Returns when the queue has room, most-missed first.
 
-None right now. `git config --list` returned 2026-11-26.
+None right now.
 
 ---
 
@@ -140,6 +137,7 @@ Newest first. Full details live in [[Git Results]].
 
 | Date | Level | Score | Change | Note |
 |---|---|---|---|---|
+| [[2026-11-27 Git Quiz\|2026-11-27]] | 1 — Street Kid | 7.5 / 9 (83%) | none | First ≥80% (streak 1/2); 3 cleared; `--staged` + `status -s` deletions + `branch -d` weakest |
 | [[2026-11-26 Git Quiz\|2026-11-26]] | 1 — Street Kid | 7 / 9 (78%) | none | Diff pair ✅ at last; 4 cleared; `status -s` deletions + `log`/`show`/`HEAD~N` weakest |
 | [[2026-11-25 Git Quiz\|2026-11-25]] | 1 — Street Kid | 7 / 9 (78%) | none | Best yet; `rm --cached` cleared, commit msg ✅; `status -s` on new files + diff swap weakest |
 | [[2026-11-24 Git Quiz\|2026-11-24]] | 1 — Street Kid | 6.5 / 9 (72%) | none | Diff pairs + `status -s` ✅ (cleared); `show` vs `diff` and one-change-per-commit weakest |

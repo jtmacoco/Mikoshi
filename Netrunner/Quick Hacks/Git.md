@@ -278,6 +278,22 @@ git rm -r --cached node_modules/   # untrack, keep on disk (-r for folders, -n f
 git commit -m "Stop tracking node_modules"
 ```
 
+**Anchoring patterns**
+
+```gitignore
+/build/      # root build/ only
+build/       # build/ at any depth (src/build/ too)
+```
+`git check-ignore -v <path>` shows which rule matched.
+
+---
+# git config
+
+```bash
+git config --list --show-origin   # every setting + which file it came from
+git config --get user.email       # one value
+```
+
 ---
 # git restore
 

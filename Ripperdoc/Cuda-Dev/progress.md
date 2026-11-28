@@ -26,14 +26,14 @@ created: 2026-10-25
 - Where I run: local Arch Linux desktop (Hyprland); GPU also drives the display, so desktop apps (Firefox, etc.) share it. Close heavy GPU apps before benchmarking.
 
 ## Current level
-Level 1: Foundations. 01-saxpy passes review at 91.9% of peak BW. 02-error-checking is half done (all six cases diagnosed, fixes not started). Error checking is 2 → 3 on practice; a quiz is needed to confirm it before Level 2 (transpose ladder).
+Level 1 → 2. Level 1 cleared on 2026-11-27: 01-saxpy (91.9% BW) and 02-error-checking pass review, and all Level 1 concepts are at 3. Next: Level 2 (2D indexing, coalescing, matrix add, then transpose ladder).
 
 ## Weak spots
 - Roofline / back-of-envelope: couldn't count bytes/FLOPs or compute AI and ideal time for SAXPY (Q4). Core interview skill.
 - Memory coalescing: didn't spot `threadIdx.x` mapped to row (strided access) in a 2D kernel (Q1).
 - When shared memory helps: suggested tiling for a no-reuse elementwise kernel; missed that the blur benefits (Q1 follow-up).
 - Occupancy calculation: couldn't work out blocks/SM from regs, smem, threads (Q2).
-- Error checking & async errors: improved in 02 (used GetLastError + sync correctly, read sanitizer reports). Still needs a quiz to confirm; blocks leaving Level 1.
+- Complete answers: 11-27 quiz had 3 partials from missing scope/reasons, not wrong ideas. Practice stating which/how much/why.
 - Units in grid sizing: in case 3, counted `d.bytes`-based grid as n threads (it's 4n). Watch bytes vs elements.
 
 ## Concept tracker
@@ -41,11 +41,11 @@ Rating: 1 = can't do it without help, 2 = shaky, 3 = OK with docs, 4 = solid, 5 
 
 | Concept | Level | Rating | Last practiced | Last tested | Notes |
 |---|---|---|---|---|---|
-| Grid sizing (ceil-div) & bounds checks | 1 | 3 | 2026-11-26 | 2026-11-24 | 02 case 3: said bytes-sized grid launches n threads (4n), fixed after hint; case 2: computed thread (232, blk 3) → i=1000 unaided. Missed truncating grid (Q1) and OOB `in[i]` in last block (Q3). 01-saxpy: derived ceil-div after level-1 hint, wrote guard unprompted; fuzzy on *why* the -1. 2026-11-24 quiz: Q1 partial (right expr, no count, thought unguarded threads sit idle), Q3 correct (`<=` off-by-one, `n/256+1` extra block at n=1024) [[grid-sizing]] |
-| Error checking (launch + sync) | 1 | 3 | 2026-11-26 | 2026-11-24 | 02: wrote GetLastError + Sync after all 8 launches (after shape shown); used per-launch sync to pin case 3 on kernel B; explained config errors → GetLastError, runtime → sync. Raised on practice, confirm by quiz. Didn't flag missing checks in Q1. 2026-11-24 quiz: Q2 partial (thought bad launch crashes; didn't know GetLastError vs sync), Q4 partial (knew memcpy wasn't the bug; couldn't name compute-sanitizer / sync-after-launch / CUDA_LAUNCH_BLOCKING to locate it) |
-| Async launches & host-device sync | 1 | 2 | 2026-11-26 | 2026-11-24 | 02: read -12345 = D2H memcpy failed (error from earlier kernel) ✓; still predicted "no device sync" as case 3 bug. Q4/Q5: said "threads not synced" for host-GPU wait; described `__syncthreads` (block) right but not `cudaDeviceSynchronize` (CPU waits for all prior GPU work); picked the right one for Q4 |
-| compute-sanitizer (memcheck / initcheck) | 1 | 3 | 2026-11-26 | – | 02: read memcheck report (kernel, line, thread/block, bytes past alloc) and initcheck. Mistake: matched addresses across runs (must be same run, same tool) |
-| CUDA_CHECK macro (preprocessor) | 1 | 2 | 2026-11-26 | – | 02: missing `;`, didn't know `#arg`, called `CUDA_CHECK()` empty, wrapped void kernel launch, put Sync inside macro. do/while(0) + single eval right unprompted |
+| Grid sizing (ceil-div) & bounds checks | 1 | 3 | 2026-11-27 | 2026-11-27 | 11-27 quiz Q3 (bytes vs elements in memcpy): spotted bug, no scope; follow-up first bad index 262144 ✓. 02 case 3: said bytes-sized grid launches n threads (4n), fixed after hint; case 2: computed thread (232, blk 3) → i=1000 unaided. Missed truncating grid (Q1) and OOB `in[i]` in last block (Q3). 01-saxpy: derived ceil-div after level-1 hint, wrote guard unprompted; fuzzy on *why* the -1. 2026-11-24 quiz: Q1 partial (right expr, no count, thought unguarded threads sit idle), Q3 correct (`<=` off-by-one, `n/256+1` extra block at n=1024) [[grid-sizing]] |
+| Error checking (launch + sync) | 1 | 3 | 2026-11-27 | 2026-11-27 | 11-27 quiz: Q1 partial (said "a check between launches", only 1 of 2 ways; follow-up ✓ GetLastError can't see execution errors), Q5 partial (all 4 tool matches right, no reasoning). 02: wrote GetLastError + Sync after all 8 launches (after shape shown); used per-launch sync to pin case 3 on kernel B; explained config errors → GetLastError, runtime → sync. Raised on practice, confirm by quiz. Didn't flag missing checks in Q1. 2026-11-24 quiz: Q2 partial (thought bad launch crashes; didn't know GetLastError vs sync), Q4 partial (knew memcpy wasn't the bug; couldn't name compute-sanitizer / sync-after-launch / CUDA_LAUNCH_BLOCKING to locate it) |
+| Async launches & host-device sync | 1 | 3 | 2026-11-27 | 2026-11-27 | 11-27 quiz Q4 ✓: sticky (illegal address kills context) vs non-sticky (rejected launch) explained fully. Q1a ✓ async queueing → error at later memcpy. 02: read -12345 = D2H memcpy failed (error from earlier kernel) ✓; still predicted "no device sync" as case 3 bug. Q4/Q5: said "threads not synced" for host-GPU wait; described `__syncthreads` (block) right but not `cudaDeviceSynchronize` (CPU waits for all prior GPU work); picked the right one for Q4 |
+| compute-sanitizer (memcheck / initcheck) | 1 | 3 | 2026-11-27 | 2026-11-27 | 11-27 quiz Q3 partial: right tool (initcheck), didn't say what it reports. 02: read memcheck report (kernel, line, thread/block, bytes past alloc) and initcheck. Mistake: matched addresses across runs (must be same run, same tool) |
+| CUDA_CHECK macro (preprocessor) | 1 | 3 | 2026-11-27 | 2026-11-27 | 11-27 quiz Q2 ✓: spotted wrapped void launch, missing do/while (redefinition + if/else), #call; missed missing exit. 02: missing `;`, didn't know `#arg`, called `CUDA_CHECK()` empty, wrapped void kernel launch, put Sync inside macro. do/while(0) + single eval right unprompted |
 | 2D indexing (x → contiguous dim) | 2 | 1 | – | 2026-11-08 | Mapped row from threadIdx.x went unnoticed (Q1) |
 | Memory coalescing | 2 | 1 | 2026-11-20 | 2026-11-08 | Q1. 01-saxpy: 1D idx coalesced correctly (trivial case, not yet 2D) |
 | When shared memory helps (data reuse) | 2 | 1 | – | 2026-11-08 | Proposed smem for elementwise; missed blur (Q1 follow-up) |
@@ -77,26 +77,44 @@ Specific mistakes and misconceptions. Mark `[x]` when resolved (two correct quiz
 - [ ] 2026-11-21, 01-saxpy follow-up: called float4 "like quantization" → float4 = same bytes in fewer, wider loads (more in flight); quantization = fewer bytes per value
 - [ ] 2026-11-24, quiz Q1c: thought threads without an `i < n` guard sit idle → they run the body and read/write past the allocation (UB: often silent, can corrupt neighbours, sometimes illegal address)
 - [ ] 2026-11-24, quiz Q2b: thought an invalid launch (2048 tpb) crashes → launch is rejected, kernel never runs, program continues and prints garbage silently
-- [ ] 2026-11-24, quiz Q2c/Q4b: didn't know the two post-launch checks → `cudaGetLastError()` = launch/config errors (immediate); `cudaDeviceSynchronize()` = execution errors (async, e.g. illegal address)
+- [ ] (1/2: ✓ 11-27 quiz Q1 follow-up) 2026-11-24, quiz Q2c/Q4b: didn't know the two post-launch checks → `cudaGetLastError()` = launch/config errors (immediate); `cudaDeviceSynchronize()` = execution errors (async, e.g. illegal address)
 - [ ] 2026-11-24, quiz Q4c: couldn't say how to find the real source of an error reported at `cudaMemcpy` → compute-sanitizer (line via -lineinfo), sync+check after each launch, `CUDA_LAUNCH_BLOCKING=1`; illegal access is sticky
 - [ ] 2026-11-24, quiz Q4a/Q5: conflated thread sync with host-device sync → `__syncthreads` = threads of one block wait at a barrier; `cudaDeviceSynchronize` = CPU waits for all queued GPU work
-- [ ] 2026-11-26, 02 macro: wrapped a kernel launch in `CUDA_CHECK(kernel<<<>>>())` → launches return `void`; check with `CUDA_CHECK(cudaGetLastError())` then `CUDA_CHECK(cudaDeviceSynchronize())` on separate lines
+- [ ] (1/2: ✓ 11-27 quiz Q2) 2026-11-26, 02 macro: wrapped a kernel launch in `CUDA_CHECK(kernel<<<>>>())` → launches return `void`; check with `CUDA_CHECK(cudaGetLastError())` then `CUDA_CHECK(cudaDeviceSynchronize())` on separate lines
 - [ ] 2026-11-26, 02 macro: put `cudaDeviceSynchronize()` inside the generic CUDA_CHECK → the macro wraps one call; a sync in it would serialize every malloc/memcpy
 - [ ] 2026-11-26, 02 macro: didn't know stringizing → `#param` turns a macro argument into a string literal (only works on parameters)
 - [ ] 2026-11-26, 02 compiler error: "expected ;" at a macro call site → the bug is inside the macro expansion, not that line
-- [ ] 2026-11-26, 02 case 3: `(d.bytes + t - 1) / t` read as n threads → d.bytes = 4n, so 4n threads; size grids in elements, not bytes
+- [ ] (1/2: ✓ 11-27 quiz Q3 follow-up) 2026-11-26, 02 case 3: `(d.bytes + t - 1) / t` read as n threads → d.bytes = 4n, so 4n threads; size grids in elements, not bytes
 - [ ] 2026-11-26, 02 case 4: compared sanitizer address with pointers printed in a plain run → device addresses shift between runs/tools; print under the same tool, same run
 - [ ] 2026-11-26, 02 predictions: expected invalid arch (case 5) to report an error and missing upload (case 4) to crash → both silent without checks; uninit reads and small overruns never fault
+- [ ] 2026-11-27, 02 case 3 fix: kept bytes-sized grid, relied on guard → a guard hides an oversized grid (correct output, wasted threads); fix the grid AND guard
+- [ ] 2026-11-27, 02 case 6 fix: shrank blockDim to fit oversized smem → size dynamic smem to what the kernel uses; extra smem/block cuts blocks/SM
+- [ ] 2026-11-27, 02 cases 1/6: picked 1000 and 100 threads/block → use multiples of 32 (partial last warp wastes lanes)
+- [ ] 2026-11-27, 02 README: called launch-config errors "compiler" errors → they compile fine; runtime rejects the launch, seen via cudaGetLastError
+- [ ] 2026-11-27, 02 case 3 proof: credited memcheck alone for finding the broken kernel → per-launch sync localizes *which launch* (error at sync after B); sanitizer gives line + cause
+- [ ] 2026-11-27, quiz Q1b: gave only "add a check between launches" → must be sync+check per launch; second way: compute-sanitizer / CUDA_LAUNCH_BLOCKING=1
+- [ ] 2026-11-27, quiz Q2: missed that the macro never exits → print + exit(EXIT_FAILURE), else code runs on bad state
+- [ ] 2026-11-27, quiz Q3/Q5: answers right but incomplete (no affected range, no tool output, no reasons) → always state scope + why (interview habit)
 - [ ] 2026-11-08, placement Q5: didn't explain warp divergence → different paths within a warp are serialized (masked lanes); cost ~ sum of both paths
 
 ## Quiz log
 | Date | Topic | Score | Missed concepts |
 |---|---|---|---|
+| 2026-11-27 | Error checking (L1) | 2/5 (3 partial) | locating async errors (2nd way), memcpy bytes scope, giving reasons |
 | 2026-11-24 | Grid sizing + error checking (L1) | 1/5 (4 partial) | error checking (launch vs sync), locating async errors, unguarded-thread behavior, cudaDeviceSynchronize |
 | 2026-11-08 | Placement (L1–L4) | 1/5 (2 partial, 3 wrong) | coalescing, smem reuse, grid sizing, occupancy, roofline, sync after load, divergence |
 
 ## Session log
 <!-- The tutor adds an entry here at the end of each session. Newest first. -->
+### 2026-11-27: Gigs/02-error-checking (in progress)
+- Status: **done**. Passes review (0 critical/major). Optional leftovers: Makefile case5 hardcodes sm_86 (not $(ARCH)), binary still named _sm90; case 5 Tool cell says "compiler/makefile"
+- Highest help level: 2 (case 5: suggested $(ARCH), explained no kernel image / PTX)
+- Review findings: critical 0, major 2, minor 2, style 1. Major: case 3 kept byte-sized grid (4n threads, hidden by switching to guarded kernel); case 6 shrank block to 100 threads + stages 10 instead of sizing smem to 2*threads floats (8 KB for 800 B used → smem-limited occupancy). Minor: block sizes 1000/100 not multiples of 32; Makefile hardcodes sm_86 and keeps errlab_sm90 name. Style: case 4 FIX comment says "allocating" (it's copying)
+- README table errors: put exit code in Error message column; credited "compiler/makefile" for cases 1 and 5 (it was cudaGetLastError at runtime); called case 4 initcheck "out of bounds" (it's uninitialized read). Fix column + case 3 proof empty
+- Fix round: both majors fixed (case 3 grid from n + guard; case 6 smem = 2*threads floats); case 1 → 256. All PASS, memcheck + initcheck 0 errors → **code passes review (0 critical/major)**. Left: case 6 threads = 257 (not multiple of 32 again), unused `stages` warning, Makefile still hardcodes sm_86. README: error column still exit codes, case 4 tool changed to cudaGetLastError (wrong; initcheck), case 5/6 tool wrong, Fix column + case 3 proof empty
+- Final round: case 6 → 256 threads, `stages` removed, Fix column + error messages filled. Case 3 proof (in chat): partial; named kernel B + both causes, credited memcheck alone; missed that the per-launch syncs localized it (line 109 = sync after B, A's sync clean). Pattern: sync → which launch, sanitizer → which line/why
+- Quiz (error checking): 2/5, 3 partial (all follow-ups ✓). Macro 2→3, async/host sync 2→3; error checking stays 3. Level 1 cleared
+- Next: Level 2 gig: matrix add / 2D indexing + coalescing (weak: 2D indexing 1, coalescing 1), then transpose ladder. Optional: 02 stretch 2 (KERNEL_CHECK + -DDEBUG_SYNC)
 ### 2026-11-26: Gigs/02-error-checking (in progress)
 - Status: steps 1–4 done; step 5 (fixes) not started. User stopped at wrap-up
 - Performance: n/a (no perf target)

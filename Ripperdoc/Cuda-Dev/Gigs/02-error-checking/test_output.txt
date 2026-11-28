@@ -301,3 +301,601 @@
   (reached the end of main normally)
 
 === case 3 (n = 16777216) ===
+=== case 1 (n = 1000000) ===
+=== case 2 (n = 1000) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 3 (n = 16777216) ===
+=== case 4 (n = 1000000) ===
+  mismatch at i=0: expected 3.17108, got 1.37454
+  mismatch at i=1: expected 3.13415, got 1.95071
+  mismatch at i=2: expected 3.51168, got 1.73199
+  mismatch at i=3: expected 3.19551, got 1.59866
+  mismatch at i=4: expected 2.60185, got 1.15602
+  1000000 / 1000000 elements wrong
+  result: FAIL
+  (reached the end of main normally)
+
+=== case 6 (n = 1000000) ===
+=== case 3 (n = 16777216) ===
+=== case 2 (n = 1000) ===
+=== case 4 (n = 1000000) ===
+  mismatch at i=0: expected 3.17108, got 1.37454
+  mismatch at i=1: expected 3.13415, got 1.95071
+  mismatch at i=2: expected 3.51168, got 1.73199
+  mismatch at i=3: expected 3.19551, got 1.59866
+  mismatch at i=4: expected 2.60185, got 1.15602
+  1000000 / 1000000 elements wrong
+  result: FAIL
+  (reached the end of main normally)
+
+=== case 4 (n = 1000000) ===
+=== case 5 (n = 1000000) ===
+=== case 1 (n = 1000000) ===
+=== case 2 (n = 1000) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 3 (n = 16777216) ===
+=== case 4 (n = 1000000) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 6 (n = 1000000) ===
+=== case 4 (n = 1000000) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 1 (n = 1000000) ===
+=== case 2 (n = 1000) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 3 (n = 16777216) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 4 (n = 1000000) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 6 (n = 1000000) ===
+=== case 1 (n = 1000000) ===
+=== case 2 (n = 1000) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 3 (n = 16777216) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 4 (n = 1000000) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 6 (n = 1000000) ===
+=== case 1 (n = 1000000) ===
+=== case 2 (n = 1000) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 3 (n = 16777216) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 4 (n = 1000000) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 6 (n = 1000000) ===
+=== case 2 (n = 1000) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 4 (n = 1000000) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 3 (n = 16777216) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 1 (n = 1000000) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 2 (n = 1000) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 3 (n = 16777216) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 4 (n = 1000000) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 6 (n = 1000000) ===
+=== case 1 (n = 1000000) ===
+=== case 2 (n = 1000) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 3 (n = 16777216) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 4 (n = 1000000) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 6 (n = 1000000) ===
+=== case 1 (n = 1000000) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 2 (n = 1000) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 3 (n = 16777216) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 4 (n = 1000000) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 6 (n = 1000000) ===
+=== case 1 (n = 1000000) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 2 (n = 1000) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 3 (n = 16777216) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 4 (n = 1000000) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 6 (n = 1000000) ===
+=== case 1 (n = 1000000) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 2 (n = 1000) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 3 (n = 16777216) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 4 (n = 1000000) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 6 (n = 1000000) ===
+=== case 1 (n = 1000000) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 2 (n = 1000) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 3 (n = 16777216) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 4 (n = 1000000) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 6 (n = 1000000) ===
+=== case 6 (n = 1000000) ===
+=== case 6 (n = 1000000) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 6 (n = 1000000) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 1 (n = 1000000) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 2 (n = 1000) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 3 (n = 16777216) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 4 (n = 1000000) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 6 (n = 1000000) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 5 (n = 1000000) ===
+=== case 5 (n = 1000000) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 1 (n = 1000000) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 1 (n = 1000000) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 1 (n = 1000000) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 2 (n = 1000) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 2 (n = 1000) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 2 (n = 1000) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 3 (n = 16777216) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 3 (n = 16777216) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 3 (n = 16777216) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 4 (n = 1000000) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 4 (n = 1000000) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 4 (n = 1000000) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 6 (n = 1000000) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 6 (n = 1000000) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 6 (n = 1000000) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 5 (n = 1000000) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 1 (n = 1000000) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 1 (n = 1000000) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 1 (n = 1000000) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 2 (n = 1000) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 2 (n = 1000) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 2 (n = 1000) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 3 (n = 16777216) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 3 (n = 16777216) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 3 (n = 16777216) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 4 (n = 1000000) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 4 (n = 1000000) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 4 (n = 1000000) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 6 (n = 1000000) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 6 (n = 1000000) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 6 (n = 1000000) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 5 (n = 1000000) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 1 (n = 1000000) ===
+=== case 2 (n = 1000) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 3 (n = 16777216) ===
+=== case 4 (n = 1000000) ===
+  mismatch at i=0: expected 3.17108, got 1.37454
+  mismatch at i=1: expected 3.13415, got 1.95071
+  mismatch at i=2: expected 3.51168, got 1.73199
+  mismatch at i=3: expected 3.19551, got 1.59866
+  mismatch at i=4: expected 2.60185, got 1.15602
+  1000000 / 1000000 elements wrong
+  result: FAIL
+  (reached the end of main normally)
+
+=== case 6 (n = 1000000) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 1 (n = 1000000) ===
+=== case 2 (n = 1000) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 3 (n = 16777216) ===
+=== case 4 (n = 1000000) ===
+  mismatch at i=0: expected 3.17108, got 1.37454
+  mismatch at i=1: expected 3.13415, got 1.95071
+  mismatch at i=2: expected 3.51168, got 1.73199
+  mismatch at i=3: expected 3.19551, got 1.59866
+  mismatch at i=4: expected 2.60185, got 1.15602
+  1000000 / 1000000 elements wrong
+  result: FAIL
+  (reached the end of main normally)
+
+=== case 6 (n = 1000000) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 2 (n = 1000) ===
+=== case 3 (n = 16777216) ===
+=== case 3 (n = 16777216) ===
+=== case 4 (n = 1000000) ===
+=== case 1 (n = 1000000) ===
+=== case 2 (n = 1000) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 3 (n = 16777216) ===
+=== case 4 (n = 1000000) ===
+  mismatch at i=0: expected 3.17108, got 1.37454
+  mismatch at i=1: expected 3.13415, got 1.95071
+  mismatch at i=2: expected 3.51168, got 1.73199
+  mismatch at i=3: expected 3.19551, got 1.59866
+  mismatch at i=4: expected 2.60185, got 1.15602
+  1000000 / 1000000 elements wrong
+  result: FAIL
+  (reached the end of main normally)
+
+=== case 6 (n = 1000000) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 6 (n = 1000000) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 6 (n = 1000000) ===
+=== case 1 (n = 1000000) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 2 (n = 1000) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 3 (n = 16777216) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 4 (n = 1000000) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 6 (n = 1000000) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 1 (n = 1000000) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 2 (n = 1000) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 3 (n = 16777216) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 4 (n = 1000000) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 6 (n = 1000000) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 1 (n = 1000000) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 1 (n = 1000000) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 1 (n = 1000000) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 2 (n = 1000) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 2 (n = 1000) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 2 (n = 1000) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 3 (n = 16777216) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 3 (n = 16777216) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 3 (n = 16777216) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 4 (n = 1000000) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 4 (n = 1000000) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 4 (n = 1000000) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 6 (n = 1000000) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 6 (n = 1000000) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 6 (n = 1000000) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 5 (n = 1000000) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 1 (n = 1000000) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 1 (n = 1000000) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 1 (n = 1000000) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 2 (n = 1000) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 2 (n = 1000) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 2 (n = 1000) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 3 (n = 16777216) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 3 (n = 16777216) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 3 (n = 16777216) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 4 (n = 1000000) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 4 (n = 1000000) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 4 (n = 1000000) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 6 (n = 1000000) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 6 (n = 1000000) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 6 (n = 1000000) ===
+  result: PASS
+  (reached the end of main normally)
+
+=== case 5 (n = 1000000) ===
+  result: PASS
+  (reached the end of main normally)
+

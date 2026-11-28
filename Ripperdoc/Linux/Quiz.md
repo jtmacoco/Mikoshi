@@ -21,12 +21,12 @@ Two tracks, leveled independently.
 | Field | Main Track | Kernel Track |
 |---|---|---|
 | Current level | 3 — Merc | K1 — Ripper |
-| Sessions at this level | 0 | 0 |
+| Sessions at this level | 1 | 0 |
 | Streak (≥80%) | 0 | 0 |
 | Streak (<50%) | 0 | 0 |
 | ⚡ Preview hits at level | 0 | 0 |
-| Total sessions | 12 | 0 |
-| Last session | 2026-11-26 (83%) | — |
+| Total sessions | 13 | 0 |
+| Last session | 2026-11-27 (72%) | — |
 
 | Say | Runs |
 |---|---|
@@ -43,21 +43,21 @@ Commands/concepts I missed. An item clears after 2 ✅ in separate sessions.
 
 | Command / Concept | Track | Level | Times missed | ✅ since | Last seen |
 |---|---|---|---|---|---|
-| `2>&1` (copies hose 1's target *now*, so put it last; `> file` needs the arrow: `make > build.log 2>&1`) | Main | 2 | 7 | 1 | 2026-11-26 |
-| `find ~ -type f -name/-size/-mtime` (no `-r`; `-type f` = files only; `~` = your home, not `/home`) | Main | 2 | 6 | 1 | 2026-11-26 |
-| `grep -l TODO *.c` (list matching file names; pass files as args, don't pipe names in) | Main | 2 | 3 | 0 | 2026-11-26 |
-| `Ctrl+L` clear / `Ctrl+Z` suspends → `fg` to resume | Main | 1 | 2 | 1 | 2026-11-19 |
+| `grep -l TODO *.c` (list matching file names; pass files as args, don't pipe names in; don't quote the glob) | Main | 2 | 4 | 0 | 2026-11-27 |
+| `Ctrl+Z` suspends → `jobs` to see it → `fg` to resume / `Ctrl+L` clear | Main | 1 | 3 | 0 | 2026-11-27 |
+| `pgrep firefox` (show PID; `pkill` kills; case-sensitive) | Main | 3 | 2 | 1 | 2026-11-27 |
+| `chmod 750` (r=4 w=2 x=1, add per group: `r-x` = 5) | Main | 3 | 1 | 0 | 2026-11-27 |
+| `export VAR=val` (child processes only see exported vars) | Main | 3 | 1 | 0 | 2026-11-27 |
+| `kill` (SIGTERM, lets it clean up) vs `kill -9` (SIGKILL, can't be caught) | Main | 3 | 1 | 0 | 2026-11-27 |
+| `for f in *.txt; do echo "$f"; done` (glob, `$`, `;` before `done`) | Main | 4 | 1 | 0 | 2026-11-27 |
+| `grep -v '^$'` (`^` = line start, `$` = line end, so `^$` = empty line) | Main | 2 | 1 | 0 | 2026-11-26 |
 | `grep -c` (count matching lines; `-n` = line numbers) | Main | 2 | 1 | 1 | 2026-11-24 |
 | `2> file` (stderr only; stdout stays on screen) | Main | 2 | 1 | 1 | 2026-11-24 |
 | `grep -iE 'a\|b'` (`-E` for `\|` = or; one pair of quotes) | Main | 2 | 1 | 1 | 2026-11-25 |
 | `grep -rn` (`-r` recursive, `-n` line numbers) | Main | 2 | 1 | 1 | 2026-11-20 |
-| `>>` append vs `>` overwrite | Main | 2 | 1 | 1 | 2026-11-18 |
 | `sort -o f f` (`> f` truncates before the command reads it) | Main | 2 | 1 | 1 | 2026-11-26 |
-| `pgrep firefox` (show PID; `pkill` kills; case-sensitive) | Main | 3 | 2 | 0 | 2026-11-26 |
-| `grep -v '^$'` (`^` = line start, `$` = line end, so `^$` = empty line) | Main | 2 | 1 | 0 | 2026-11-26 |
 | `du -sh * \| sort -h` (biggest item in dir) | Main | 3 | 1 | 0 | 2026-11-19 |
 | `cmd --help \| grep` / `man` `/word` to find a flag (`ls -S`) | Main | 1 | 1 | 0 | 2026-11-18 |
-| `ls -A` (hidden, minus `.` `..`) | Main | 1 | 1 | 1 | 2026-11-18 |
 
 ### Parked
 
@@ -68,6 +68,8 @@ Out of the queue because it hit the 15-item cap. Not quizzed, not cleared. Most-
 | `rm -i` (prompt before each delete) | Main | 1 | 1 | 1 | 2026-11-18 | 2026-11-21 |
 | `whatis` (one-line man page summary) | Main | 1 | 1 | 1 | 2026-11-18 | 2026-11-21 |
 | `touch` on existing file (updates timestamp only) | Main | 1 | 1 | 1 | 2026-11-18 | 2026-11-21 |
+| `>>` append vs `>` overwrite | Main | 2 | 1 | 1 | 2026-11-18 | 2026-11-27 |
+| `ls -A` (hidden, minus `.` `..`) | Main | 1 | 1 | 1 | 2026-11-18 | 2026-11-27 |
 
 ---
 
@@ -212,6 +214,7 @@ Newest first. Full details live in [[Linux Results]].
 
 | Date | Track | Level | Score | Change | Note |
 |---|---|---|---|---|---|
+| 2026-11-27 | Main | 3 — Merc | 6.5 / 9 (72%) | none | [[2026-11-27 Linux Quiz]] |
 | 2026-11-26 | Main | 2 — Punk | 7.5 / 9 (83%) | ⬆️ up to 3 — Merc (streak 2/2) | [[2026-11-26 Linux Quiz]] |
 | 2026-11-25 | Main | 2 — Punk | 7.5 / 9 (83%) | none (streak 1/2) | [[2026-11-25 Linux Quiz]] |
 | 2026-11-24 | Main | 2 — Punk | 3 / 5 (60%) | none | [[2026-11-24 Linux Quiz 2]] (redirection drill) |

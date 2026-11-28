@@ -35,8 +35,9 @@ blocking: $(TARGET)
 	-CUDA_LAUNCH_BLOCKING=1 ./$(TARGET) $(C); echo "  exit code: $$?"
 
 # Case 5: the same code, but built for a different GPU architecture
+# FIX: Fixed by change arch to sm_86
 case5: $(SRCS) $(HDRS)
-	$(NVCC) $(NVCCFLAGS) -arch=sm_90 -o $(TARGET)_sm90 $(SRCS)
+	$(NVCC) $(NVCCFLAGS) -arch=sm_86 -o $(TARGET)_sm90 $(SRCS)
 	-./$(TARGET)_sm90 5; echo "  exit code: $$?"
 
 clean:

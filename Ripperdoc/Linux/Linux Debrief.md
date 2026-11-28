@@ -10,115 +10,16 @@ status: active
 
 Review notes built from the [[Mikoshi/Ripperdoc/Linux/Quiz#Review Queue|Review Queue]]. Read it before jacking in. Most-missed first. Answer each self-check in your head before you peek.
 
-Built from: [[2026-11-26 Linux Quiz]]
+Built from: [[2026-11-27 Linux Quiz]]
 
 ## Notes
 
 ### Main track
 
-#### Redirection
-
-##### `2>&1`: send errors where normal output goes
-Missed: 11-19 🟡 · 11-20 🟡 · 11-21 ❌ · 11-23 🟡 · 11-24 ❌ · 11-24 drill ❌ · 11-25 ❌ (Q1 reading it ✅, Q7 writing it ❌) · ✅ 11-26 (1 of 2 to clear)
-
-Every command has two output streams: **stdout** (1, normal output) and **stderr** (2, errors). Both show on your terminal, but `>` and `|` only grab stdout.
-
-```bash
-cmd > out.txt 2>&1     # both streams into the file
-cmd 2>&1 | grep err    # both streams into the pipe
-cmd |& grep err        # bash shortcut for the line above
-cmd > /dev/null 2>&1   # silence everything (or: cmd &> /dev/null)
-```
-Read `2>&1` as "2 goes to the same place as 1". Nothing is discarded. Only `2>/dev/null` throws errors away, and *only* errors. Stdout still prints.
-
-Think of two hoses, both aimed at the screen at the start. Bash reads redirects **left to right**, and each one re-aims one hose. `2>&1` **copies** where hose 1 points *right now*. It's not a permanent link, so put it **last**.
-
-| Command | Hose 1 ends at | Hose 2 ends at |
-|---|---|---|
-| `cmd > f 2>&1` | f | f ✅ |
-| `cmd 2>&1 > f` | f | screen (copied before hose 1 moved) |
-| `cmd 2>/dev/null 2>&1` | screen | screen (re-aimed back) |
-| `cmd > f 2>&1 > /dev/null` | trash (last redirect wins) | f |
-
-Sending a hose to a file **already takes it off the screen**. Add `/dev/null` only when you want output gone.
-
-Don't drop the arrow: `make build.log 2>&1` has no `>`, so make reads `build.log` as a **target** to build. The file name always comes right after `>` or `&>`.
-
-```bash
-make > build.log 2>&1   # ✅
-make &> build.log       # ✅ shorthand
-make build.log &>       # ❌ no file after &>
-```
-
-> [!question]- Self-check: what lands on screen for `ls /tmp /nope 2>&1 > out.txt`?
-> The `/nope` error. Hose 2 copied "screen" before hose 1 moved to the file.
-
-> [!question]- Self-check: save everything `./run.sh` prints into `all.log`, nothing on screen. Two ways.
-> `./run.sh > all.log 2>&1` or `./run.sh &> all.log`
-
-> [!question]- Self-check: `make | tee build.log` but the compiler errors aren't in the log. Fix it.
-> `make 2>&1 | tee build.log`. The errors went to stderr, which skipped the pipe.
-
-##### `2> file`: save only the errors
-Missed: 11-24 ❌ · ✅ 11-24 drill (1 of 2 to clear)
-
-```bash
-make 2> errors.log          # errors → file, progress stays on screen
-make > /dev/null            # hide progress, see only errors
-make > out.log 2> err.log   # each stream in its own file
-```
-Pick the stream: `>` (or `1>`) = stdout only, `2>` = stderr only, `> f 2>&1` or `&> f` = both. `2>&1 | tee` merges them, so it can't separate anything.
-
-> [!question]- Self-check: run `./build.sh` with progress in `out.log` and errors in `err.log`.
-> `./build.sh > out.log 2> err.log`
-
-##### `sort -o f f`: don't redirect into the file you're reading
-Missed: 11-23 ❌ · ✅ 11-26 (1 of 2 to clear)
-
-```bash
-sort names.txt > names.txt        # ❌ file ends up empty
-sort -o names.txt names.txt       # ✅ sort writes it safely
-sort names.txt > tmp && mv tmp names.txt   # ✅ works for any command
-```
-The shell sets up `> names.txt` **before** the command runs, and `>` truncates the file to zero bytes. Then `sort` reads an empty file. `>>` doesn't fix it: it appends the sorted copy after the original lines.
-
-> [!question]- Self-check: strip blank lines from `list.txt` in place with grep.
-> `grep -v '^$' list.txt > tmp && mv tmp list.txt`
-
-##### `>>` append vs `>` overwrite
-Missed: 11-17 🟡 · ✅ 11-18 (1 of 2 to clear)
-
-```bash
-echo hi >  log.txt    # wipe file, write "hi"
-echo hi >> log.txt    # add "hi" to the end
-```
-
-> [!question]- Self-check: you run `date > log.txt` three times. How many lines are in the file?
-> One. `>` empties the file every time.
-
-#### Finding files
-
-##### `find`: search by name, type, age or size
-Missed: 11-19 ❌ · 11-20 ❌ · 11-21 ❌ · 11-23 🟡 · 11-24 🟡 · 11-25 🟡 · ✅ 11-26 (1 of 2 to clear)
-
-`find` walks a directory tree and prints every path that passes all your filters. It always goes into subfolders, so there's no `-r`.
-
-```bash
-find <where> <filters>
-find . -type f -name "*.log"      # files ending in .log
-find . -type d -name build        # directories named build
-find /var/log -type f -mtime -2   # files modified in the last 2 days
-find ~ -type f -size +100M        # files over 100 MB anywhere in home
-```
-`-type f` = file, `-type d` = directory. `.` = where you are now, `~` = **your** home (`/home/you`). `/home` is the folder that holds *every* user's home, so searching it hits other users' files and throws `Permission denied`. Quote the `-name` pattern so the shell doesn't expand `*` first. Leave off `2>/dev/null` until it works.
-
-> [!question]- Self-check: list every `.o` file under `src/` changed in the last day.
-> `find src -type f -name "*.o" -mtime -1`
-
 #### Searching text
 
 ##### `grep -l`: just the file names
-Missed: 11-21 ❌ · 11-23 ❌ · ✅ 11-24 · 11-26 ❌ (0 of 2 to clear)
+Missed: 11-21 ❌ · 11-23 ❌ · ✅ 11-24 · 11-26 ❌ · 11-27 🟡 (quoted the glob) (0 of 2 to clear)
 
 By default grep prints every matching line. `-l` prints each matching **file name** once instead.
 
@@ -135,6 +36,14 @@ grep -rl TODO --include='*.c' .        # ✅ same, into subfolders
 find . -name '*.c' | grep -rl TODO     # ❌ grep ignores the pipe's names, searches all of .
 ```
 Also: it's `-type f`, not `-type -f`.
+
+Don't quote the glob. Quotes stop the shell from expanding `*.c`, so grep looks for one file literally named `*.c`:
+
+```bash
+grep -l malloc *.c      # ✅ shell expands to a.c b.c ...
+grep -l malloc "*.c"    # ❌ grep: *.c: No such file or directory
+```
+Quote the **pattern**, not the **glob**. The exception is `--include='*.c'`, where grep does the matching itself.
 
 > [!question]- Self-check: which `.h` files in `include/` mention `uint64_t`?
 > `grep -l uint64_t include/*.h`
@@ -194,15 +103,137 @@ grep -rn "TODO" .
 > [!question]- Self-check: what does `-n` add to the output?
 > `file:LINE:` before each match.
 
-#### Keyboard
+#### Keyboard & jobs
 
-##### `Ctrl+L` clear / `Ctrl+Z` suspend → `fg`
-Missed: 11-17 🟡 · 11-18 🟡 · ✅ 11-19 (1 of 2 to clear)
+##### `Ctrl+Z` suspend → `jobs` → `fg` / `Ctrl+L` clear
+Missed: 11-17 🟡 · 11-18 🟡 · ✅ 11-19 · 11-27 🟡 (no `jobs`) (0 of 2 to clear)
 
-`Ctrl+L` clears the screen. `Ctrl+Z` pauses (suspends) the running program, and `fg` brings it back. `Ctrl+C` is the one that kills it.
+`Ctrl+Z` pauses (suspends) the running program and gives you the prompt back. It's still alive. `Ctrl+C` is the one that kills it. `Ctrl+L` clears the screen.
 
-> [!question]- Self-check: you hit `Ctrl+Z` in vim by accident. Get back in.
-> `fg`. Don't reopen the file, or you'll get a swap-file warning.
+```bash
+jobs      # [1]+  Stopped   vim notes.txt
+fg        # resume the current job (same as fg %1 / fg %)
+bg        # resume it in the background instead
+```
+
+> [!question]- Self-check: you hit `Ctrl+Z` in vim by accident. Confirm it's still there, then get back in.
+> `jobs`, then `fg`. Don't reopen the file, or you'll get a swap-file warning.
+
+#### Processes
+
+##### `pgrep`: find a PID by name
+Missed: 11-23 🟡 (⚡ L3 preview) · 11-26 🟡 (⚡ L3 preview, `pgrep Firefox`) · ✅ 11-27 (1 of 2 to clear)
+
+```bash
+pgrep firefox        # PIDs only
+pgrep -a firefox     # PID + full command line
+pkill firefox        # skip the lookup, send SIGTERM
+kill -9 1234         # force-kill one PID
+```
+`pgrep` and `pkill` match names the same way, and the match is **case-sensitive**: the process is `firefox`, not `Firefox`. Use `-i` to ignore case. `pgrep` shows the PID, `pkill` sends the signal.
+
+> [!question]- Self-check: check whether any `qemu` process is still running.
+> `pgrep -a qemu`. No output means none.
+
+##### `kill` vs `kill -9`: ask nicely, then force
+Missed: 11-27 🟡 (wrote `kill -f`)
+
+```bash
+kill 1234       # SIGTERM (15): "please quit", the default
+kill -9 1234    # SIGKILL: dies instantly, can't be caught or ignored
+pkill -9 firefox
+kill -l         # list all signals
+```
+Try plain `kill` first. SIGTERM lets the program **clean up** (save, release locks, delete temp files). SIGKILL skips all of that, so it can leave corrupt files or stale locks. There's no `-f` flag.
+
+> [!question]- Self-check: `qemu` hangs and ignores `pkill qemu`. Next step?
+> `pkill -9 qemu`
+
+#### Redirection
+
+##### `2> file`: save only the errors
+Missed: 11-24 ❌ · ✅ 11-24 drill (1 of 2 to clear)
+
+```bash
+make 2> errors.log          # errors → file, progress stays on screen
+make > /dev/null            # hide progress, see only errors
+make > out.log 2> err.log   # each stream in its own file
+```
+Pick the stream: `>` (or `1>`) = stdout only, `2>` = stderr only, `> f 2>&1` or `&> f` = both. `2>&1 | tee` merges them, so it can't separate anything.
+
+> [!question]- Self-check: run `./build.sh` with progress in `out.log` and errors in `err.log`.
+> `./build.sh > out.log 2> err.log`
+
+##### `sort -o f f`: don't redirect into the file you're reading
+Missed: 11-23 ❌ · ✅ 11-26 (1 of 2 to clear)
+
+```bash
+sort names.txt > names.txt        # ❌ file ends up empty
+sort -o names.txt names.txt       # ✅ sort writes it safely
+sort names.txt > tmp && mv tmp names.txt   # ✅ works for any command
+```
+The shell sets up `> names.txt` **before** the command runs, and `>` truncates the file to zero bytes. Then `sort` reads an empty file. `>>` doesn't fix it: it appends the sorted copy after the original lines.
+
+> [!question]- Self-check: strip blank lines from `list.txt` in place with grep.
+> `grep -v '^$' list.txt > tmp && mv tmp list.txt`
+
+#### Permissions
+
+##### `chmod 750`: turning `rwx` into numbers
+Missed: 11-27 🟡 (wrote 710)
+
+Each of the three groups (owner, group, others) gets one digit: add up **r=4, w=2, x=1**.
+
+```bash
+# -rwxr-x---  →  rwx | r-x | ---  →  7 | 5 | 0
+chmod 750 deploy.sh
+stat -c '%a %n' deploy.sh   # prints: 750 deploy.sh
+```
+`r-x` = 4+0+1 = **5**. A `1` would be `--x`: run but not read, which doesn't work for scripts because bash has to read the file to run it.
+
+> [!question]- Self-check: what number is `rw-r-----`?
+> `640` (rw = 6, r = 4, nothing = 0)
+
+#### Environment
+
+##### `export`: let child processes see a variable
+Missed: 11-27 🟡 (tried `echo $MYVAR > hello`)
+
+```bash
+MYVAR=hello                 # shell variable: this shell only
+bash -c 'echo "[$MYVAR]"'   # []
+export MYVAR                # now an environment variable
+bash -c 'echo "[$MYVAR]"'   # [hello]
+
+CC=clang make               # one-off: set it for a single command
+```
+Scripts, `make` and `bash -c` all run as **child processes**, and they only inherit exported variables. `>` writes to a *file*, not a variable.
+
+> [!question]- Self-check: your script can't see `$BUILD_DIR`, even though `echo $BUILD_DIR` works in your shell. Fix it.
+> `export BUILD_DIR` (or run it as `BUILD_DIR=... ./script.sh`)
+
+#### Loops
+
+##### `for` loop over files
+Missed: 11-27 ❌ (⚡ L4 preview)
+
+A `for` loop runs the same commands once for each item in a list. Each time through, the variable holds the next item.
+
+```bash
+for VAR in LIST; do
+    commands using "$VAR"
+done
+
+for f in *.txt; do echo "$f"; done     # one-liner form
+for n in 1 2 3; do echo "$n"; done     # plain list
+for i in {1..5}; do echo "$i"; done    # range
+```
+- The list is the **glob** `*.txt`, and the shell expands it into the file names. `.` is a single item.
+- Read the variable with `$`: `"$f"`. Plain `f` is just the letter f.
+- `do` and `done` each need a new line or `;` before them.
+
+> [!question]- Self-check: make a `.bak` copy of every `.conf` file here.
+> `for f in *.conf; do cp "$f" "$f.bak"; done`
 
 #### Disk usage
 
@@ -216,32 +247,6 @@ du -sh * | sort -h    # biggest last
 
 > [!question]- Self-check: show only the 3 biggest items here.
 > `du -sh * | sort -h | tail -3`
-
-#### Processes
-
-##### `pgrep`: find a PID by name
-Missed: 11-23 🟡 (⚡ L3 preview) · 11-26 🟡 (⚡ L3 preview, `pgrep Firefox`)
-
-```bash
-pgrep firefox        # PIDs only
-pgrep -a firefox     # PID + full command line
-pkill firefox        # skip the lookup, send SIGTERM
-kill -9 1234         # force-kill one PID
-```
-`pgrep` and `pkill` match names the same way, and the match is **case-sensitive**: the process is `firefox`, not `Firefox`. Use `-i` to ignore case. `pgrep` shows the PID, `pkill` sends the signal.
-
-> [!question]- Self-check: check whether any `qemu` process is still running.
-> `pgrep -a qemu`. No output means none.
-
-#### Navigation
-
-##### `ls -A`: hidden files, without `.` and `..`
-Missed: 11-18 🟡 · ✅ 11-18 (1 of 2 to clear)
-
-`-a` shows everything, including `.` and `..`. `-A` shows hidden files but skips those two.
-
-> [!question]- Self-check: `ls -a` vs `ls -A` in an empty folder?
-> `-a` shows `.  ..`, `-A` shows nothing.
 
 #### Getting help
 
@@ -282,8 +287,31 @@ Missed: 11-18 ❌ · ✅ 11-18 (1 of 2 to clear)
 
 `touch` creates a file if it's missing. If the file exists, it only updates the timestamp. The contents are left alone.
 
+##### `>>` append vs `>` overwrite
+Parked 2026-11-27
+Missed: 11-17 🟡 · ✅ 11-18 (1 of 2 to clear)
+
+```bash
+echo hi >  log.txt    # wipe file, write "hi"
+echo hi >> log.txt    # add "hi" to the end
+```
+
+> [!question]- Self-check: you run `date > log.txt` three times. How many lines are in the file?
+> One. `>` empties the file every time.
+
+##### `ls -A`: hidden files, without `.` and `..`
+Parked 2026-11-27
+Missed: 11-18 🟡 · ✅ 11-18 (1 of 2 to clear)
+
+`-a` shows everything, including `.` and `..`. `-A` shows hidden files but skips those two.
+
+> [!question]- Self-check: `ls -a` vs `ls -A` in an empty folder?
+> `-a` shows `.  ..`, `-A` shows nothing.
+
 ## Cleared
 Last 10 only.
+- `2>&1` — cleared 2026-11-27
+- `find ~ -type f -name/-size/-mtime` — cleared 2026-11-27
 - `Ctrl+R` — cleared 2026-11-26
 - `cut -d -f` — cleared 2026-11-25
 - `sort | uniq -c | sort -nr` — cleared 2026-11-25

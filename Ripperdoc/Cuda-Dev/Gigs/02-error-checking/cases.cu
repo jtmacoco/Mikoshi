@@ -67,7 +67,8 @@ void case1(const std::vector<float>& h_a, const std::vector<float>& h_b, std::ve
     int n = (int)h_a.size();
     Buffers d = alloc_and_upload(h_a, h_b);
 
-    int threads = 2048;
+    //FIX: fixed by adjusting the number of threads
+    int threads = 256;
     int blocks  = (n + threads - 1) / threads;
     vec_add<<<blocks, threads>>>(d.a, d.b, d.c, n);
     
@@ -84,7 +85,8 @@ void case2(const std::vector<float>& h_a, const std::vector<float>& h_b, std::ve
 
     int threads = 256;
     int blocks  = (n + threads - 1) / threads;
-    vec_add_unguarded<<<blocks, threads>>>(d.a, d.b, d.c, n);
+    //FIX: fixed by using the guarded vec_add
+    vec_add<<<blocks, threads>>>(d.a, d.b, d.c, n);
     CUDA_CHECK(cudaGetLastError());
     CUDA_CHECK(cudaDeviceSynchronize());
 
@@ -103,8 +105,10 @@ void case3(const std::vector<float>& h_a, const std::vector<float>& h_b, std::ve
     CUDA_CHECK(cudaGetLastError());
     CUDA_CHECK(cudaDeviceSynchronize());
 
-    int blocks_b = (int)((d.bytes + threads - 1) / threads);
-    vec_add_unguarded<<<blocks_b, threads>>>(d.a, d.b, d.c, n);       // kernel B
+    //FIX: by changing to n + threads instead of the original 4n threads
+    int blocks_b = (int)((n + threads - 1) / threads);
+    //FIX: fixed by using the guarded vec_add
+    vec_add<<<blocks_b, threads>>>(d.a, d.b, d.c, n);       // kernel B
     CUDA_CHECK(cudaGetLastError());
     CUDA_CHECK(cudaDeviceSynchronize());
 
@@ -125,6 +129,8 @@ void case4(const std::vector<float>& h_a, const std::vector<float>& h_b, std::ve
     CUDA_CHECK(cudaMalloc(&d.b, d.bytes));
     CUDA_CHECK(cudaMalloc(&d.c, d.bytes));
     CUDA_CHECK(cudaMemcpy(d.a, h_a.data(), d.bytes, cudaMemcpyHostToDevice));
+    //FIX: fixed by copying d.b data
+    CUDA_CHECK(cudaMemcpy(d.b, h_b.data(), d.bytes, cudaMemcpyHostToDevice));
 
 
     int threads = 256;
@@ -156,10 +162,10 @@ void case6(const std::vector<float>& h_a, const std::vector<float>& h_b, std::ve
     int n = (int)h_a.size();
     Buffers d = alloc_and_upload(h_a, h_b);
 
-    int threads = 1024;
+    //FIX: size of smem to what the kernel uses (2 tiles of blockDim.x floats) removed the stages multipler
+    int threads = 256;
     int blocks  = (n + threads - 1) / threads;
-    int stages  = 8;                                   // room to pipeline later
-    size_t smem = stages * 2 * threads * sizeof(float);
+    size_t smem = 2 * threads * sizeof(float);
     vec_add_staged<<<blocks, threads, smem>>>(d.a, d.b, d.c, n);
     CUDA_CHECK(cudaGetLastError());
     CUDA_CHECK(cudaDeviceSynchronize());
